@@ -9,27 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
- public function up(): void
+    public function up(): void
 {
     Schema::table('maisons', function (Blueprint $table) {
-        $table->foreignId('utilisateur_id')->constrained('utilisateurs')->onDelete('cascade');
+        // On ajoute la colonne qui va pointer vers la table categories
+        $table->foreignId('categorie_id')->nullable()->constrained('categories')->onDelete('cascade');
     });
 }
 
 public function down(): void
 {
     Schema::table('maisons', function (Blueprint $table) {
-        $table->dropForeign(['utilisateur_id']);
-    
+        $table->dropForeign(['categorie_id']);
+        $table->dropColumn('categorie_id');
     });
 }
 };
-
-
-
-
-
-
-
-
-

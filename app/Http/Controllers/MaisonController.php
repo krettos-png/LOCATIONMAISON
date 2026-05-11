@@ -100,6 +100,7 @@ public function indexadmininfo($id){
     public function store(Request $request)
     {
         $request->validate([
+            'categorie_id' => 'required|exists:categories,id',
         'titre' => 'required',
         'description' => 'required',
         'prix' => 'required|numeric',
@@ -115,10 +116,13 @@ public function indexadmininfo($id){
     // Enregistrer la maison
     $maison = new Maison();
     $maison->utilisateur_id = $utilisateur->id;
+    $maison->categorie_id = $request->categorie_id;
     $maison->titre = $request->titre;
     $maison->description = $request->description;
     $maison->prix = $request->prix;
     $maison->adresse = $request->adresse;
+
+
   
 
     

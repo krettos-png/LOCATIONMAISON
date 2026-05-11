@@ -28,6 +28,19 @@
       @csrf
 
       <div class="form-group">
+    <label for="categorie">Catégorie</label>
+    <select required name="categorie_id" id="categorie" class="form-control">
+        <option value="" disabled selected>Sélectionnez une catégorie</option>
+        <option value="1">Maison</option>
+        <option value="2">Appartement</option>
+        <option value="3">Villa</option>
+    </select>
+</div>
+
+
+
+
+      <div class="form-group">
         <label for="titre">Titre de la maison</label>
         <input type="text" id="titre" name="titre" required />
       </div>

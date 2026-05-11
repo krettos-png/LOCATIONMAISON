@@ -19,6 +19,11 @@ class Maison extends Model
     return $this->belongsTo(Utilisateur::class, 'utilisateur_id');
 }
 
+    public function categorie()
+    {
+        return $this->belongsTo(Categorie::class, 'categorie_id');
+    }
+
 }
 
 
