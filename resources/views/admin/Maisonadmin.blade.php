@@ -70,7 +70,7 @@
 
         <div class="logo">
             <a href="{{ url('/') }}">
-                MaisonLoc
+                MaisonLoctag
             </a>
         </div>
 
