@@ -795,18 +795,23 @@ body{
 </div>
 
     <section class="houses">
-        @foreach($maisons as $maison)
-        <a href="/maison/{{ $maison->id }}/info" style="text-decoration: none; color: inherit;">
-            <div class="card">
-                <img src="{{ asset('storage/' . $maison->image) }}" alt="{{ $maison['TITRE'] }}">
-                <h2>{{ $maison['titre'] }}</h2>
-                <p>{{ $maison['description'] }}</p>
-                <p><strong>{{ $maison['prix'] }} FCFA/mois</strong></p>
-                <button onclick="bookNow('{{ $maison['adresse'] }}')">En Savoir Plus</button>
-            </div>
-         </a>
-        @endforeach
-    </section>
+    @foreach($maisons as $maison)
+    <a class="reste" href="/maison/{{ $maison->id }}/infoA" style="text-decoration: none; color: inherit;">
+        <div class="card">
+            <img src="{{ asset('storage/' . $maison->image) }}" alt="{{ $maison['titre'] }}">
+            
+            {{-- Limite le titre à 10 caractères --}}
+            <h2>{{ Str::limit($maison['titre'], 10, '...') }}</h2>
+            
+            {{-- Limite la description à 30 caractères --}}
+            <p>{{ Str::limit($maison['description'], 30, '...') }}</p>
+            
+            <p><strong>{{ $maison['prix'] }} FCFA/mois</strong></p>
+            <button onclick="bookNow('{{ $maison['adresse'] }}')">En Savoir Plus</button>
+        </div>
+    </a>
+    @endforeach
+</section>
 
     <script src="{{ asset('js/script.js') }}"></script>
 
@@ -820,6 +825,9 @@ body{
     color: #333;
 }
 
+
+
+
 /* header {
     margin-top :55px;
     background: #2c3e50;
@@ -828,6 +836,17 @@ body{
     padding: 20px;
     text-align: center;
 } */
+
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%; /* Pour que toutes les cartes d'une même ligne soient égales */
+    min-height: 400px; /* Ajuste cette valeur selon tes besoins */
+}
+
+
 
 .houses {
     display: flex;

@@ -769,10 +769,10 @@ body{
     </form>
 </div>
 
-    <section class="houses">
+    <!-- <section class="houses">
         @foreach($maisons as $maison)
         <a href="/maison/{{ $maison->id }}/infoA" style="text-decoration: none; color: inherit;">
-            <div class="card">
+            <div class="card" class="reste">
                 <img src="{{ asset('storage/' . $maison->image) }}" alt="{{ $maison['TITRE'] }}">
                 <h2>{{ $maison['titre'] }}</h2>
                 <p>{{ $maison['description'] }}</p>
@@ -781,7 +781,27 @@ body{
             </div>
          </a>
         @endforeach
-    </section>
+    </section> -->
+
+
+    <section class="houses">
+    @foreach($maisons as $maison)
+    <a class="reste" href="/maison/{{ $maison->id }}/infoA" style="text-decoration: none; color: inherit;">
+        <div class="card">
+            <img src="{{ asset('storage/' . $maison->image) }}" alt="{{ $maison['titre'] }}">
+            
+            {{-- Limite le titre à 10 caractères --}}
+            <h2>{{ Str::limit($maison['titre'], 10, '...') }}</h2>
+            
+            {{-- Limite la description à 30 caractères --}}
+            <p>{{ Str::limit($maison['description'], 30, '...') }}</p>
+            
+            <p><strong>{{ $maison['prix'] }} FCFA/mois</strong></p>
+            <button onclick="bookNow('{{ $maison['adresse'] }}')">En Savoir Plus</button>
+        </div>
+    </a>
+    @endforeach
+</section>
 
     <script src="{{ asset('js/script.js') }}"></script>
 
@@ -804,6 +824,16 @@ body{
     text-align: center;
 } */
 
+
+    .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%; /* Pour que toutes les cartes d'une même ligne soient égales */
+    min-height: 200px; /* Ajuste cette valeur selon tes besoins */
+}
+
+
 .houses {
     display: flex;
     justify-content: center;
@@ -813,11 +843,11 @@ body{
 }
 
 .card {
+    width: 300px;
     background: white;
     border-radius: 15px;
     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
     overflow: hidden;
-    width: 300px;
     transition: transform 0.3s ease;
 }
 
@@ -842,7 +872,7 @@ body{
 }
 
 .card button {
-    background: #27ae60;
+    background: #2563eb;
     color: white;
     border: none;
     padding: 10px;
