@@ -29,11 +29,10 @@ route::get('/recherche', function(){
 });
 
 
-
+route::get('/categories/{id}', [MaisonController::class, 'byCategory'])->name('maisons.byCategory');
 
 
 route::get('/', [MaisonController::class, 'home'])->name('home');
-
 route::get('/maison', [MaisonController::class, 'home2'])->name('home2');
 
 

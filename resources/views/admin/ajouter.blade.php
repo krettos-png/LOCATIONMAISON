@@ -51,14 +51,30 @@
       </div>
 
       <div class="form-group">
-        <label for="prix">Prix (FCFA)</label>
-        <input type="number" id="prix" name="prix" required />
+        <label for="prix">Prixx (FCFA)</label>
+        <input type="number" id="prix" name="prix" max="999999999" required />
+        <small class="form-text text-muted">Le prix doit être inférieur à 999 999 999 FCFA.</small>
+      </div>
+
+
+
+      <div class="form-group">
+        <label for="ville">Ville</label>
+        <input type="text" id="ville" name="ville" required />
       </div>
 
       <div class="form-group">
-        <label for="adresse">Adresse</label>
-        <textarea id="adresse" name="adresse" required></textarea>
+        <label for="adresse">Quartier</label>
+        <input type="text" id="adresse" name="adresse" required />
       </div>
+
+
+
+
+
+
+
+
 
       <div class="form-group">
         <label for="image">Image principale</label>
@@ -97,7 +113,7 @@
     </form>
 dd($request->all());
 
-    <a href="/admin/home" class="back-link">← Retour à l'accueil admin</a>
+    <a href="/espaceadmin" class="back-link">← Retour à l'accueil admin</a>
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>

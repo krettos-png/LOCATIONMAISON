@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Maison extends Model
 {
-    protected $fillable = ['titre', 'description', 'prix', 'adresse', 'image', 'time'];
+    protected $fillable = ['titre', 'description', 'prix', 'ville', 'adresse', 'image', 'time'];
 
 
     public function photos()

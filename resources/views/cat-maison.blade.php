@@ -1,7 +1,7 @@
 
 
 
-            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -156,16 +156,13 @@ nav {
 
         <nav class="nav-container">
             <div class="nav-links">
-                <a href="#">Maisons</a>
-                <a href="#">Appartements</a>
-                <a href="#">Villas</a>
-                <a href="#contact">Contact</a>
-                <a href="#Apropos">À propos</a>
+                <a href="#maisons">Maisons</a>
+                
             </div>
 
             <div class="nav-buttons">
-                <a href="/logout" class="btn-login">Deconnexion</a>
-            <a href="/inscription" class="btn-register">Publier un bien</a>
+                <a href="/" class="btn-login">Accueil</a>
+               
             </div>
         </nav>
     </header>
@@ -199,10 +196,10 @@ nav {
             <div class="search-item">
                 <i class="fa-solid fa-house"></i>
                 <select name="type">
-                    <option>Type de logement</option>
-                    <option>Maison</option>
-                    <option>Appartement</option>
-                    <option>Villa</option>
+                    <option value="">Type...</option>
+                    @foreach($categoriess as $categorie)
+                        @if($categorie) <option value="{{ $categorie->id }}">{{ $categorie->nom }}</option> @endif
+                    @endforeach
                 </select>
             </div>
 
@@ -238,12 +235,14 @@ body { font-family: 'Poppins', sans-serif; background: #f4f7fb; overflow-x: hidd
 .hero-rental {
     min-height: 85vh;
     background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-                url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2070');
+                url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070');
     background-size: cover;
     background-position: center;
     padding: 20px 3%;
     color: white;
 }
+/* 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070' */
+/* https://flagcdn.com/w20/tg.png */
 
 /* NAVBAR */
 .navbar {
@@ -421,323 +420,6 @@ body { font-family: 'Poppins', sans-serif; background: #f4f7fb; overflow-x: hidd
 
 
 
-
-<!-- ===================================
-     SECTION AVANTAGES + OFFRES TOGO
-=================================== -->
-
-<section class="why-section">
-
-    <div class="container">
-
-        <!-- TITLE -->
-
-        <h2 class="section-title">
-            Pourquoi choisir MaisonLoc ?
-        </h2>
-
-        <!-- FEATURES -->
-
-        <div class="features-grid">
-
-            <!-- CARD -->
-
-            <div class="feature-card">
-                <div class="feature-icon">🏠</div>
-
-                <h3>Maisons vérifiées</h3>
-
-                <p>
-                    Toutes les maisons et appartements publiés sur la plateforme
-                    sont vérifiés pour garantir sécurité et fiabilité.
-                </p>
-            </div>
-
-            <!-- CARD -->
-
-            <div class="feature-card">
-                <div class="feature-icon">📍</div>
-
-                <h3>Locations partout au Togo</h3>
-
-                <p>
-                    Trouvez facilement des logements à Lomé, Kara,
-                    Sokodé, Atakpamé et dans plusieurs autres villes.
-                </p>
-            </div>
-
-            <!-- CARD -->
-
-            <div class="feature-card">
-                <div class="feature-icon">💬</div>
-
-                <h3>Contact direct avec le propriétaire</h3>
-
-                <p>
-                    Discutez directement avec les propriétaires
-                    sans intermédiaires compliqués.
-                </p>
-            </div>
-
-            <!-- CARD -->
-
-            <div class="feature-card">
-                <div class="feature-icon">🔒</div>
-
-                <h3>Paiements sécurisés</h3>
-
-                <p>
-                    Réservez votre maison en toute confiance
-                    grâce à des paiements fiables et sécurisés.
-                </p>
-            </div>
-
-        </div>
-
-        <!-- OFFERS -->
-
-        <div class="offers-section">
-
-            <div class="offers-content">
-
-                <span class="offer-badge">
-                    OFFRES SPÉCIALES AU TOGO
-                </span>
-
-                <h2>
-                    Trouvez une maison moderne à prix abordable
-                </h2>
-
-                <p>
-                    Découvrez des villas, appartements meublés et maisons familiales
-                    disponibles à des prix accessibles dans plusieurs quartiers populaires
-                    de Lomé et des grandes villes du Togo.
-                </p>
-
-                <ul class="offer-list">
-                    <li>✔️ Maisons meublées disponibles immédiatement</li>
-                    <li>✔️ Réservation rapide et sécurisée</li>
-                    <li>✔️ Prix adaptés à tous les budgets</li>
-                    <li>✔️ Assistance client 7j/7</li>
-                </ul>
-
-                <a href="#" class="offer-btn">
-                    Explorer les maisons
-                </a>
-
-            </div>
-
-            <!-- IMAGE -->
-
-            <div class="offers-image">
-                <img src="https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?q=80&w=1200"
-                     alt="Maison moderne">
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-
-
-
-
-
-
-<style>
-
-
-
-/* ===================================
-   SECTION AVANTAGES LOCATION TOGO
-=================================== */
-
-.why-section{
-    background:#f5f7fb;
-    padding:40px 80px;
-}
-
-.container{
-    max-width:1300px;
-    margin:auto;
-}
-
-/* TITLE */
-
-.section-title{
-    font-size:42px;
-    color:#111827;
-    margin-bottom:50px;
-    font-weight:800;
-}
-
-/* FEATURES */
-
-.features-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:25px;
-}
-
-.feature-card{
-    background:white;
-    padding:35px 30px;
-    border-radius:18px;
-    transition:0.3s;
-    border:1px solid #e5e7eb;
-}
-
-.feature-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 15px 35px rgba(0,0,0,0.08);
-}
-
-.feature-icon{
-    font-size:45px;
-    margin-bottom:20px;
-}
-
-.feature-card h3{
-    font-size:24px;
-    margin-bottom:15px;
-    color:#111827;
-}
-
-.feature-card p{
-    color:#6b7280;
-    line-height:1.8;
-    font-size:16px;
-}
-
-/* OFFERS */
-
-.offers-section{
-    margin-top:80px;
-    background:white;
-    border-radius:24px;
-    padding:50px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:50px;
-    border:1px solid #e5e7eb;
-}
-
-.offer-badge{
-    background:#dbeafe;
-    color:#2563eb;
-    padding:10px 18px;
-    border-radius:50px;
-    font-size:14px;
-    font-weight:600;
-}
-
-.offers-content h2{
-    margin-top:25px;
-    font-size:46px;
-    line-height:1.2;
-    color:#111827;
-}
-
-.offers-content p{
-    margin-top:20px;
-    color:#4b5563;
-    line-height:1.9;
-    font-size:18px;
-    max-width:650px;
-}
-
-.offer-list{
-    margin-top:25px;
-    list-style:none;
-}
-
-.offer-list li{
-    margin-bottom:15px;
-    font-size:17px;
-    color:#111827;
-}
-
-.offer-btn{
-    display:inline-block;
-    margin-top:30px;
-    background:#2563eb;
-    color:white;
-    text-decoration:none;
-    padding:18px 30px;
-    border-radius:12px;
-    font-weight:600;
-    transition:0.3s;
-}
-
-.offer-btn:hover{
-    background:#1d4ed8;
-    transform:translateY(-2px);
-}
-
-/* IMAGE */
-
-.offers-image img{
-    width:420px;
-    border-radius:20px;
-    object-fit:cover;
-    box-shadow:0 20px 40px rgba(0,0,0,0.15);
-}
-
-/* RESPONSIVE */
-
-@media(max-width:1100px){
-
-    .features-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .offers-section{
-        flex-direction:column;
-        text-align:center;
-    }
-
-    .offers-content p{
-        max-width:100%;
-    }
-
-    .offers-image img{
-        width:100%;
-    }
-}
-
-@media(max-width:768px){
-
-    .why-section{
-        padding:60px 20px;
-    }
-
-    .section-title{
-        font-size:32px;
-    }
-
-    .features-grid{
-        grid-template-columns:1fr;
-    }
-
-    .offers-content h2{
-        font-size:34px;
-    }
-
-    .offers-content p{
-        font-size:16px;
-    }
-}
-
-
-
-
-
-
-</style>
 
 
 
@@ -948,23 +630,24 @@ body { font-family: 'Poppins', sans-serif; background: #f4f7fb; overflow-x: hidd
 
 
 
-    <section class="houses">
-        @foreach($categoriess as $categorie)
+    <section class="houses" id="maisons">
+        @foreach($maisons as $maison)
     {{-- Modification du lien pour pointer vers la catégorie si nécessaire --}}
-    <a class="reste" href="/categories/{{ $categorie->id }}" style="text-decoration: none; color: inherit;">
+    <a class="reste" href="/maison/{{ $maison->id }}/infoA" class="house-card" style="text-decoration: none; color: inherit;">
         <div class="card">
             {{-- Image de la catégorie ou de la première maison --}}
-             <img src="{{ $categorie->description }}" alt="{{ $categorie->nom }}">
+             <img src="{{ asset('storage/' . $maison->image) }}" alt="{{ $maison->titre }}">
             
             {{-- On affiche le nom de la catégorie --}}
-            <h2 style="text-align: center; padding: 15px 0;">
-                 {{ $categorie->nom ?? 'Catégorie Sans Nom' }}
-            </h2>
+            <h3 style="text-align: center; padding: 15px 0;">
+                 {{ $maison->titre ?? 'Maison Sans Titre' }}
+            </h3>
             
             {{-- Petit badge ou texte descriptif --}}
-            <p style="text-align: center; color: #666;">
-                Découvrir nos offres
-            </p>
+            <div class="house-price">
+                        
+                        <div class="price-sub"> {{ number_format($maison->prix, 0, ',', ' ') }} FCFA  par mois</div>
+                    </div>
             
             <button>Voir la catégorie</button>
         </div>
@@ -1026,554 +709,35 @@ body { font-family: 'Poppins', sans-serif; background: #f4f7fb; overflow-x: hidd
 
 
 
-<!-- ===================================
-     SECTION À PROPOS - MaisonLoc
-=================================== -->
-<section class="about-section" id="Apropos">
-    <div class="container">
-        <div class="about-grid">
-            
-            <!-- IMAGE ET STATS -->
-            <div class="about-visual">
-                <div class="image-wrapper">
-                    <img src="https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?q=80&w=1200">
-                    
-                    <!-- Petit badge flottant de stats -->
-                    <div class="stat-card">
-                        <span class="stat-number">500+</span>
-                        <span class="stat-label">Annonces vérifiées</span>
-                    </div>
-                </div>
-            </div>
 
-            <!-- TEXTE -->
-            <div class="about-content">
-                <span class="about-badge">QUI SOMMES-NOUS ?</span>
-                <h2>La solution n°1 pour votre logement au Togo</h2>
-                
-                <p>
-                    Lancée avec l'ambition de simplifier l'accès à l'immobilier, <strong>MaisonLoc</strong> est une plateforme dédiée à connecter les locataires et les propriétaires sur toute l'étendue du territoire togolais.
-                </p>
 
-                <div class="mission-box">
-                    <div class="mission-item">
-                        <div class="mission-dot"></div>
-                        <div>
-                            <h4>Notre Vision</h4>
-                            <p>Éliminer les barrières et les intermédiaires informels pour une location transparente.</p>
-                        </div>
-                    </div>
 
-                    <div class="mission-item">
-                        <div class="mission-dot"></div>
-                        <div>
-                            <h4>Notre Engagement</h4>
-                            <p>Sécurité totale : chaque annonce est manuellement validée par nos équipes locales.</p>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="about-footer">
-                    <div class="signature">
-                        <strong>L'équipe MaisonLoc</strong>
-                        <span>Basée à Lomé, Togo</span>
-                    </div>
-                </div>
-            </div>
 
-        </div>
-    </div>
-</section>
 
 
 
 
 
 
-<style>
 
-/* ===================================
-   SECTION À PROPOS STYLE
-=================================== */
 
-.about-section {
-    padding: 100px 80px;
-    background: white; /* Alternance avec le gris clair des autres sections */
-}
 
-.about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    gap: 80px;
-}
 
-/* Visuel à gauche */
-.about-visual {
-    position: relative;
-}
 
-.image-wrapper {
-    position: relative;
-    padding: 20px;
-}
 
-.image-wrapper img {
-    width: 100%;
-    height: 500px;
-    object-fit: cover;
-    border-radius: 30px;
-    box-shadow: 20px 20px 60px rgba(0,0,0,0.05);
-}
 
-.stat-card {
-    position: absolute;
-    bottom: -20px;
-    right: -20px;
-    background: #2563eb;
-    color: white;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 15px 30px rgba(37, 99, 235, 0.3);
-    text-align: center;
-}
 
-.stat-number {
-    display: block;
-    font-size: 32px;
-    font-weight: 800;
-}
 
-.stat-label {
-    font-size: 14px;
-    opacity: 0.9;
-}
 
-/* Contenu à droite */
-.about-badge {
-    color: #2563eb;
-    font-weight: 700;
-    letter-spacing: 1px;
-    font-size: 14px;
-    display: block;
-    margin-bottom: 15px;
-}
 
-.about-content h2 {
-    font-size: 40px;
-    color: #111827;
-    line-height: 1.2;
-    margin-bottom: 25px;
-    font-weight: 800;
-}
 
-.about-content p {
-    color: #4b5563;
-    font-size: 18px;
-    line-height: 1.8;
-    margin-bottom: 30px;
-}
 
-.mission-box {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-}
 
-.mission-item {
-    display: flex;
-    gap: 20px;
-}
 
-.mission-dot {
-    width: 12px;
-    height: 12px;
-    background: #2563eb;
-    border-radius: 50%;
-    margin-top: 6px;
-    flex-shrink: 0;
-}
 
-.mission-item h4 {
-    font-size: 18px;
-    color: #111827;
-    margin-bottom: 5px;
-}
 
-.mission-item p {
-    font-size: 16px;
-    margin-bottom: 0;
-}
 
-.about-footer {
-    margin-top: 40px;
-    padding-top: 30px;
-    border-top: 1px solid #f3f4f6;
-}
-
-.signature strong {
-    display: block;
-    font-size: 18px;
-    color: #111827;
-}
-
-.signature span {
-    color: #6b7280;
-    font-size: 14px;
-}
-
-/* RESPONSIVE */
-
-@media(max-width: 1100px) {
-    .about-grid {
-        grid-template-columns: 1fr;
-        gap: 60px;
-    }
-
-    .about-visual {
-        order: 2;
-    }
-
-    .about-content {
-        order: 1;
-        text-align: center;
-    }
-
-    .mission-item {
-        text-align: left;
-    }
-    
-    .image-wrapper img {
-        height: 400px;
-    }
-}
-
-@media(max-width: 768px) {
-    .about-section {
-        padding: 60px 20px;
-    }
-
-    .about-content h2 {
-        font-size: 30px;
-    }
-
-    .stat-card {
-        padding: 20px;
-        right: 10px;
-    }
-}
-
-
-
-
-</style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<section class="contact-section">
-
-
-<!-- /* ===================================
-   SECTION CONTACT LOCATION TOGO
-=================================== */ -->
-
-    <div class="container" id="contact">
-        
-        <h2 class="section-title">Contactez-nous</h2>
-
-        <div class="contact-wrapper">
-            
-            <div class="contact-info">
-                <h3>Besoin d'aide ?</h3>
-                <p>Notre équipe togolaise est à votre écoute pour vous accompagner dans votre recherche de logement.</p>
-                
-                <div class="info-item">
-                    <div class="info-icon">📞</div>
-                    <div class="info-text">
-                        <span>Appelez-nous</span>
-                        <p>+228 91 30 40 00</p>
-                    </div>
-                </div>
-
-                <div class="info-item">
-                    <div class="info-icon">✉️</div>
-                    <div class="info-text">
-                        <span>Email</span>
-                        <p>contact@maisonloc.tg</p>
-                    </div>
-                </div>
-
-                <div class="info-item">
-                    <div class="info-icon">📍</div>
-                    <div class="info-text">
-                        <span>Siège social</span>
-                        <p>Quartier Agoè, Lomé - Togo</p>
-                    </div>
-                </div>
-
-                <div class="social-links">
-                    <small>Suivez-nous sur les réseaux sociaux</small>
-                    <div class="social-icons">
-                        <a href="#">FB</a>
-                        <a href="#">WA</a>
-                        <a href="#">IG</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="contact-form-container">
-                <form class="contact-form">
-                    <div class="form-group">
-                        <label>Nom complet</label>
-                        <input type="text" placeholder="Ex: Jean Koffi" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Votre Email</label>
-                        <input type="email" placeholder="jean.koffi@email.com" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Sujet</label>
-                        <select required>
-                            <option value="">Choisissez une option</option>
-                            <option value="location">Recherche de location</option>
-                            <option value="proprietaire">Mettre mon bien en location</option>
-                            <option value="assistance">Assistance technique</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Message</label>
-                        <textarea rows="5" placeholder="Comment pouvons-nous vous aider ?" required></textarea>
-                    </div>
-
-                    <button type="submit" class="submit-btn">Envoyer le message</button>
-                </form>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-
-
-
-
-<!-- /* ===================================
-   SECTION CONTACT STYLE
-=================================== */ -->
-
-
-<style>
-.contact-section {
-    background: #f5f7fb; /* Même fond que Why-section */
-    padding: 90px 80px;
-}
-
-.contact-wrapper {
-    display: flex;
-    gap: 60px;
-    background: white;
-    padding: 40px;
-    border-radius: 24px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-}
-
-/* Infos à gauche */
-.contact-info {
-    flex: 1;
-    padding-right: 20px;
-}
-
-.contact-info h3 {
-    font-size: 30px;
-    color: #111827;
-    margin-bottom: 15px;
-}
-
-.contact-info p {
-    color: #6b7280;
-    line-height: 1.6;
-    margin-bottom: 40px;
-}
-
-.info-item {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.info-icon {
-    width: 50px;
-    height: 50px;
-    background: #f0f7ff;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-}
-
-.info-text span {
-    display: block;
-    font-size: 14px;
-    color: #6b7280;
-    margin-bottom: 2px;
-}
-
-.info-text p {
-    margin: 0;
-    font-weight: 700;
-    color: #111827;
-    font-size: 18px;
-}
-
-/* Formulaire à droite */
-.contact-form-container {
-    flex: 1.2;
-}
-
-.contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.form-group label {
-    font-weight: 600;
-    font-size: 15px;
-    color: #374151;
-}
-
-.form-group input, 
-.form-group select, 
-.form-group textarea {
-    padding: 14px 18px;
-    border-radius: 10px;
-    border: 1px solid #d1d5db;
-    font-size: 16px;
-    transition: 0.3s;
-    outline: none;
-}
-
-.form-group input:focus, 
-.form-group select:focus, 
-.form-group textarea:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-}
-
-.submit-btn {
-    background: #2563eb;
-    color: white;
-    padding: 16px;
-    border: none;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
-    margin-top: 10px;
-}
-
-.submit-btn:hover {
-    background: #1d4ed8;
-    transform: translateY(-2px);
-}
-
-.social-links {
-    margin-top: 40px;
-    padding-top: 30px;
-    border-top: 1px solid #e5e7eb;
-}
-
-.social-icons {
-    display: flex;
-    gap: 15px;
-    margin-top: 15px;
-}
-
-.social-icons a {
-    text-decoration: none;
-    width: 40px;
-    height: 40px;
-    background: #111827;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.social-icons a:hover {
-    background: #2563eb;
-}
-
-/* RESPONSIVE */
-
-@media(max-width: 1100px) {
-    .contact-wrapper {
-        flex-direction: column;
-        padding: 30px;
-    }
-    
-    .contact-info {
-        padding-right: 0;
-        text-align: center;
-    }
-
-    .info-item {
-        justify-content: center;
-    }
-
-    .social-icons {
-        justify-content: center;
-    }
-}
-
-@media(max-width: 768px) {
-    .contact-section {
-        padding: 60px 20px;
-    }
-}
 
 
 </style>

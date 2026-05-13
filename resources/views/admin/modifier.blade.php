@@ -56,9 +56,30 @@
         
     </header>
 
+
+
+
+
+<!--     
+<section class="houses">
+        @foreach($maisons as $maison)
+        <a href="/maison/{{ $maison->id }}/info3" style="text-decoration: none; color: inherit;">
+            <div class="card">
+                <img src="{{ asset('storage/' . $maison->image) }}" alt="{{ $maison['TITRE'] }}">
+                <h2>{{ $maison['titre'] }}</h2>
+                <p>{{ $maison['description'] }}</p>
+                <p><strong>{{ $maison['prix'] }} FCFA/mois</strong></p>
+                <button onclick="bookNow('{{ $maison['adresse'] }}')">Modifier</button>
+            </div>
+         </a>
+        @endforeach
+    </section> -->
+
+
+
     <section class="houses">
     @foreach($maisons as $maison)
-    <a class="reste" href="/maison/{{ $maison->id }}/infoA" style="text-decoration: none; color: inherit;">
+    <a class="reste" href="/maison/{{ $maison->id }}/info3" style="text-decoration: none; color: inherit;">
         <div class="card">
             <img src="{{ asset('storage/' . $maison->image) }}" alt="{{ $maison['titre'] }}">
             
@@ -69,7 +90,7 @@
             <p>{{ Str::limit($maison['description'], 50, '...') }}</p>
             
             <p><strong>{{ $maison['prix'] }} FCFA/mois</strong></p>
-            <button onclick="bookNow('{{ $maison['adresse'] }}')">En Savoir Plus</button>
+            <button onclick="bookNow('{{ $maison['adresse'] }}')">Modifier</button>
         </div>
     </a>
     @endforeach

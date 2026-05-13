@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Maison;
 use App\Models\Utilisateur;
+use App\Models\Categorie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -27,9 +28,15 @@ class AdminController extends Controller
 
 
     $maisons = Maison::all(); // ou Maison::with('photos')->get();
-    
-    return view('/admin/maisonadmin', compact('maisons')); // transmet la variable à la vue
+    // Récupère la liste des quartiers uniques
+    $quartiers = Maison::distinct()->pluck('adresse');
+    $villes = Maison::distinct()->pluck('ville');
+    $categories = Maison::distinct()->pluck('categorie_id');
+    $categoriess = Categorie::all();
+
+    return view('/admin/maisonadmin', compact('maisons', 'quartiers', 'villes', 'categories', 'categoriess')); // transmet la variable à la vue
 }
+
 
 
 
@@ -94,30 +101,68 @@ class AdminController extends Controller
 
 
 
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+    // public function login(Request $request)
+    // {
+    //     $request->validate([
+    //         'email' => 'required|email',
+    //         'password' => 'required',
+    //     ]);
 
-        $utilisateur = Utilisateur::where('email', $request->email)->first();
+    //     $utilisateur = Utilisateur::where('email', $request->email)->first();
 
-        if (!$utilisateur || !Hash::check($request->password, $utilisateur->password)) {
-            return back()->withErrors(['email' => 'Identifiants incorrects veuillez reessayer']);
-        }
+    //     if (!$utilisateur || !Hash::check($request->password, $utilisateur->password)) {
+    //         return back()->withErrors(['email' => 'Identifiants incorrects veuillez reessayer']);
+    //     }
 
-        Auth::login($utilisateur);
+    //     Auth::login($utilisateur);
 
-        // Redirection selon le rôle
-        if ($utilisateur->role === 'admin') {
-            return redirect()->route('jj');
-        } else {
-            return redirect()->route('home2');
+    //     // Redirection selon le rôle
+    //     // if ($utilisateur->role === 'admin') {
+    //     //     return redirect()->route('jj');
+    //     // } else {
+    //          return redirect()->route('home');
             
-        }
-        return view('login');
+    //     // }
+    //     return view('login');
+    // }
+
+
+
+
+
+    public function login(Request $request)
+{
+    // 1. Validation des entrées
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    // 2. Recherche de l'utilisateur
+    $utilisateur = Utilisateur::where('email', $request->email)->first();
+
+    // 3. Vérification des identifiants
+    if (!$utilisateur || !Hash::check($request->password, $utilisateur->password)) {
+        return back()->withErrors([
+            'email' => 'Identifiants incorrects, veuillez réessayer.',
+        ])->withInput($request->only('email')); // Garde l'email dans le champ pour l'utilisateur
     }
+
+    // 4. Connexion et création de la session
+    Auth::login($utilisateur);
+
+    // 5. Régénération de la session (Crucial pour la sécurité)
+    $request->session()->regenerate();
+
+    // 6. Redirection finale
+    // On utilise "intended" pour renvoyer l'utilisateur là où il voulait aller 
+    // avant d'être bloqué par le login, sinon vers 'home'.
+    return redirect()->intended(route('home'));
+}
+
+
+
+
 
     public function showLoginForm()
 {

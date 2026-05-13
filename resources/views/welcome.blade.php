@@ -139,81 +139,133 @@ nav {
 ========================= -->
 
 <section class="hero-rental">
-
-    <!-- NAVBAR -->
     <header class="navbar">
-
         <div class="logo">
-            <a href="{{ url('/') }}">
-                MaisonLoc
-            </a>
+            <a href="{{ url('/') }}">MaisonLoc</a>
         </div>
 
-        <nav class="nav-links">
-            <a href="#">Maisons</a>
-            <a href="#">Appartements</a>
-            <a href="#">Villas</a>
-            <a href="#">Contact</a>
+        <!-- Icône Menu Mobile -->
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
 
-        </nav>
+        <!-- <nav class="nav-container">
+            <div class="nav-links">
+                <a href="#maisons">Maisons</a>
+                <a href="#maisons">Appartements</a>
+                <a href="#maisons">Villas</a>
+                <a href="#contact">Contact</a>
+                <a href="#Apropos">À propos</a>
+            </div>
 
-        <div class="nav-buttons">
+            <div class="nav-buttons">
+                <a href="/login" class="btn-login">Connexion</a>
+                <a href="/inscription" class="btn-register">Publier un bien</a>
+            </div>
+        </nav> -->
+
+
+
+
+<nav class="nav-container">
+    <div class="nav-links">
+        <a href="#maisons">Maisons</a>
+        <a href="#maisons">Appartements</a>
+        <a href="#maisons">Villas</a>
+        <a href="#contact">Contact</a>
+        <a href="#Apropos">À propos</a>
+
+        {{-- Si l'utilisateur n'est PAS connecté --}}
+        @guest
+            <a href="#">Nader</a>
+        @endguest
+    </div>
+
+    <div class="nav-buttons">
+        {{-- Si l'utilisateur est connecté --}}
+        @auth
+            
+            
+            {{-- Vérification du rôle --}}
+            @if(Auth::user()->role === 'admin')
+            
+                
+                <a href="/espaceadmin" class="btn-login" title="Vous pouvez ajouter ou modifier une maison ici">Manager</a>
+                
+                
+            @endif
+
+            {{-- Bouton de déconnexion (obligatoire en Laravel via un petit formulaire) --}}
+            <p> {{ Auth::user()->name }} {{ Auth::user()->prenom}} !</p>
+            <a href="/logout" class="btn-login">Deconnexion</a>
+                <a href="#" class="btn-register">Publier un bien</a>
+                
+            
+            
+
+        @endauth
+
+        {{-- Si l'utilisateur est un simple visiteur --}}
+        @guest
             <a href="/login" class="btn-login">Connexion</a>
-            <a href="/inscription" class="btn-register">Publier un bien</a>
-        </div>
+            <a href="/inscription" class="btn-register">S'inscrire</a>
+        @endguest
+    </div>
+</nav>
+
+
+
+
+
+
+
+
+
+
 
     </header>
 
-    <!-- HERO CONTENT -->
-
     <div class="hero-content">
-
-        <span class="hero-badge">
-            🏡 Trouvez votre logement idéal
-        </span>
-
-        <h1>
-            Louez ou faite louer une maison moderne facilement
-        </h1>
-
-        <p>
-            Découvrez des milliers de maisons, villas et appartements
-            disponibles partout dans votre ville.
-        </p>
-
-        <!-- SEARCH BOX -->
+        <span class="hero-badge">🏡 Trouvez votre logement idéal</span>
+        <h1>Louez ou faites louer une maison moderne facilement</h1>
+        <p>Découvrez des milliers de maisons, villas et appartements disponibles partout.</p>
 
         <form class="search-container">
-
             <div class="search-item">
                 <i class="fa-solid fa-location-dot"></i>
-                <input type="text" placeholder="Ville ou quartier">
+                <select name="ville">
+                    <option value="">Ville</option>
+                    @foreach($villes as $ville)
+                        @if($ville) <option value="{{ $ville }}">{{ $ville }}</option> @endif
+                    @endforeach
+                </select>
             </div>
 
             <div class="search-item">
-                <i class="fa-solid fa-calendar"></i>
-                <input type="date">
+                <i class="fa-solid fa-map-pin"></i>
+                <select name="quartier">
+                    <option value="">Quartier...</option>
+                    @foreach($quartiers as $quartier)
+                        @if($quartier) <option value="{{ $quartier }}">{{ $quartier }}</option> @endif
+                    @endforeach
+                </select>
             </div>
 
             <div class="search-item">
                 <i class="fa-solid fa-house"></i>
-
-                <select>
-                    <option>Type de logement</option>
-                    <option>Maison</option>
-                    <option>Appartement</option>
-                    <option>Villa</option>
+                <select name="type">
+                    <option value="">Type...</option>
+                    @foreach($categoriess as $categorie)
+                        @if($categorie) <option value="{{ $categorie->id }}">{{ $categorie->nom }}</option> @endif
+                    @endforeach
                 </select>
             </div>
 
-            <button type="submit" class="search-btn">
-                Rechercher
-            </button>
-
+            <button type="submit" class="search-btn">Rechercher</button>
         </form>
-
     </div>
-
 </section>
 
 <!-- FONT AWESOME -->
@@ -236,222 +288,159 @@ nav {
    STYLE LOCATION MAISON
 ========================= */
 
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Poppins', sans-serif; background: #f4f7fb; overflow-x: hidden; }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+.hero-rental {
+    min-height: 85vh;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070');
+    background-size: cover;
+    background-position: center;
+    padding: 20px 3%;
+    color: white;
 }
-
-body{
-    font-family:'Poppins',sans-serif;
-    background:#f4f7fb;
-}
-
-/* HERO */
-
-.hero-rental{
-    min-height:10vh;
-    background:
-    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-    url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2070');
-    
-    background-size:cover;
-    background-position:center;
-    padding:30px 80px;
-    color:white;
-    position:relative;
-}
+/* 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070' */
+/* https://flagcdn.com/w20/tg.png */
 
 /* NAVBAR */
-
-.navbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
 }
 
-.logo a{
-    color:white;
-    text-decoration:none;
-    font-size:34px;
-    font-weight:700;
-}
+.logo a { color: white; text-decoration: none; font-size: 28px; font-weight: 700; }
 
-.nav-links{
-    display:flex;
-    gap:35px;
-}
+.nav-container { display: flex; align-items: center; gap: 40px; }
+.nav-links { display: flex; gap: 25px; }
+.nav-links a { color: white; text-decoration: none; font-weight: 500; transition: 0.3s; font-size: 15px; }
+.nav-buttons { display: flex; gap: 10px; align-items: center; }
 
-.nav-links a{
-    color:white;
-    text-decoration:none;
-    font-weight:500;
-    transition:0.3s;
-}
+.btn-login { color: white; text-decoration: none; padding: 10px 15px; }
+.btn-register { background: white; color: #111827; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; }
 
-.nav-links a:hover{
-    opacity:0.8;
-}
-
-.nav-buttons{
-    display:flex;
-    gap:15px;
-}
-
-.btn-login{
-    color:white;
-    text-decoration:none;
-    font-weight:500;
-    padding:12px 18px;
-}
-
-.btn-register{
-    background:white;
-    color:#111827;
-    padding:12px 20px;
-    border-radius:10px;
-    text-decoration:none;
-    font-weight:600;
-}
+/* MENU MOBILE TOGGLE */
+.menu-toggle { display: none; cursor: pointer; flex-direction: column; gap: 6px; }
+.menu-toggle .bar { width: 30px; height: 3px; background: white; transition: 0.3s; }
 
 /* HERO CONTENT */
-
-.hero-content{
-    margin-top:120px;
-    max-width:850px;
-}
-
-.hero-badge{
-    background:rgba(255,255,255,0.15);
-    padding:10px 18px;
-    border-radius:50px;
-    backdrop-filter:blur(10px);
-    font-size:14px;
-}
-
-.hero-content h1{
-    font-size:60px;
-    line-height:1.1;
-    margin-top:25px;
-    font-weight:800;
-}
-
-.hero-content p{
-    margin-top:25px;
-    font-size:22px;
-    line-height:1.7;
-    color:#f1f1f1;
-}
+.hero-content { margin-top: 80px; max-width: 800px; }
+.hero-badge { background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 50px; backdrop-filter: blur(5px); font-size: 13px; }
+.hero-content h1 { font-size: clamp(32px, 5vw, 56px); line-height: 1.2; margin-top: 20px; font-weight: 800; }
+.hero-content p { margin-top: 20px; font-size: clamp(16px, 2vw, 20px); color: #e5e7eb; }
 
 /* SEARCH BOX */
-
-.search-container{
-    margin-top:50px;
-    background:white;
-    border-radius:18px;
-    padding:5px;
-    display:flex;
-    align-items:center;
-    box-shadow:0 20px 40px rgba(0,0,0,0.2);
-    gap:10px;
+.search-container {
+    margin-top: 98px;
+    background: white;
+    border-radius: 15px;
+    padding: 8px;
+    display: flex;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
 }
 
-.search-item{
-    flex:1;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:18px 20px;
-    border-right:1px solid #e5e7eb;
+.search-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border-right: 1px solid #eee;
 }
 
-.search-item:last-child{
-    border-right:none;
+.search-item:last-of-type { border-right: none; }
+.search-item i { color: #2563eb; font-size: 18px; }
+.search-item select { border: none; outline: none; width: 100%; font-size: 15px; background: transparent; cursor: pointer; }
+
+.search-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
 }
 
-.search-item i{
-    color:#6b7280;
-    font-size:18px;
+/* RESPONSIVE MEDIA QUERIES */
+
+@media (max-width: 992px) {
+    .menu-toggle { display: flex; z-index: 100; }
+    
+    .nav-container {
+        position: fixed;
+        top: 0; right: -100%;
+        height: 100vh; width: 70%;
+        background: #111827;
+        flex-direction: column;
+        padding: 100px 40px;
+        transition: 0.4s;
+        box-shadow: -10px 0 20px rgba(0,0,0,0.2);
+    }
+
+    .nav-container.active { right: 0; }
+    .nav-links { flex-direction: column; width: 100%; gap: 30px; }
+    .nav-links a { font-size: 20px; }
+    .nav-buttons { flex-direction: column; width: 100%; margin-top: 40px; }
+    .btn-register { text-align: center; width: 100%; }
+
+    .search-container { flex-direction: column; }
+    .search-item { border-right: none; border-bottom: 1px solid #eee; width: 100%; }
+    .search-btn { width: 100%; margin-top: 10px; }
 }
 
-.search-item input,
-.search-item select{
-    border:none;
-    outline:none;
-    width:100%;
-    font-size:16px;
-    color:#111827;
-    background:none;
+@media (max-width: 480px) {
+    .hero-rental { padding: 20px; }
+    .hero-content { margin-top: 40px; }
+    .search-container { padding: 15px; }
 }
 
-.search-btn{
-    background:#2563eb;
-    color:white;
-    border:none;
-    padding:22px 35px;
-    border-radius:14px;
-    cursor:pointer;
-    font-size:18px;
-    font-weight:600;
-    transition:0.3s;
+
+
+
+
+/* On s'assure que le bouton de menu (qui devient la croix) reste fixe */
+.menu-toggle {
+    display: none; /* Cache par défaut sur PC */
+    cursor: pointer;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 110; /* Doit être au-dessus du menu (qui est à 100) */
+    position: relative; /* Par défaut */
 }
 
-.search-btn:hover{
-    background:#1d4ed8;
-    transform:translateY(-2px);
-}
-
-/* RESPONSIVE */
-
-@media(max-width:1100px){
-
-    .hero-rental{
-        padding:30px;
+@media (max-width: 992px) {
+    .menu-toggle {
+        display: flex;
+        position: fixed; /* <--- C'EST LA CLÉ */
+        top: 25px;       /* Ajuste selon ton design */
+        right: 25px;     /* Ajuste selon ton design */
     }
 
-    .hero-content h1{
-        font-size:52px;
-    }
-
-    .search-container{
-        flex-direction:column;
-        align-items:stretch;
-    }
-
-    .search-item{
-        border-right:none;
-        border-bottom:1px solid #eee;
-    }
-
-    .search-btn{
-        width:100%;
+    .nav-container {
+        position: fixed;
+        top: 0; 
+        right: -100%;
+        height: 100vh; 
+        width: 80%; /* Un peu plus large pour le confort */
+        background: #111827;
+        flex-direction: column;
+        padding: 100px 40px;
+        transition: 0.4s;
+        overflow-y: auto; /* Permet de défiler le contenu du menu seulement */
+        z-index: 100;
     }
 }
 
-@media(max-width:768px){
 
-    .navbar{
-        flex-direction:column;
-        gap:25px;
-    }
 
-    .nav-links{
-        display:none;
-    }
 
-    .hero-content{
-        margin-top:80px;
-    }
 
-    .hero-content h1{
-        font-size:40px;
-    }
 
-    .hero-content p{
-        font-size:18px;
-    }
-}
+
 
 
 </style>
@@ -459,6 +448,27 @@ body{
 
 
 
+
+
+<!-- ===================================
+     SECTION JS MAISON ENTETE
+=================================== -->
+
+
+
+<script>
+    const menuToggle = document.getElementById('mobile-menu');
+    const navContainer = document.querySelector('.nav-container');
+
+    menuToggle.addEventListener('click', () => {
+        navContainer.classList.toggle('active');
+        // Animation simple des barres du menu
+        const bars = document.querySelectorAll('.bar');
+        bars[0].style.transform = navContainer.classList.contains('active') ? 'rotate(45deg) translate(5px, 6px)' : 'none';
+        bars[1].style.opacity = navContainer.classList.contains('active') ? '0' : '1';
+        bars[2].style.transform = navContainer.classList.contains('active') ? 'rotate(-45deg) translate(7px, -8px)' : 'none';
+    });
+</script>
 
 
 
@@ -492,7 +502,7 @@ body{
             <!-- CARD -->
 
             <div class="feature-card">
-                <div class="feature-icon">🏠</div>
+                <div class="feature-icon"></div>
 
                 <h3>Maisons vérifiées</h3>
 
@@ -505,7 +515,7 @@ body{
             <!-- CARD -->
 
             <div class="feature-card">
-                <div class="feature-icon">📍</div>
+                <div class="feature-icon"></div>
 
                 <h3>Locations partout au Togo</h3>
 
@@ -518,7 +528,7 @@ body{
             <!-- CARD -->
 
             <div class="feature-card">
-                <div class="feature-icon">💬</div>
+                <div class="feature-icon"></div>
 
                 <h3>Contact direct avec le propriétaire</h3>
 
@@ -531,7 +541,7 @@ body{
             <!-- CARD -->
 
             <div class="feature-card">
-                <div class="feature-icon">🔒</div>
+                <div class="feature-icon"></div>
 
                 <h3>Paiements sécurisés</h3>
 
@@ -554,7 +564,7 @@ body{
                 </span>
 
                 <h2>
-                    Trouvez une maison moderne à prix abordable
+                    Trouvez une maison à prix abordable
                 </h2>
 
                 <p>
@@ -570,7 +580,7 @@ body{
                     <li>✔️ Assistance client 7j/7</li>
                 </ul>
 
-                <a href="#" class="offer-btn">
+                <a href="#maisons" class="offer-btn">
                     Explorer les maisons
                 </a>
 
@@ -606,7 +616,7 @@ body{
 
 .why-section{
     background:#f5f7fb;
-    padding:90px 80px;
+    padding:40px 80px;
 }
 
 .container{
@@ -890,7 +900,7 @@ body{
 
 
 
-    <section class="houses">
+    <!-- <section class="houses">
     @foreach($maisons as $maison)
     <a class="reste" href="/maison/{{ $maison->id }}/infoA" style="text-decoration: none; color: inherit;">
         <div class="card">
@@ -910,7 +920,7 @@ body{
 </section>
     <script src="{{ asset('js/script.js') }}"></script>
 
-
+-->
 
     <style>
         body {
@@ -991,5 +1001,931 @@ body{
     background: #219150;
 }
     </style>
+
+
+
+
+
+
+    <section class="houses" id="maisons">
+        @foreach($categoriess as $categorie)
+    {{-- Modification du lien pour pointer vers la catégorie si nécessaire --}}
+    <a class="reste" href="/categories/{{ $categorie->id }}" style="text-decoration: none; color: inherit;">
+        <div class="card">
+            {{-- Image de la catégorie ou de la première maison --}}
+             <img src="{{ $categorie->description }}" alt="{{ $categorie->nom }}">
+            
+            {{-- On affiche le nom de la catégorie --}}
+            <h1 style="text-align: center; padding: 15px 0;">
+                 {{ $categorie->nom ?? 'Catégorie Sans Nom' }}
+            </h1>
+            
+            {{-- Petit badge ou texte descriptif --}}
+            <p style="text-align: center; color: #666;">
+                Découvrir nos offres
+            </p>
+            
+            <button>Voir la catégorie</button>
+        </div>
+    </a>
+    @endforeach
+</section>
+
+    <script src="{{ asset('js/script.js') }}"></script>
+
+
+    <style>
+        body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f5f7fa;
+    color: #333;
+}
+
+
+
+    .card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    overflow: hidden;
+    width: 280px; /* Légèrement plus étroit pour les catégories */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre le contenu */
+    padding-bottom: 15px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ===================================
+     SECTION À PROPOS - MaisonLoc
+=================================== -->
+<section class="about-section" id="Apropos">
+    <div class="container">
+        <div class="about-grid">
+            
+            <!-- IMAGE ET STATS -->
+            <div class="about-visual">
+                <div class="image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1560185007-c5ca9d2c014d?q=80&w=1200">
+                    
+                    <!-- Petit badge flottant de stats -->
+                    <div class="stat-card">
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label">Annonces vérifiées</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TEXTE -->
+            <div class="about-content">
+                <span class="about-badge">QUI SOMMES-NOUS ?</span>
+                <h2>La solution n°1 pour votre logement au Togo</h2>
+                
+                <p>
+                    Lancée avec l'ambition de simplifier l'accès à l'immobilier, <strong>MaisonLoc</strong> est une plateforme dédiée à connecter les locataires et les propriétaires sur toute l'étendue du territoire togolais.
+                </p>
+
+                <div class="mission-box">
+                    <div class="mission-item">
+                        <div class="mission-dot"></div>
+                        <div>
+                            <h4>Notre Vision</h4>
+                            <p>Éliminer les barrières et les intermédiaires informels pour une location transparente.</p>
+                        </div>
+                    </div>
+
+                    <div class="mission-item">
+                        <div class="mission-dot"></div>
+                        <div>
+                            <h4>Notre Engagement</h4>
+                            <p>Sécurité totale : chaque annonce est manuellement validée par nos équipes locales.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-footer">
+                    <div class="signature">
+                        <strong>L'équipe MaisonLoc</strong>
+                        <span>Basée à Lomé, Togo</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+<style>
+
+/* ===================================
+   SECTION À PROPOS STYLE
+=================================== */
+
+.about-section {
+    padding: 100px 80px;
+    background: white; /* Alternance avec le gris clair des autres sections */
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 80px;
+}
+
+/* Visuel à gauche */
+.about-visual {
+    position: relative;
+}
+
+.image-wrapper {
+    position: relative;
+    padding: 20px;
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 30px;
+    box-shadow: 20px 20px 60px rgba(0,0,0,0.05);
+}
+
+.stat-card {
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    background: #2563eb;
+    color: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(37, 99, 235, 0.3);
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.stat-label {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* Contenu à droite */
+.about-badge {
+    color: #2563eb;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.about-content h2 {
+    font-size: 40px;
+    color: #111827;
+    line-height: 1.2;
+    margin-bottom: 25px;
+    font-weight: 800;
+}
+
+.about-content p {
+    color: #4b5563;
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.mission-box {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.mission-item {
+    display: flex;
+    gap: 20px;
+}
+
+.mission-dot {
+    width: 12px;
+    height: 12px;
+    background: #2563eb;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+}
+
+.mission-item h4 {
+    font-size: 18px;
+    color: #111827;
+    margin-bottom: 5px;
+}
+
+.mission-item p {
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.about-footer {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.signature strong {
+    display: block;
+    font-size: 18px;
+    color: #111827;
+}
+
+.signature span {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 1100px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+
+    .about-visual {
+        order: 2;
+    }
+
+    .about-content {
+        order: 1;
+        text-align: center;
+    }
+
+    .mission-item {
+        text-align: left;
+    }
+    
+    .image-wrapper img {
+        height: 400px;
+    }
+}
+
+@media(max-width: 768px) {
+    .about-section {
+        padding: 60px 20px;
+    }
+
+    .about-content h2 {
+        font-size: 30px;
+    }
+
+    .stat-card {
+        padding: 20px;
+        right: 10px;
+    }
+}
+
+
+
+
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="contact-section">
+
+
+<!-- /* ===================================
+   SECTION CONTACT LOCATION TOGO
+=================================== */ -->
+
+    <div class="container" id="contact">
+        
+        <h2 class="section-title">Contactez-nous</h2>
+
+        <div class="contact-wrapper">
+            
+            <div class="contact-info">
+                <h3>Besoin d'aide ?</h3>
+                <p>Notre équipe togolaise est à votre écoute pour vous accompagner dans votre recherche de logement.</p>
+                
+                <div class="info-item">
+                    <div class="info-icon">📞</div>
+                    <div class="info-text">
+                        <span>Appelez-nous</span>
+                        <p>+228 91 30 40 00</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">✉️</div>
+                    <div class="info-text">
+                        <span>Email</span>
+                        <p>contact@maisonloc.tg</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">📍</div>
+                    <div class="info-text">
+                        <span>Siège social</span>
+                        <p>Quartier Agoè, Lomé - Togo</p>
+                    </div>
+                </div>
+
+                <div class="social-links">
+                    <small>Suivez-nous sur les réseaux sociaux</small>
+                    <div class="social-icons">
+                        <a href="#">FB</a>
+                        <a href="#">WA</a>
+                        <a href="#">IG</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form-container">
+                <form class="contact-form">
+                    <div class="form-group">
+                        <label>Nom complet</label>
+                        <input type="text" placeholder="Ex: Jean Koffi" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Votre Email</label>
+                        <input type="email" placeholder="jean.koffi@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sujet</label>
+                        <select required>
+                            <option value="">Choisissez une option</option>
+                            <option value="location">Recherche de location</option>
+                            <option value="proprietaire">Mettre mon bien en location</option>
+                            <option value="assistance">Assistance technique</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea rows="5" placeholder="Comment pouvons-nous vous aider ?" required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Envoyer le message</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+
+
+
+<!-- /* ===================================
+   SECTION CONTACT STYLE
+=================================== */ -->
+
+
+<style>
+.contact-section {
+    background: #f5f7fb; /* Même fond que Why-section */
+    padding: 90px 80px;
+}
+
+.contact-wrapper {
+    display: flex;
+    gap: 60px;
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* Infos à gauche */
+.contact-info {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.contact-info h3 {
+    font-size: 30px;
+    color: #111827;
+    margin-bottom: 15px;
+}
+
+.contact-info p {
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.info-icon {
+    width: 50px;
+    height: 50px;
+    background: #f0f7ff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.info-text span {
+    display: block;
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 2px;
+}
+
+.info-text p {
+    margin: 0;
+    font-weight: 700;
+    color: #111827;
+    font-size: 18px;
+}
+
+/* Formulaire à droite */
+.contact-form-container {
+    flex: 1.2;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 15px;
+    color: #374151;
+}
+
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    font-size: 16px;
+    transition: 0.3s;
+    outline: none;
+}
+
+.form-group input:focus, 
+.form-group select:focus, 
+.form-group textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.submit-btn {
+    background: #2563eb;
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+}
+
+.social-links {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.social-icons a {
+    text-decoration: none;
+    width: 40px;
+    height: 40px;
+    background: #111827;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.social-icons a:hover {
+    background: #2563eb;
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 1100px) {
+    .contact-wrapper {
+        flex-direction: column;
+        padding: 30px;
+    }
+    
+    .contact-info {
+        padding-right: 0;
+        text-align: center;
+    }
+
+    .info-item {
+        justify-content: center;
+    }
+
+    .social-icons {
+        justify-content: center;
+    }
+}
+
+@media(max-width: 768px) {
+    .contact-section {
+        padding: 60px 20px;
+    }
+}
+
+
+</style>
+
+
+
+
+
+
+
+
+
+
 </body>
+
+
+
+<!-- ===================================
+     FOOTER - MaisonLoc
+=================================== -->
+<footer class="main-footer">
+    <div class="container">
+        <div class="footer-grid">
+            
+            <!-- COLONNE 1 : LOGO & DESCRIPTION -->
+            <div class="footer-col about-col">
+                <div class="footer-logo">
+                    Maison<span>Loc</span>
+                </div>
+                <p>
+                    La plateforme de référence pour la location immobilière au Togo. 
+                    Nous rendons la recherche de logement simple, rapide et sécurisée pour tous.
+                </p>
+                <div class="footer-socials">
+                    <a href="#" aria-label="Facebook">FB</a>
+                    <a href="#" aria-label="WhatsApp">WA</a>
+                    <a href="#" aria-label="Instagram">IG</a>
+                    <a href="#" aria-label="LinkedIn">IN</a>
+                </div>
+            </div>
+
+            <!-- COLONNE 2 : LIENS RAPIDES -->
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Accueil</a></li>
+                    <li><a href="#">Explorer les maisons</a></li>
+                    <li><a href="#">À propos de nous</a></li>
+                    <li><a href="#">Devenir partenaire</a></li>
+                </ul>
+            </div>
+
+            <!-- COLONNE 3 : VILLES POPULAIRES -->
+            <div class="footer-col">
+                <h4>Villes populaires</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Locations à Lomé</a></li>
+                    <li><a href="#">Locations à Kara</a></li>
+                    <li><a href="#">Locations à Sokodé</a></li>
+                    <li><a href="#">Locations à Kpalimé</a></li>
+                </ul>
+            </div>
+
+            <!-- COLONNE 4 : NEWSLETTER / CONTACT RAPIDE -->
+            <div class="footer-col">
+                <h4>Restez informé</h4>
+                <p class="small-text">Inscrivez-vous pour recevoir les dernières offres immobilières au Togo.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Votre email" required>
+                    <button type="submit">S'inscrire</button>
+                </form>
+            </div>
+
+        </div>
+
+        <!-- BAS DU FOOTER -->
+        <div class="footer-bottom">
+            <p>&copy; 2026 MaisonLoc Togo. Tous droits réservés.</p>
+            <div class="footer-legal">
+                <a href="#">Mentions légales</a>
+                <a href="#">Politique de confidentialité</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+
+<style>
+/* ===================================
+   FOOTER STYLE
+=================================== */
+
+.main-footer {
+    background: #111827; /* Noir bleuté profond */
+    color: #e5e7eb;
+    padding: 80px 80px 30px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+    gap: 50px;
+    margin-bottom: 60px;
+}
+
+/* Colonne Logo/About */
+.footer-logo {
+    font-size: 28px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.footer-logo span {
+    color: #3b82f6;
+}
+
+.about-col p {
+    line-height: 1.7;
+    color: #9ca3af;
+    font-size: 15px;
+    max-width: 300px;
+}
+
+/* Titres des colonnes */
+.footer-col h4 {
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.footer-col h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 30px;
+    height: 2px;
+    background: #3b82f6;
+}
+
+/* Liens */
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: #9ca3af;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 15px;
+}
+
+.footer-links a:hover {
+    color: white;
+    padding-left: 5px;
+}
+
+/* Newsletter */
+.small-text {
+    font-size: 14px;
+    color: #9ca3af;
+    margin-bottom: 15px;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 10px;
+}
+
+.newsletter-form input {
+    flex: 1;
+    background: #1f2937;
+    border: 1px solid #374151;
+    padding: 12px 15px;
+    border-radius: 8px;
+    color: white;
+    outline: none;
+}
+
+.newsletter-form button {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.newsletter-form button:hover {
+    background: #2563eb;
+}
+
+/* Réseaux Sociaux */
+.footer-socials {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.footer-socials a {
+    width: 36px;
+    height: 36px;
+    background: #1f2937;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.footer-socials a:hover {
+    background: #3b82f6;
+    transform: translateY(-3px);
+}
+
+/* Bas du Footer */
+.footer-bottom {
+    padding-top: 30px;
+    border-top: 1px solid #1f2937;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.footer-legal {
+    display: flex;
+    gap: 25px;
+}
+
+.footer-legal a {
+    color: #6b7280;
+    text-decoration: none;
+}
+
+.footer-legal a:hover {
+    color: #9ca3af;
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 1100px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+    }
+}
+
+@media(max-width: 768px) {
+    .main-footer {
+        padding: 60px 20px 30px;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .footer-col h4::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .footer-socials, .newsletter-form {
+        justify-content: center;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+}
+</style>
+
+
+
 </html>

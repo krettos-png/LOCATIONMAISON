@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Maison;
 use App\Models\Photo;
+use App\Models\Categorie;
+use App\Models\Utilisateur;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
 
@@ -20,17 +23,60 @@ class MaisonController extends Controller
     public function home()
 {
     $maisons = Maison::all(); // ou Maison::with('photos')->get();
+
+
+
+
+
+
+
     
-    return view('welcome', compact('maisons')); // transmet la variable à la vue
+
+    
+
+    // Récupère la liste des quartiers uniques
+    $quartiers = Maison::distinct()->pluck('adresse');
+    $villes = Maison::distinct()->pluck('ville');
+    $categories = Maison::distinct()->pluck('categorie_id');
+    $categoriess = categorie::all();
+    
+    return view('welcome', compact('maisons', 'quartiers', 'villes', 'categories', 'categoriess')); // transmet la variable à la vue
 }
+
+
+public function byCategory($id)
+{
+    // On récupère uniquement les maisons dont la catégorie correspond à l'ID
+    $maisons = Maison::where('categorie_id', $id)->get();
+
+    // On garde les listes pour les menus de recherche si besoin
+    $quartiers = Maison::distinct()->pluck('adresse');
+    $villes = Maison::distinct()->pluck('ville');
+    $categories = Maison::distinct()->pluck('categorie_id');
+    $categoriess = categorie::all();
+
+    // On retourne la même vue 'welcome' mais avec les données filtrées
+    return view('cat-maison', compact('maisons', 'quartiers', 'villes', 'categories', 'categoriess'));
+}
+
 
 
 public function home2()
 {
     $maisons = Maison::all(); // ou Maison::with('photos')->get();
+    // Récupère la liste des quartiers uniques
+    $quartiers = Maison::distinct()->pluck('adresse');
+    $villes = Maison::distinct()->pluck('ville');
+    $categories = Maison::distinct()->pluck('categorie_id');
+    $categoriess = categorie::all();
     
-    return view('Maison', compact('maisons')); // transmet la variable à la vue
+
+
+    
+    
+    return view('Maison', compact('maisons', 'quartiers', 'villes', 'categories', 'categoriess')); // transmet la variable à la vue
 }
+
 
 
 
@@ -81,11 +127,6 @@ public function indexadmininfo($id){
         return view('admin/infomaison', compact('maisons'));
 }
 
-
-    
-
-
-
     /**
      * Show the form for creating a new resource.
      */
@@ -103,7 +144,8 @@ public function indexadmininfo($id){
             'categorie_id' => 'required|exists:categories,id',
         'titre' => 'required',
         'description' => 'required',
-        'prix' => 'required|numeric',
+        'prix' => 'required|numeric|MAX:999999999',
+        'ville' => 'required',
         'adresse' => 'required',
         'image' => 'nullable|image|max:2048',
         'latitude' => 'required|numeric|between:-90,90',
@@ -120,6 +162,7 @@ public function indexadmininfo($id){
     $maison->titre = $request->titre;
     $maison->description = $request->description;
     $maison->prix = $request->prix;
+    $maison->ville = $request->ville;
     $maison->adresse = $request->adresse;
 
 
@@ -147,8 +190,14 @@ public function indexadmininfo($id){
     }
 
      $maisons = Maison::all(); // ou Maison::with('photos')->get();
-    
-    return view('/admin/maisonadmin', compact('maisons')); // transmet la variable à la vue
+
+     $quartiers = Maison::distinct()->pluck('adresse');
+    $villes = Maison::distinct()->pluck('ville');
+    $categories = Maison::distinct()->pluck('categorie_id');
+     
+
+    return redirect('/admin/modifier');
+    //return view('/admin/modifier', compact('maisons', 'quartiers', 'villes', 'categories')); // transmet la variable à la vue
 
     
    // return view('admin/Maisonadmin');
@@ -187,13 +236,16 @@ public function update(Request $request, $id)
     // 2. Validation
     $request->validate([
         'titre' => 'required',
-        'prix' => 'required|numeric',
+        'description' => 'required',
+        'prix' => 'required|numeric|MAX:999999999',
+        'ville' => 'required',
+        'adresse' => 'required',
         'image' => 'nullable|image|max:2048',
         'images_secondaires.*' => 'nullable|image|max:2048'
     ]);
 
     // 3. Préparer les données de base
-    $data = $request->only(['titre', 'description', 'prix', 'adresse', 'latitude', 'longitude']);
+    $data = $request->only(['titre', 'description', 'prix', 'ville', 'adresse', 'latitude', 'longitude']);
 
     // 4. Gestion de l'image principale (remplacement)
     if ($request->hasFile('image')) {

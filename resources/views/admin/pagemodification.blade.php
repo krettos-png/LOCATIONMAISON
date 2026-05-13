@@ -14,7 +14,7 @@
       <a class="navbar-brand" href="#">MaisonLoc</a>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link active" href="/acd">Accueil</a></li>
+          <li class="nav-item"><a class="nav-link active" href="/">Accueil</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
         </ul>
       </div>
@@ -54,10 +54,18 @@
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="prix" class="form-label">Prix (FCFA/mois)</label>
-            <input type="number" class="form-control" id="prix" name="prix" value="{{ $maisons->prix }}" required>
+            <input type="number" class="form-control" id="prix" max="999999999" name="prix" value="{{ $maisons->prix }}" required>
+            <small class="form-text text-muted">Le prix doit être inférieur à 999 999 999 FCFA.</small>
           </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="ville" class="form-label">Ville</label>
+              <input type="text" class="form-control" id="ville" name="ville" value="{{ $maisons->ville }}" required>
+            </div>
+          
+
           <div class="col-md-6 mb-3">
-            <label for="adresse" class="form-label">Adresse</label>
+            <label for="adresse" class="form-label">Quartier</label>
             <input type="text" class="form-control" id="adresse" name="adresse" value="{{ $maisons->adresse }}" required>
           </div>
         </div>
