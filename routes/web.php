@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\http\Controllers\MaisonController;
 use App\http\Controllers\AdminController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 
 //Route::get('/', function () {
    // return view('welcome');
@@ -83,6 +84,14 @@ Route::get('/maisons/recherche', [MaisonController::class, 'recherche'])->name('
 Route::get('/maisons/rechercheA', [MaisonController::class, 'rechercheA'])->name('maisons.rechercheA');
 
 
+
+
+
+
+// Afficher le formulaire (ou la vue) pour demander la réinitialisation
+Route::get('password/forgot', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+// Envoyer le mail
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
 
 

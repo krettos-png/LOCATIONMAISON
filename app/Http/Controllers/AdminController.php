@@ -12,6 +12,7 @@ use App\Models\Categorie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -58,14 +59,29 @@ class AdminController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        // $request->validate([
+        //     'nom' => 'required',
+        //     'prenom' => 'required',
+        //     'contact' => 'required',
+        //     'email' => 'required|email|unique:utilisateurs,email',
+        //     'password' => 'required|min:6|confirmed',
+        //     'role' => 'required|in:oui,non',
+        // ]);
+
+        $validator = Validator::make($request->all(), [
             'nom' => 'required',
             'prenom' => 'required',
             'contact' => 'required',
             'email' => 'required|email|unique:utilisateurs,email',
-            'password' => 'required|min:6|confirmed',
-            'role' => 'required|in:oui,non',
+                'password' => 'required|min:6|confirmed',
+                'role' => 'required|in:oui,non',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator, 'register') // Spécifie le bag d'erreurs pour le formulaire d'inscription
+                ->withInput();
+        }
 
         $role = $request->role === 'oui' ? 'admin' : 'client'; // 👈 logique du rôle
     
@@ -79,7 +95,8 @@ class AdminController extends Controller
         $utilisateur->role=$role;
         $utilisateur->save();
 
-        return redirect('/login');
+   
+        return redirect("/")->with('registre_ok', true); // Redirige vers la page d'accueil avec un message de succès
 
     }
 
@@ -129,8 +146,7 @@ class AdminController extends Controller
 
 
 
-
-    public function login(Request $request)
+public function login(Request $request)
 {
     // 1. Validation des entrées
     $request->validate([
@@ -145,18 +161,23 @@ class AdminController extends Controller
     if (!$utilisateur || !Hash::check($request->password, $utilisateur->password)) {
         return back()->withErrors([
             'email' => 'Identifiants incorrects, veuillez réessayer.',
-        ])->withInput($request->only('email')); // Garde l'email dans le champ pour l'utilisateur
+        ])->withInput($request->only('email'));
     }
 
-    // 4. Connexion et création de la session
-    Auth::login($utilisateur);
+    // --- MODIFICATION ICI ---
+    // 4. On récupère la valeur de la checkbox "remember"
+    // has('remember') renvoie true si la case est cochée
+    $remember = $request->has('remember');
 
-    // 5. Régénération de la session (Crucial pour la sécurité)
+    // 5. Connexion avec le paramètre "Remember Me"
+    // Le deuxième argument dit à Laravel de créer le cookie longue durée
+    Auth::login($utilisateur, $remember);
+    // -------------------------
+
+    // 6. Régénération de la session
     $request->session()->regenerate();
 
-    // 6. Redirection finale
-    // On utilise "intended" pour renvoyer l'utilisateur là où il voulait aller 
-    // avant d'être bloqué par le login, sinon vers 'home'.
+    // 7. Redirection finale
     return redirect()->intended(route('home'));
 }
 
