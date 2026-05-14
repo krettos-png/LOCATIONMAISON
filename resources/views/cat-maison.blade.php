@@ -815,7 +815,7 @@ body { font-family: 'Poppins', sans-serif; background: #f4f7fb; overflow-x: hidd
 
         <!-- BAS DU FOOTER -->
         <div class="footer-bottom">
-            <p>&copy; 2026 MaisonLoc Togo. Tous droits réservés.</p>
+            <p>&copy; 2026 MaisonLoc Togo by Gkrettos TAGBA. Tous droits réservés.</p>
             <div class="footer-legal">
                 <a href="#">Mentions légales</a>
                 <a href="#">Politique de confidentialité</a>
