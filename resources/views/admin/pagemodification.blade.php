@@ -31,7 +31,7 @@
         @method('DELETE')
         <button type="submit" class="btn btn-danger btn-sm">Supprimer la maison</button>
       </form>
-      <button type="submit" class="btn btn-danger btn-sm">Verrouiller la maison</button>
+    
     </div>
 
     <div class="card-body">

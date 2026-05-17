@@ -30,6 +30,8 @@ route::get('/recherche', function(){
 });
 
 
+
+
 route::get('/categories/{id}', [MaisonController::class, 'byCategory'])->name('maisons.byCategory');
 
 
@@ -66,6 +68,10 @@ Route::get('/logout', function () {
 
 route::get('/admin/modifier', [MaisonController::class, 'indexModifier'])->name('hhh');
 
+route::get('/admin/table', [MaisonController::class, 'indextable'])->name('ttt');
+
+Route::patch('/maison/{id}/toggle-loue', [MaisonController::class, 'toggleLoue']);
+
 route::get('/admin/modifier2', [MaisonController::class, 'indexModifier'])->name('hhh');
 
 route::get('/admin/pagemodification', [MaisonController::class, 'indexModifierR'])->name('RRR');
@@ -93,6 +99,6 @@ Route::get('password/forgot', [ForgotPasswordController::class, 'showLinkRequest
 // Envoyer le mail
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
+Route::get('/rechercher-maison', [MaisonController::class, 'search']);
 
-
-
+Route::get('/maison/{id}/demander-visite', [MaisonController::class, 'demanderVisite'])->name('maisons.visite');

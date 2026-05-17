@@ -120,7 +120,7 @@
             <p>Modifier ou supprimer les maisons existantes.</p>
         </a>
 
-        <a href="/admin/d" class="admin-card">
+        <a href="/admin/table" class="admin-card">
             <div class="icon">📊</div>
             <h2>Tableau de Bord</h2>
             <p>Voir les statistiques et la liste complète.</p>

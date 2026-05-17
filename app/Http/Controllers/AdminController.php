@@ -240,7 +240,7 @@ public function login(Request $request)
 
     $maisons = $utilisateur->maisons; // Toutes ses maisons
 
-    return view('admin.modifier', compact('maisons')); // transmet la variable à la vue
+    return view('admin.table', compact('maisons')); // transmet la variable à la vue
 
 
 }

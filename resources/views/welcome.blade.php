@@ -192,15 +192,23 @@ nav {
             @if(Auth::user()->role === 'admin')
             
                 
-                <a href="/espaceadmin" class="btn-login" title="Vous pouvez ajouter ou modifier une maison ici">Manager</a>
+                <a href="/admin/table" class="btn-login" title="Vous pouvez ajouter ou modifier une maison ici">Manager</a>
                 
                 
             @endif
 
             {{-- Bouton de déconnexion (obligatoire en Laravel via un petit formulaire) --}}
-            <p> {{ Auth::user()->name }} {{ Auth::user()->prenom}} !</p>
+            <a class="btn-login"> {{ Auth::user()->name }} {{ Auth::user()->prenom}} !</a>
             <a href="/logout" class="btn-login">Deconnexion</a>
+                
+                @if(Auth::user()->role === 'admin')
+
+                <a href="/admin/ajouter" class="btn-register">Publier un bien</a>
+                @else
+
                 <a href="#" class="btn-register">Publier un bien</a>
+
+                @endif
                 
             
             
@@ -2000,12 +2008,13 @@ function openLoginModal() {
                     Nous rendons la recherche de logement simple, rapide et sécurisée pour tous.
                 </p>
                 <div class="footer-socials">
-                    <a href="#" aria-label="Facebook">FB</a>
-                    <a href="#" aria-label="WhatsApp">WA</a>
+                    <a href="https://www.facebook.com/gerard.krettossmith" aria-label="Facebook" target="_blank">FB</a>
+                    <a href="https://wa.me/22891304000" aria-label="WhatsApp" target="_blank">WA</a>
                     <a href="#" aria-label="Instagram">IG</a>
                     <a href="#" aria-label="LinkedIn">IN</a>
                 </div>
             </div>
+        
 
             <!-- COLONNE 2 : LIENS RAPIDES -->
             <div class="footer-col">

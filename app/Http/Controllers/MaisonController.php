@@ -44,20 +44,118 @@ class MaisonController extends Controller
 }
 
 
+// public function byCategory($id)
+// {
+//     // On récupère uniquement les maisons dont la catégorie correspond à l'ID
+//     $maisons = Maison::where('categorie_id', $id)->get();
+
+//     // On garde les listes pour les menus de recherche si besoin
+//     $quartiers = Maison::distinct()->pluck('adresse');
+//     $villes = Maison::distinct()->pluck('ville');
+//     $categories = Maison::distinct()->pluck('categorie_id');
+//     $categoriess = categorie::all();
+
+//     // On retourne la même vue 'welcome' mais avec les données filtrées
+//     return view('cat-maison', compact('maisons', 'quartiers', 'villes', 'categories', 'categoriess'));
+// }
+
+
+
+
+
+
 public function byCategory($id)
 {
-    // On récupère uniquement les maisons dont la catégorie correspond à l'ID
-    $maisons = Maison::where('categorie_id', $id)->get();
+    // On récupère les maisons de la catégorie ET qui ne sont PAS louées
+    $maisons = Maison::where('categorie_id', $id)
+                     ->where('est_loue', false)
+                     ->get();
 
-    // On garde les listes pour les menus de recherche si besoin
+    // Le reste de ton code ne change pas
     $quartiers = Maison::distinct()->pluck('adresse');
     $villes = Maison::distinct()->pluck('ville');
     $categories = Maison::distinct()->pluck('categorie_id');
     $categoriess = categorie::all();
 
-    // On retourne la même vue 'welcome' mais avec les données filtrées
     return view('cat-maison', compact('maisons', 'quartiers', 'villes', 'categories', 'categoriess'));
 }
+
+
+
+
+
+
+
+// public function byCategory($id)
+// {
+//     // 1. On récupère les maisons disponibles de cette catégorie
+//     $maisons = Maison::where('categorie_id', $id)
+//                      ->where('est_loue', false)
+//                      ->get();
+
+//     // 2. Initialisation dynamique de la barre de recherche dès le premier chargement :
+//     // On ne prend QUE les villes et quartiers où il y a des maisons disponibles DANS CETTE CATÉGORIE
+//     $villes = Maison::where('categorie_id', $id)
+//                     ->where('est_loue', false)
+//                     ->distinct()
+//                     ->whereNotNull('ville')
+//                     ->pluck('ville');
+
+//     $quartiers = Maison::where('categorie_id', $id)
+//                        ->where('est_loue', false)
+//                        ->distinct()
+//                        ->whereNotNull('adresse')
+//                        ->pluck('adresse');
+
+//     // Pour que le premier menu affiche toutes les catégories possibles
+//     $categoriess = Categorie::all(); 
+
+//     // On passe l'ID de la catégorie actuelle à la vue pour le JavaScript
+//     $current_category_id = $id;
+
+//     return view('cat-maison', compact('maisons', 'quartiers', 'villes', 'categoriess', 'current_category_id'));
+// }
+
+
+
+public function search(Request $request)
+{
+    // 1. On commence par exclure d'office les maisons louées
+    $query = Maison::where('est_loue', false);
+
+    // 2. Filtre par Ville si sélectionnée
+    if ($request->filled('ville')) {
+        $query->where('ville', $request->ville);
+    }
+
+    // 3. Filtre par Quartier (adresse) si sélectionné
+    if ($request->filled('quartier')) {
+        $query->where('adresse', $request->quartier);
+    }
+
+    // 4. Filtre par Catégorie si sélectionnée
+    if ($request->filled('categorie_id')) {
+        $query->where('categorie_id', $request->categorie_id);
+    }
+
+    // 5. On récupère les résultats filtrés
+    $maisons = $query->get();
+
+    // 6. On recharge les données pour alimenter les sélecteurs
+    $quartiers = Maison::where('est_loue', false)->distinct()->pluck('adresse');
+    $villes = Maison::where('est_loue', false)->distinct()->pluck('ville');
+    $categoriess = Categorie::all(); 
+
+    // CHANGER ICI : On récupère l'ID de la catégorie recherchée pour la renvoyer à la vue
+    $current_category_id = $request->categorie_id;
+
+    // On ajoute 'current_category_id' dans le compact()
+    return view('cat-maison', compact('maisons', 'quartiers', 'villes', 'categoriess', 'current_category_id'));
+}
+
+
+
+
 
 
 
@@ -106,6 +204,39 @@ public function indexModifier()
 
 
 
+public function indextable()
+
+
+{
+    $utilisateur = Auth::user(); // Récupère l'utilisateur connecté
+
+
+    $maisons = $utilisateur->maisons; // Toutes ses maisons
+
+    return view('/admin.table', compact('maisons')); // transmet la variable à la vue
+
+    
+}
+
+
+
+public function toggleLoue($id)
+{
+    // 1. On cherche la maison, sinon erreur 404 propre
+    $maison = Maison::findOrFail($id);
+    
+    // 2. On inverse l'état (si true devient false, si false devient true)
+    $maison->est_loue = !$maison->est_loue; 
+    $maison->save();
+
+    // 3. On recharge la page avec le nouveau statut visuel
+    return back();
+}
+
+
+
+
+
 public function indexModifierR()
 
 
@@ -124,8 +255,55 @@ public function indexModifierR()
 
 public function indexadmininfo($id){
      $maisons = Maison::with(['photos'])->findOrFail($id);
+
+    
+
+    // 2. Astuce pour éviter qu'un rafraîchissement (F5) en boucle fausse les stats
+    //$sessionKey = 'viewed_maison_' . $id;
+    // if (!session()->has($sessionKey)) {
+        
+    //     session()->put($sessionKey, true); // Marque le visiteur comme "ayant déjà vu"
+    // }
+
+        $maisons->increment('vues'); // Ajoute +1 en base de données
         return view('admin/infomaison', compact('maisons'));
 }
+
+
+
+public function demanderVisite($id)
+{
+    // 1. On trouve la maison
+    $maison = Maison::findOrFail($id);
+
+    // 2. On incrémente le compteur de visites demandées
+    $maison->increment('visites_demandees');
+
+    // 3. On prépare exactement le même lien WhatsApp que tu avais sur ta page
+    $texteBrut = "Bonjour, je suis très intéressé par l'annonce suivante :\n\n"
+               . "🏠 *Bien :* " . $maison->titre . "\n"
+               . "💰 *Loyer :* " . number_format($maison->prix, 0, ',', ' ') . " FCFA / mois\n"
+               . "📍 *Zone :* " . $maison->ville . " (" . $maison->adresse . ")\n"
+               . "📸 *Image :* " . asset('storage/' . $maison->image);
+
+    $lienWhatsApp = "https://wa.me/22891304000?text=" . urlencode($texteBrut);
+
+   // $lienWhatsApp = "https://wa.me/228" . $maison->telephone . "?text=" . urlencode($texteBrut);
+
+
+    // 4. On redirige instantanément l'utilisateur vers WhatsApp
+    return redirect()->away($lienWhatsApp);
+}
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -196,7 +374,7 @@ public function indexadmininfo($id){
     $categories = Maison::distinct()->pluck('categorie_id');
      
 
-    return redirect('/admin/modifier');
+    return redirect('/admin/table');
     //return view('/admin/modifier', compact('maisons', 'quartiers', 'villes', 'categories')); // transmet la variable à la vue
 
     

@@ -172,13 +172,17 @@ nav {
         <h1>Louez ou faites louer une maison moderne facilement</h1>
         <p>Découvrez des milliers de maisons, villas et appartements disponibles partout.</p>
 
-        <form class="search-container">
+        
+            <!-- FORMULAIRE DE RECHERCHE RENDU OPÉRATIONNEL -->
+        <form action="{{ url('/rechercher-maison') }}" method="GET" class="search-container">
             <div class="search-item">
                 <i class="fa-solid fa-location-dot"></i>
                 <select name="ville">
-                    <option value="">Ville</option>
+                    <option value="">Ville...</option>
                     @foreach($villes as $ville)
-                        @if($ville) <option value="{{ $ville }}">{{ $ville }}</option> @endif
+                        @if($ville) 
+                            <option value="{{ $ville }}" {{ request('ville') == $ville ? 'selected' : '' }}>{{ $ville }}</option> 
+                        @endif
                     @endforeach
                 </select>
             </div>
@@ -188,23 +192,28 @@ nav {
                 <select name="quartier">
                     <option value="">Quartier...</option>
                     @foreach($quartiers as $quartier)
-                        @if($quartier) <option value="{{ $quartier }}">{{ $quartier }}</option> @endif
+                        @if($quartier) 
+                            <option value="{{ $quartier }}" {{ request('quartier') == $quartier ? 'selected' : '' }}>{{ $quartier }}</option> 
+                        @endif
                     @endforeach
                 </select>
             </div>
 
             <div class="search-item">
                 <i class="fa-solid fa-house"></i>
-                <select name="type">
+                <select name="categorie_id">
                     <option value="">Type...</option>
                     @foreach($categoriess as $categorie)
-                        @if($categorie) <option value="{{ $categorie->id }}">{{ $categorie->nom }}</option> @endif
+                        @if($categorie) 
+                            <option value="{{ $categorie->id }}" {{ request('categorie_id') == $categorie->id ? 'selected' : '' }}>{{ $categorie->nom }}</option> 
+                        @endif
                     @endforeach
                 </select>
             </div>
 
             <button type="submit" class="search-btn">Rechercher</button>
         </form>
+       
     </div>
 </section>
 
@@ -544,87 +553,72 @@ body { font-family: 'Poppins', sans-serif; background: #f4f7fb; overflow-x: hidd
     <script src="{{ asset('js/script.js') }}"></script>
 
 -->
+<style>
+    .houses {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 5px;
+        gap: 6px; /* Espace minimal entre les cartes */
+    }
 
-    <style>
-        body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #f5f7fa;
-    color: #333;
-}
+    .card {
+        background: white;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        overflow: hidden;
+        width: 140px; /* Largeur très réduite */
+        transition: transform 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        min-height: 210px; /* Hauteur totale très courte */
+    }
 
-/*header {
-    margin-top :55px;
-    background: #2c3e50;
+    .card:hover {
+        transform: translateY(-3px); /* Petit saut au lieu d'un gros zoom */
+    }
 
-    color: white;
-    padding: 20px;
-    text-align: center;
-}*/
+    .card img {
+        width: 100%;
+        height: 90px; /* Image miniature */
+        object-fit: cover;
+    }
 
+    .card h3 {
+        margin: 4px;
+        font-size: 0.75em; /* Texte très petit */
+        text-align: left; /* Aligné à gauche pour gagner de la place */
+        padding-left: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-.card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%; /* Pour que toutes les cartes d'une même ligne soient égales */
-    min-height: 400px; /* Ajuste cette valeur selon tes besoins */
-}
+    .house-price {
+        padding-left: 8px;
+        font-weight: bold;
+        color: #2563eb;
+        font-size: 0.7em;
+        margin-bottom: 5px;
+    }
 
-.houses {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    padding: 10px;
-    gap: 10px;
-}
+    .price-sub {
+        color: #2563eb;
+    }
 
-.card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    overflow: hidden;
-    width: 300px;
-    transition: transform 0.3s ease;
-}
-
-.card:hover {
-    transform: scale(1.03);
-}
-
-.card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.card h2 {
-    margin: 10px;
-    font-size: 1.2em;
-}
-
-.card p {
-    margin: 10px;
-    font-size: 0.9em;
-}
-
-.card button {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 10px;
-    margin: 10px;
-    width: calc(100% - 20px);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.card button:hover {
-    background: #219150;
-}
-    </style>
-
+    .card button {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 5px;
+        margin: 5px;
+        width: calc(100% - 10px);
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.7em;
+        margin-top: auto; /* Pousse le bouton toujours en bas */
+    }
+</style>
 
 
 
@@ -640,8 +634,13 @@ body { font-family: 'Poppins', sans-serif; background: #f4f7fb; overflow-x: hidd
             
             {{-- On affiche le nom de la catégorie --}}
             <h3 style="text-align: center; padding: 15px 0;">
-                 {{ $maison->titre ?? 'Maison Sans Titre' }}
+
+            <p>{{ $maison->titre ?? 'Maison Sans Titre' }}</p>
+                  
+                 {{ $maison->ville }} |  {{ $maison->adresse }}
             </h3>
+
+            
             
             {{-- Petit badge ou texte descriptif --}}
             <div class="house-price">
@@ -649,7 +648,7 @@ body { font-family: 'Poppins', sans-serif; background: #f4f7fb; overflow-x: hidd
                         <div class="price-sub"> {{ number_format($maison->prix, 0, ',', ' ') }} FCFA  par mois</div>
                     </div>
             
-            <button>Voir la catégorie</button>
+            <button>Voir la maison</button>
         </div>
     </a>
     @endforeach
