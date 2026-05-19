@@ -96,6 +96,7 @@
             padding-left: 10px;
         }
 
+
         .houses {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -283,7 +284,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/espaceadmin">
+                        <a class="nav-link active" href="/">
                             <i class="fa-solid fa-arrow-left me-1"></i> Retour
                         </a>
                     </li>

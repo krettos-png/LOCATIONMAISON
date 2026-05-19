@@ -448,7 +448,7 @@ public function update(Request $request, $id)
 
     // 7. Redirection avec les données à jour
     $maisons = Maison::all(); 
-    return redirect('/admin/modifier');
+    return redirect('/admin/table');
 
 
     //return view('admin.maisonadmin', compact('maisons'))->with('success', 'Mise à jour réussie');
