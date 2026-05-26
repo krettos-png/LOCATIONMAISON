@@ -171,9 +171,9 @@ nav {
 
 <nav class="nav-container">
     <div class="nav-links">
-        <a href="#maisons">Maisons</a>
-        <a href="#maisons">Appartements</a>
-        <a href="#maisons">Villas</a>
+        <a href="#maisons">Habitations</a>
+        <a href="#maisons">Bureaux</a>
+        <a href="#maisons">Boutiques</a>
         <a href="#contact">Contact</a>
         <a href="#Apropos">À propos</a>
 
@@ -197,6 +197,11 @@ nav {
                 
             @endif
 
+            @if(Auth::user()->role === 'dev')
+            
+                
+                <a href="#" class="btn-login" title="Vous pouvez ajouter une maison ici">DEVELOPPEUR</a>
+@endif
             {{-- Bouton de déconnexion (obligatoire en Laravel via un petit formulaire) --}}
             <a class="btn-login"> {{ Auth::user()->name }} {{ Auth::user()->prenom}} !</a>
             <a href="/logout" class="btn-login">Deconnexion</a>
@@ -204,6 +209,8 @@ nav {
                 @if(Auth::user()->role === 'admin')
 
                 <a href="/admin/ajouter" class="btn-register">Publier un bien</a>
+                @elseif(Auth::user()->role === 'dev')
+
                 @else
 
                 <a href="#" class="btn-register">Publier un bien</a>
@@ -480,6 +487,229 @@ body { font-family: 'Poppins', sans-serif; background: #f4f7fb; overflow-x: hidd
 </script>
 
 
+
+
+    <!-- <section class="houses">
+    @foreach($maisons as $maison)
+    <a class="reste" href="/maison/{{ $maison->id }}/infoA" style="text-decoration: none; color: inherit;">
+        <div class="card">
+            <img src="{{ asset('storage/' . $maison->image) }}" alt="{{ $maison['titre'] }}">
+            
+            {{-- Limite le titre à 10 caractères --}}
+            <h2>{{ Str::limit($maison['titre'], 10, '...') }}</h2>
+            
+            {{-- Limite la description à 30 caractères --}}
+            <p>{{ Str::limit($maison['description'], 30, '...') }}</p>
+            
+            <p><strong>{{ $maison['prix'] }} FCFA/mois</strong></p>
+            <button onclick="bookNow('{{ $maison['adresse'] }}')">En Savoir Plus</button>
+        </div>
+    </a>
+    @endforeach
+</section>
+    <script src="{{ asset('js/script.js') }}"></script>
+
+-->
+
+    <style>
+        body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f5f7fa;
+    color: #333;
+}
+
+/*header {
+    margin-top :55px;
+    background: #2c3e50;
+
+    color: white;
+    padding: 20px;
+    text-align: center;
+}*/
+
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%; /* Pour que toutes les cartes d'une même ligne soient égales */
+    min-height: 400px; /* Ajuste cette valeur selon tes besoins */
+}
+
+.houses {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 10px;
+    gap: 10px;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    overflow: hidden;
+    width: 300px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.03);
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card h2 {
+    margin: 10px;
+    font-size: 1.2em;
+}
+
+.card p {
+    margin: 10px;
+    font-size: 0.9em;
+}
+
+.card button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 10px;
+    width: calc(100% - 20px);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.card button:hover {
+    background: #219150;
+}
+    </style>
+
+
+
+<br>
+
+
+    <section class="houses" id="maisons">
+        
+    @auth
+        @foreach($categoriess as $categorie)
+    {{-- Modification du lien pour pointer vers la catégorie si nécessaire --}}
+    <a class="reste" class="link-categorie" href="/categories/{{ $categorie->id }}" style="text-decoration: none; color: inherit;">
+        <div class="card">
+            {{-- Image de la catégorie ou de la première maison --}}
+             <img src="{{ $categorie->description }}" alt="{{ $categorie->nom }}">
+            
+            {{-- On affiche le nom de la catégorie --}}
+            <h1 style="text-align: center; padding: 15px 0;">
+                 {{ $categorie->nom ?? 'Catégorie Sans Nom' }}
+            </h1>
+            
+            {{-- Petit badge ou texte descriptif --}}
+            <p style="text-align: center; color: #666;">
+                Découvrir nos offres
+            </p>
+            
+            <button>Voir la catégorie</button>
+        </div>
+    </a>
+    @endforeach
+    @else
+        @foreach($categoriess as $categorie)
+    {{-- Modification du lien pour pointer vers la catégorie si nécessaire --}}
+    <a class="reste" class="link-categorie" href="javascript:void(0)" onclick="preparerMessage(); openLoginModal()" style="text-decoration: none; color: inherit;">
+        <div class="card">
+            {{-- Image de la catégorie ou de la première maison --}}
+             <img src="{{ $categorie->description }}" alt="{{ $categorie->nom }}">
+            
+            {{-- On affiche le nom de la catégorie --}}
+            <h1 style="text-align: center; padding: 15px 0;">
+                 {{ $categorie->nom ?? 'Catégorie Sans Nom' }}
+            </h1>
+            
+            {{-- Petit badge ou texte descriptif --}}
+            <p style="text-align: center; color: #666;">
+                Découvrir nos offres
+            </p>
+            
+            <button>Voir la catégorie</button>
+        </div>
+    </a>
+    
+    @endforeach
+    @endauth
+</section>
+
+
+
+
+
+<script>
+function preparerMessage() {
+    const messageBox = document.getElementById('auth-message');
+    if (messageBox) {
+        messageBox.innerText = "Veuillez vous connecter pour explorer cette catégorie.";
+        messageBox.style.display = 'block';
+    }
+}
+
+function openLoginModal() {
+    const loginModal = document.getElementById('loginModal');
+    if (loginModal) {
+        loginModal.style.display = 'flex';
+    }
+}
+</script>
+
+
+
+
+
+
+    <script src="{{ asset('js/script.js') }}"></script>
+
+
+    <style>
+        body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f5f7fa;
+    color: #333;
+}
+
+
+
+    .card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    overflow: hidden;
+    width: 280px; /* Légèrement plus étroit pour les catégories */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre le contenu */
+    padding-bottom: 15px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+</style>
 
 
 
@@ -907,228 +1137,6 @@ body { font-family: 'Poppins', sans-serif; background: #f4f7fb; overflow-x: hidd
 
 
 
-
-
-    <!-- <section class="houses">
-    @foreach($maisons as $maison)
-    <a class="reste" href="/maison/{{ $maison->id }}/infoA" style="text-decoration: none; color: inherit;">
-        <div class="card">
-            <img src="{{ asset('storage/' . $maison->image) }}" alt="{{ $maison['titre'] }}">
-            
-            {{-- Limite le titre à 10 caractères --}}
-            <h2>{{ Str::limit($maison['titre'], 10, '...') }}</h2>
-            
-            {{-- Limite la description à 30 caractères --}}
-            <p>{{ Str::limit($maison['description'], 30, '...') }}</p>
-            
-            <p><strong>{{ $maison['prix'] }} FCFA/mois</strong></p>
-            <button onclick="bookNow('{{ $maison['adresse'] }}')">En Savoir Plus</button>
-        </div>
-    </a>
-    @endforeach
-</section>
-    <script src="{{ asset('js/script.js') }}"></script>
-
--->
-
-    <style>
-        body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #f5f7fa;
-    color: #333;
-}
-
-/*header {
-    margin-top :55px;
-    background: #2c3e50;
-
-    color: white;
-    padding: 20px;
-    text-align: center;
-}*/
-
-
-.card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%; /* Pour que toutes les cartes d'une même ligne soient égales */
-    min-height: 400px; /* Ajuste cette valeur selon tes besoins */
-}
-
-.houses {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    padding: 10px;
-    gap: 10px;
-}
-
-.card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    overflow: hidden;
-    width: 300px;
-    transition: transform 0.3s ease;
-}
-
-.card:hover {
-    transform: scale(1.03);
-}
-
-.card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.card h2 {
-    margin: 10px;
-    font-size: 1.2em;
-}
-
-.card p {
-    margin: 10px;
-    font-size: 0.9em;
-}
-
-.card button {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 10px;
-    margin: 10px;
-    width: calc(100% - 20px);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.card button:hover {
-    background: #219150;
-}
-    </style>
-
-
-
-
-
-
-    <section class="houses" id="maisons">
-    @auth
-        @foreach($categoriess as $categorie)
-    {{-- Modification du lien pour pointer vers la catégorie si nécessaire --}}
-    <a class="reste" class="link-categorie" href="/categories/{{ $categorie->id }}" style="text-decoration: none; color: inherit;">
-        <div class="card">
-            {{-- Image de la catégorie ou de la première maison --}}
-             <img src="{{ $categorie->description }}" alt="{{ $categorie->nom }}">
-            
-            {{-- On affiche le nom de la catégorie --}}
-            <h1 style="text-align: center; padding: 15px 0;">
-                 {{ $categorie->nom ?? 'Catégorie Sans Nom' }}
-            </h1>
-            
-            {{-- Petit badge ou texte descriptif --}}
-            <p style="text-align: center; color: #666;">
-                Découvrir nos offres
-            </p>
-            
-            <button>Voir la catégorie</button>
-        </div>
-    </a>
-    @endforeach
-    @else
-        @foreach($categoriess as $categorie)
-    {{-- Modification du lien pour pointer vers la catégorie si nécessaire --}}
-    <a class="reste" class="link-categorie" href="javascript:void(0)" onclick="preparerMessage(); openLoginModal()" style="text-decoration: none; color: inherit;">
-        <div class="card">
-            {{-- Image de la catégorie ou de la première maison --}}
-             <img src="{{ $categorie->description }}" alt="{{ $categorie->nom }}">
-            
-            {{-- On affiche le nom de la catégorie --}}
-            <h1 style="text-align: center; padding: 15px 0;">
-                 {{ $categorie->nom ?? 'Catégorie Sans Nom' }}
-            </h1>
-            
-            {{-- Petit badge ou texte descriptif --}}
-            <p style="text-align: center; color: #666;">
-                Découvrir nos offres
-            </p>
-            
-            <button>Voir la catégorie</button>
-        </div>
-    </a>
-    
-    @endforeach
-    @endauth
-</section>
-
-
-
-
-
-<script>
-function preparerMessage() {
-    const messageBox = document.getElementById('auth-message');
-    if (messageBox) {
-        messageBox.innerText = "Veuillez vous connecter pour explorer cette catégorie.";
-        messageBox.style.display = 'block';
-    }
-}
-
-function openLoginModal() {
-    const loginModal = document.getElementById('loginModal');
-    if (loginModal) {
-        loginModal.style.display = 'flex';
-    }
-}
-</script>
-
-
-
-
-
-
-    <script src="{{ asset('js/script.js') }}"></script>
-
-
-    <style>
-        body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #f5f7fa;
-    color: #333;
-}
-
-
-
-    .card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    overflow: hidden;
-    width: 280px; /* Légèrement plus étroit pour les catégories */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centre le contenu */
-    padding-bottom: 15px;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-}
-
-.card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-}
-
-</style>
 
 
 

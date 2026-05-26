@@ -280,6 +280,16 @@
             <span class="ms-2 text-muted fw-medium">FCFA / mois</span>
           </div>
 
+          @php $isRented = ($maisons->est_loue == 1); @endphp
+
+          @if($isRented)
+              
+          @else
+
+           
+
+
+
           <div class="d-flex flex-column gap-2 mt-3">
             <a href="{{ route('maisons.visite', ['id' => $maisons->id]) }}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp w-100 py-3">
               <svg style="width:24px;height:24px" viewBox="0 0 24 24">
@@ -302,6 +312,7 @@
               Envoyer un message
             </a>
           </div>
+          @endif
         </div>
 
         @if (Auth::check())

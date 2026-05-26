@@ -66,6 +66,8 @@ Route::get('/logout', function () {
 })->name('logout');
 
 
+
+
 route::get('/admin/modifier', [MaisonController::class, 'indexModifier'])->name('hhh');
 
 route::get('/admin/table', [MaisonController::class, 'indextable'])->name('ttt');

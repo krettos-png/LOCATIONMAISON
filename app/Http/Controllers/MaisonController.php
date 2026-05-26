@@ -67,9 +67,15 @@ class MaisonController extends Controller
 public function byCategory($id)
 {
     // On récupère les maisons de la catégorie ET qui ne sont PAS louées
-    $maisons = Maison::where('categorie_id', $id)
+    $maisons = Maison::all()
+    //$maisons = Maison::where('categorie_id', $id)
+                     //->where('est_loue', false)
+                    // ->get();
+;
+                     $maisonsss = Maison::where('categorie_id', $id)
                      ->where('est_loue', false)
-                     ->get();
+                     ->get()
+                     ->groupBy('ville');
 
     // Le reste de ton code ne change pas
     $quartiers = Maison::distinct()->pluck('adresse');
@@ -77,7 +83,9 @@ public function byCategory($id)
     $categories = Maison::distinct()->pluck('categorie_id');
     $categoriess = categorie::all();
 
-    return view('cat-maison', compact('maisons', 'quartiers', 'villes', 'categories', 'categoriess'));
+    $Rcategory = Categorie::find($id);
+
+    return view('cat-maison', compact('Rcategory', 'maisons', 'maisonsss', 'quartiers', 'villes', 'categories', 'categoriess'));
 }
 
 

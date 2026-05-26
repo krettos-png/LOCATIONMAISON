@@ -31,11 +31,24 @@
     <label for="categorie">Catégorie</label>
     <select required name="categorie_id" id="categorie" class="form-control">
         <option value="" disabled selected>Sélectionnez une catégorie</option>
-        <option value="1">Maison</option>
-        <option value="2">Appartement</option>
-        <option value="3">Villa</option>
+        <option value="1">Habitation</option>
+        <option value="2">Bureau</option>
+        <option value="3">Boutique/Magasin</option>
+
     </select>
 </div>
+
+<style>
+  .form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccd1d9;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 10px;
+
+  }
+</style>
 
 
 
@@ -47,11 +60,11 @@
 
       <div class="form-group">
         <label for="description">Description</label>
-        <input type="text" id="description" name="description" required />
+        <textarea class="form-control" style="text-transform: capitalize;" id="description" name="description" rows="4" required></textarea>
       </div>
 
       <div class="form-group">
-        <label for="prix">Prixx (FCFA)</label>
+        <label for="prix">Prix (FCFA)</label>
         <input type="number" id="prix" name="prix" max="999999999" required />
         <small class="form-text text-muted">Le prix doit être inférieur à 999 999 999 FCFA.</small>
       </div>
@@ -60,12 +73,12 @@
 
       <div class="form-group">
         <label for="ville">Ville</label>
-        <input type="text" id="ville" name="ville" required />
+        <input type="text" style="text-transform: uppercase;" id="ville" name="ville" required />
       </div>
 
       <div class="form-group">
         <label for="adresse">Quartier</label>
-        <input type="text" id="adresse" name="adresse" required />
+        <input type="text" style="text-transform: capitalize;" id="adresse" name="adresse" required />
       </div>
 
 
@@ -113,7 +126,7 @@
     </form>
 dd($request->all());
 
-    <a href="/espaceadmin" class="back-link">← Retour à l'accueil admin</a>
+    <a href="/admin/table" class="back-link">← Retour à l'accueil admin</a>
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>

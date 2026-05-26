@@ -39,6 +39,17 @@
         @csrf
         @method('PUT')
 
+        <div class="form-group">
+    <label for="categorie">Catégorie</label>
+    <select required name="categorie_id" id="categorie" class="form-control">
+        <option value="" disabled selected>Sélectionnez une catégorie</option>
+        <option value="1">Habitation</option>
+        <option value="2">Bureau</option>
+        <option value="3">Boutique/Magasin</option>
+
+    </select>
+</div>
+<br>
         <div class="mb-3">
           <label for="titre" class="form-label">Titre</label>
           <input type="text" class="form-control" id="titre" name="titre" 
@@ -48,7 +59,7 @@
 
         <div class="mb-3">
           <label for="description" class="form-label">Description</label>
-          <textarea class="form-control" id="description" name="description" rows="4" required>{{ old('description', $maisons->description) }}</textarea>
+          <textarea class="form-control" style="text-transform: uppercase;" id="description" name="description" rows="4" required>{{ old('description', $maisons->description) }}</textarea>
         </div>
 
         <div class="row">
@@ -60,13 +71,13 @@
 
             <div class="col-md-6 mb-3">
               <label for="ville" class="form-label">Ville</label>
-              <input type="text" class="form-control" id="ville" name="ville" value="{{ $maisons->ville }}" required>
+              <input type="text" class="form-control" style="text-transform: uppercase;" id="ville" name="ville" value="{{ $maisons->ville }}" required>
             </div>
           
 
           <div class="col-md-6 mb-3">
             <label for="adresse" class="form-label">Quartier</label>
-            <input type="text" class="form-control" id="adresse" name="adresse" value="{{ $maisons->adresse }}" required>
+            <input type="text" class="form-control" style="text-transform: capitalize;" id="adresse" name="adresse" value="{{ $maisons->adresse }}" required>
           </div>
         </div>
 
