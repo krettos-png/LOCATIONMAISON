@@ -171,9 +171,7 @@ nav {
 
 <nav class="nav-container">
     <div class="nav-links">
-        <a href="#maisons">Habitations</a>
-        <a href="#maisons">Bureaux</a>
-        <a href="#maisons">Boutiques</a>
+        <a href="#maisons">Nos Biens</a>
         <a href="#contact">Contact</a>
         <a href="#Apropos">À propos</a>
 
@@ -248,7 +246,7 @@ nav {
         <h1>Louez ou faites louer une maison moderne facilement</h1>
         <p>Découvrez des milliers de maisons, villas et appartements disponibles partout.</p>
 
-        <form class="search-container">
+        <!-- <form class="search-container">
             <div class="search-item">
                 <i class="fa-solid fa-location-dot"></i>
                 <select name="ville">
@@ -280,7 +278,7 @@ nav {
             </div>
 
             <button type="submit" class="search-btn">Rechercher</button>
-        </form>
+        </form> -->
     </div>
 </section>
 
@@ -309,7 +307,7 @@ nav {
 body { font-family: 'Poppins', sans-serif; background: #f4f7fb; overflow-x: hidden; }
 
 .hero-rental {
-    min-height: 85vh;
+    min-height: 8vh;
     background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
                 url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070');
     background-size: cover;
@@ -594,9 +592,10 @@ body { font-family: 'Poppins', sans-serif; background: #f4f7fb; overflow-x: hidd
 
 
 <br>
-
+<h2 style="text-align: center; margin-bottom: 20px;">Les Catégories de biens disponibles</h2>
 
     <section class="houses" id="maisons">
+        
         
     @auth
         @foreach($categoriess as $categorie)
@@ -1894,7 +1893,7 @@ function openLoginModal() {
 
   /* Inputs */
   .input-group { margin-bottom: 18px; flex: 1; }
-  .input-row { display: flex; gap: 15px; }
+  .input-row { display: flex; gap: 1px; }
   .input-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 6px; }
   .input-group input {
     width: 100%; padding: 12px 16px; border-radius: 12px; border: 2px solid #f1f5f9;
