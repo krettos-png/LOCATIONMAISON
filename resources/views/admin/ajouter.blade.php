@@ -30,7 +30,7 @@
       <div class="form-group">
     <label for="categorie">Catégorie</label>
     <select required name="categorie_id" id="categorie" class="form-control">
-        <option value="" disabled selected>Sélectionnez une catégorie</option>
+        <option value="" disabled selected>Sélectionnez la catégorie de votre bien ici</option>
         <option value="1">Habitation</option>
         <option value="2">Bureau</option>
         <option value="3">Boutique/Magasin</option>
@@ -55,17 +55,17 @@
 
       <div class="form-group">
         <label for="titre">Titre de la maison</label>
-        <input type="text" id="titre" name="titre" required />
+        <input type="text" id="titre" name="titre" placeholder="Que voulez-vous mettre en location ?" required />
       </div>
 
       <div class="form-group">
         <label for="description">Description</label>
-        <textarea class="form-control" style="text-transform: capitalize;" id="description" name="description" rows="4" required></textarea>
+        <textarea class="form-control" style="text-transform: capitalize;" id="description" name="description" rows="4" placeholder="Decrivez votre bien y compris toutes les informations à savoir Presence d'electricite, climatisation, eau, caution etc. " required></textarea>
       </div>
 
       <div class="form-group">
         <label for="prix">Prix (FCFA)</label>
-        <input type="number" id="prix" name="prix" max="999999999" required />
+        <input type="number" id="prix" name="prix" max="999999999" placeholder="Entrez le prix mensuel de la maison " required />
         <small class="form-text text-muted">Le prix doit être inférieur à 999 999 999 FCFA.</small>
       </div>
 
@@ -73,12 +73,12 @@
 
       <div class="form-group">
         <label for="ville">Ville</label>
-        <input type="text" style="text-transform: uppercase;" id="ville" name="ville" required />
+        <input type="text" style="text-transform: uppercase;" id="ville" name="ville" placeholder="Entrez la ville où se trouve la maison" required />
       </div>
 
       <div class="form-group">
         <label for="adresse">Quartier</label>
-        <input type="text" style="text-transform: capitalize;" id="adresse" name="adresse" required />
+        <input type="text" style="text-transform: capitalize;" id="adresse"  name="adresse" placeholder="Entrez le quartier où se trouve la maison" required />
       </div>
 
 
@@ -121,10 +121,9 @@
         </div>
       </div>
 
-      <button type="submit">Ajouter la maison</button>
+      <button type="submit" class="btn-ajouter">Ajouter la maison</button>
       
     </form>
-dd($request->all());
 
     <a href="/admin/table" class="back-link">← Retour à l'accueil admin</a>
   </div>

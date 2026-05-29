@@ -1882,7 +1882,7 @@ function openLoginModal() {
   }
 
   /* Header & Icons */
-  .auth-header { text-align: center; margin-bottom: 25px; }
+  .auth-header { text-align: center; margin-bottom: -35px; }
   .icon-box {
     width: 54px; height: 54px; background: var(--primary-soft); color: var(--primary);
     border-radius: 14px; display: flex; align-items: center; justify-content: center;
@@ -1893,7 +1893,7 @@ function openLoginModal() {
 
   /* Inputs */
   .input-group { margin-bottom: 18px; flex: 1; }
-  .input-row { display: flex; gap: 1px; }
+  .input-row { display: flex; gap: 15px; }
   .input-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 6px; }
   .input-group input {
     width: 100%; padding: 12px 16px; border-radius: 12px; border: 2px solid #f1f5f9;

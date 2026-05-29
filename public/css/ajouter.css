@@ -48,7 +48,7 @@ textarea {
   min-height: 100px;
 }
 
-button {
+.btn-ajouter {
   background: #3498db;
   color: white;
   padding: 12px 20px;
@@ -59,7 +59,7 @@ button {
   width: 100%;
 }
 
-button:hover {
+.btn-ajouter:hover {
   background: #2980b9;
 }
 
@@ -121,12 +121,13 @@ button:hover {
 .btn-outline {
   margin-top: 12px;
   padding: 10px 16px;
-  background: transparent;
-  border: 1px solid #666;
+  background: black;
+  border: 1px solid #b91818;
   border-radius: 6px;
   cursor: pointer;
+  color: rgb(7, 7, 7);
 }
 
 .btn-outline:hover {
-  background: #f0f0f0;
+  background: #8ec922;
 }
