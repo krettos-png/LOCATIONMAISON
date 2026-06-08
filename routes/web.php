@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\http\Controllers\MaisonController;
 use App\http\Controllers\AdminController;
+use App\http\Controllers\CategorieController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 
 //Route::get('/', function () {
@@ -29,7 +30,11 @@ route::get('/recherche', function(){
     return view('Recherche/maisonrechercher');
 });
 
+route::get('/admin/modifier', function(){
+    return view('admin/modifier');
+});
 
+route::get('/admin/dev', [AdminController::class, 'dev'])->name('admin.dev');
 
 
 
@@ -74,6 +79,10 @@ route::get('/admin/modifier', [MaisonController::class, 'indexModifier'])->name(
 
 route::get('/admin/table', [MaisonController::class, 'indextable'])->name('ttt');
 
+route::get('/dev/{id}', [MaisonController::class, 'indextableD'])->name('tttD');
+
+
+
 Route::patch('/maison/{id}/toggle-loue', [MaisonController::class, 'toggleLoue']);
 
 route::get('/admin/modifier2', [MaisonController::class, 'indexModifier'])->name('hhh');
@@ -106,3 +115,25 @@ Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEm
 Route::get('/rechercher-maison', [MaisonController::class, 'search']);
 
 Route::get('/maison/{id}/demander-visite', [MaisonController::class, 'demanderVisite'])->name('maisons.visite');
+
+
+
+// Route pour afficher le formulaire
+Route::get('/admin/categories/creer', [CategorieController::class, 'create']);
+
+// Route pour enregistrer les données
+Route::post('/admin/categories/store', [CategorieController::class, 'store']);
+
+
+
+// Formulaire d'édition
+Route::get('/admin/categories/{id}/modifier', [CategorieController::class, 'edit']);
+
+// Traitement de la modification (PUT)
+Route::put('/admin/categories/{id}/update', [CategorieController::class, 'update']);
+
+// Suppression (DELETE)
+Route::delete('/admin/categories/{id}/delete', [CategorieController::class, 'destroy']);
+
+// Route pour supprimer un utilisateur et ses biens en cascade
+Route::delete('/admin/utilisateurs/{id}/delete', [AdminController::class, 'destroyUtilisateur']);

@@ -23,11 +23,11 @@ class utilisateurSeeder extends Seeder
             // text
             DB::table('utilisateurs')->insert([
                 'id' => 1,
-                'name' => 'boss',
+                'name' => 'client',
                 'prenom' => 'Test',
                 'contact' => '+228 90 00 00 00',
-                'email' => 'boss@test.com',
-                'password' => Hash::make('password123'),
+                'email' => 'client@test.com',
+                'password' => Hash::make('Client123'), // Mot de passe sécurisé pour le compte de test
                 'role' => 'client',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -43,8 +43,18 @@ class utilisateurSeeder extends Seeder
                 'prenom' => 'Principal',
                 'contact' => '+228 91 11 11 11',
                 'email' => 'admin@locationmaison.com',
-                'password' => Hash::make('SuperSecretAdmin2026!'), // À changer après le déploiement
+                'password' => Hash::make('Admin123'), // À changer après le déploiement
                 'role' => 'admin',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            DB::table('utilisateurs')->insert([
+                'name' => 'Dev',
+                'prenom' => 'Principal',
+                'contact' => '+228 91 11 11 11',
+                'email' => 'dev@locationmaison.com',
+                'password' => Hash::make('Dev123!'), // À changer après le déploiement
+                'role' => 'dev',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

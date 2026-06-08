@@ -284,7 +284,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/">
+                        <a class="nav-link active" href="javascript:window.history.back();">
                             <i class="fa-solid fa-arrow-left me-1"></i> Retour
                         </a>
                     </li>

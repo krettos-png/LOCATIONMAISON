@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -244,4 +245,52 @@ public function login(Request $request)
 
 
 }
+
+
+
+
+    public function dev()
+    {
+        // Récupération de l'ensemble des données requises
+        $utilisateurs = Utilisateur::all();
+        $categories = Categorie::all();
+        $maisons = Maison::all();
+        $totalUtilisateurs = $utilisateurs->count();
+        $totalCategories = $categories->count();
+        $totalMaisons = $maisons->count();
+        $totalMaisonsLouees = Maison::where('est_loue', true)->count();
+        $totalMaisonsDisponibles = Maison::where('est_loue', false)->count();
+        $totalUtilisateursadmin = Utilisateur::where('role', 'admin')->count();
+        $totalUtilisateursclient = Utilisateur::where('role', 'client')->count();
+
+        // Retourne la vue admin avec les variables nécessaires
+        return view('admin.dev', compact('utilisateurs', 'categories', 'maisons', 'totalUtilisateurs', 'totalCategories', 'totalMaisons', 'totalMaisonsLouees', 'totalMaisonsDisponibles', 'totalUtilisateursadmin', 'totalUtilisateursclient'));
+    }
+
+
+    public function destroyUtilisateur($id)
+    {
+        // 1. Trouver l'utilisateur ciblé
+        $utilisateur = Utilisateur::findOrFail($id);
+
+        // Sécurité : Éviter que l'admin connecté se supprime lui-même par accident
+        if ($utilisateur->id === auth()->id()) {
+            return redirect()->back()->with('error', 'Vous ne pouvez pas supprimer votre propre compte.');
+        }
+
+        // 2. Lancer la suppression sécurisée
+        DB::transaction(function () use ($utilisateur) {
+            // Supprime d'abord toutes les maisons liées à cet utilisateur
+            $utilisateur->maisons()->delete(); 
+
+            // Supprime ensuite l'utilisateur lui-même
+            $utilisateur->delete();
+        });
+
+        // 3. Redirection avec un message de confirmation
+        return redirect('/admin/dev')->with('success', 'L’utilisateur et toutes ses annonces ont été supprimés avec succès.');
+    }
+
+
+
 }

@@ -69,7 +69,7 @@ public function byCategory($id)
     // On récupère les maisons de la catégorie ET qui ne sont PAS louées
     //$maisons = Maison::all()
     $maisons = Maison::where('categorie_id', $id)
-                     ->where('est_loue', false)
+                    // ->where('est_loue', true)
                      ->get();
 ;
                      $maisonsss = Maison::where('categorie_id', $id)
@@ -211,12 +211,26 @@ public function indexModifier()
 
 
 
-
 public function indextable()
 
 
 {
     $utilisateur = Auth::user(); // Récupère l'utilisateur connecté
+
+
+    $maisons = $utilisateur->maisons; // Toutes ses maisons
+
+    return view('/admin.table', compact('maisons')); // transmet la variable à la vue
+
+    
+}
+
+
+public function indextableD($id)
+
+
+{
+    $utilisateur = Utilisateur::findOrFail($id); // Récupère l'utilisateur connecté
 
 
     $maisons = $utilisateur->maisons; // Toutes ses maisons
@@ -524,9 +538,6 @@ public function update(Request $request, $id)
 
         return view('admin.Maisonadmin', compact('maisons'));
     }
-
-
-
 
 
 
