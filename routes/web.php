@@ -32,6 +32,8 @@ route::get('/recherche', function(){
 
 
 
+
+
 route::get('/categories/{id}', [MaisonController::class, 'byCategory'])->name('maisons.byCategory');
 
 

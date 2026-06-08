@@ -1775,31 +1775,35 @@ function openLoginModal() {
       <p>Rejoignez la communauté MaisonLoc</p>
     </div>
 
+    @if($errors->register->any())
+      <div class="error-message-box">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        <span>Les mots de passe ne correspondent pas</span>
+      </div>
+    @endif
+
     <form method="POST" action="/enregistrer/store" enctype="multipart/form-data">
       @csrf
+      
       <div class="role-selector">
         <p>Avez-vous des maisons à louer ?</p>
         <div class="radio-group">
-          <label class="radio-btn"><input type="radio" name="role" value="oui" required> <span>Oui</span></label>
-          <label class="radio-btn"><input type="radio" name="role" value="non" required> <span>Non</span></label>
+          <label class="radio-btn"><input type="radio" name="role" value="oui" {{ old('role') === 'oui' ? 'checked' : '' }} required> <span>Oui</span></label>
+          <label class="radio-btn"><input type="radio" name="role" value="non" {{ old('role') === 'non' ? 'checked' : '' }} required> <span>Non</span></label>
         </div>
       </div>
 
       <div class="input-row">
-        <div class="input-group"><label>Nom</label><input type="text" name="nom" required></div>
-        <div class="input-group"><label>Prénom</label><input type="text" name="prenom" required></div>
+        <div class="input-group"><label>Nom</label><input type="text" name="nom" value="{{ old('nom') }}" required></div>
+        <div class="input-group"><label>Prénom</label><input type="text" name="prenom" value="{{ old('prenom') }}" required></div>
       </div>
 
-      <div class="input-group"><label>Contact</label><input type="number" name="contact" required></div>
-      <div class="input-group"><label>Email</label><input type="email" name="email" required></div>
-      @if($errors->register->any())
-  <div class="error-message-box">
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-    </svg>
-    <span>Mot de passe differents</span>
-  </div>
-@endif
+      <div class="input-row">
+        <div class="input-group"><label>Contact</label><input type="number" name="contact" value="{{ old('contact') }}" required></div>
+        <div class="input-group"><label>Email</label><input type="email" name="email" value="{{ old('email') }}" required></div>
+      </div>
 
       <div class="input-row">
         <div class="input-group"><label>Mot de passe</label><input type="password" name="password" required></div>
@@ -1825,41 +1829,7 @@ function openLoginModal() {
 
 
 
-
 <style>
-
-    .success-message-box {
-    background: #f0fdf4;
-    color: #16a34a;
-    padding: 12px;
-    border-radius: 12px;
-    border: 1px solid #bbf7d0;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-
-.error-message-box {
-  background: #fff1f2;
-  color: #e11d48;
-  padding: 10px 15px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid #ffe4e6;
-}
-
-
-
-
   :root {
     --primary: #2563eb;
     --primary-soft: #eff6ff;
@@ -1868,7 +1838,19 @@ function openLoginModal() {
     --bg-card: #ffffff;
   }
 
-  /* Overlay & Card */
+  /* Messages d'erreur / succès */
+  .success-message-box {
+    background: #f0fdf4; color: #16a34a; padding: 10px 12px; border-radius: 12px;
+    border: 1px solid #bbf7d0; font-size: 13px; font-weight: 600; margin-bottom: 15px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .error-message-box {
+    background: #fff1f2; color: #e11d48; padding: 10px 15px; border-radius: 12px;
+    font-size: 13px; font-weight: 600; margin-bottom: 15px; display: flex;
+    align-items: center; gap: 8px; border: 1px solid #ffe4e6;
+  }
+
+  /* Overlay & Card (Ajusté le padding de 40px à 30px) */
   .modal-overlay {
     display: none; position: fixed; inset: 0; z-index: 10000;
     background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px);
@@ -1876,49 +1858,51 @@ function openLoginModal() {
   }
   .auth-card {
     background: var(--bg-card); width: 100%; max-width: 480px;
-    border-radius: 24px; padding: 40px; position: relative;
+    border-radius: 24px; padding: 30px; position: relative;
     box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
     animation: slideUp 0.4s ease-out;
   }
 
-  /* Header & Icons */
-  .auth-header { text-align: center; margin-bottom: -35px; }
+  /* Header (Réduit la marge basse) */
+  .auth-header { text-align: center; margin-bottom: 15px; }
   .icon-box {
-    width: 54px; height: 54px; background: var(--primary-soft); color: var(--primary);
-    border-radius: 14px; display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 15px;
+    width: 48px; height: 48px; background: var(--primary-soft); color: var(--primary);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 10px;
   }
-  .auth-header h3 { font-size: 24px; color: var(--text-dark); font-weight: 800; }
-  .auth-header p { color: var(--text-light); font-size: 14px; margin-top: 5px; }
+  .auth-header h3 { font-size: 22px; color: var(--text-dark); font-weight: 800; }
+  .auth-header p { color: var(--text-light); font-size: 13px; margin-top: 3px; }
 
-  /* Inputs */
-  .input-group { margin-bottom: 18px; flex: 1; }
-  .input-row { display: flex; gap: 15px; }
-  .input-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 6px; }
+  /* Inputs (Espace vertical réduit de 18px à 12px) */
+  .input-group { margin-bottom: 12px; flex: 1; }
+  .input-row { display: flex; gap: 12px; }
+  .input-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-dark); margin-bottom: 4px; }
   .input-group input {
-    width: 100%; padding: 12px 16px; border-radius: 12px; border: 2px solid #f1f5f9;
-    background: #f8fafc; font-size: 15px; transition: 0.2s;
+    width: 100%; padding: 10px 14px; border-radius: 10px; border: 2px solid #f1f5f9;
+    background: #f8fafc; font-size: 14px; transition: 0.2s;
   }
   .input-group input:focus { border-color: var(--primary); background: #fff; outline: none; }
 
-  /* Role Selection */
-  .role-selector { background: #f1f5f9; padding: 15px; border-radius: 16px; margin-bottom: 20px; text-align: center; }
-  .role-selector p { font-size: 13px; font-weight: 700; margin-bottom: 10px; }
-  .radio-group { display: flex; justify-content: center; gap: 20px; }
-  .radio-btn { cursor: pointer; font-weight: 600; color: var(--text-dark); }
-  .radio-btn input { accent-color: var(--primary); margin-right: 5px; }
+  /* Role Selection (Plus compact) */
+  .role-selector { background: #f1f5f9; padding: 10px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
+  .role-selector p { font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+  .radio-group { display: flex; justify-content: center; gap: 15px; }
+  .radio-btn { cursor: pointer; font-weight: 600; color: var(--text-dark); font-size: 13px; }
+  .radio-btn input { accent-color: var(--primary); margin-right: 4px; }
 
   /* Buttons & Actions */
   .auth-btn {
-    width: 100%; padding: 14px; background: var(--primary); color: white;
-    border: none; border-radius: 14px; font-weight: 700; cursor: pointer; transition: 0.3s;
+    width: 100%; padding: 12px; background: var(--primary); color: white;
+    border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s;
+    margin-top: 5px;
   }
-  .auth-btn:hover { background: #1d4ed8; transform: translateY(-2px); }
-  .auth-footer { margin-top: 25px; text-align: center; font-size: 14px; color: var(--text-light); }
+  .auth-btn:hover { background: #1d4ed8; transform: translateY(-1px); }
+  .auth-footer { margin-top: 15px; text-align: center; font-size: 13px; color: var(--text-light); }
   .auth-footer a { color: var(--primary); font-weight: 700; text-decoration: none; }
 
-  .close-modal { position: absolute; top: 20px; right: 25px; font-size: 28px; cursor: pointer; color: var(--text-light); }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-light); }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  
 </style>
 
 

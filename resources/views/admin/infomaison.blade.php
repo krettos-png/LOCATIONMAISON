@@ -318,6 +318,8 @@
           <p class="mb-1"><strong>Nom :</strong> {{ Auth::user()->name }} </p>
           <p class="mb-1"><strong>Prenom :</strong> {{ Auth::user()->prenom }} </p>
           <p class="mb-1"><strong>Téléphone :</strong> {{ Auth::user()->contact }} </p>
+          <p class="mb-1"><strong>Téléphone :</strong> {{ $maisons->utilisateur_id }} </p>
+
           <p class="mb-0"><strong>Email :</strong> <span class="text-break">{{ Auth::user()->email }}</span></p>
         </div>
         @endif
@@ -406,5 +408,6 @@
       L.marker([lat, lng]).addTo(map).bindPopup("Position enregistrée").openPopup();
     });
   </script>
+  
 </body>
 </html>

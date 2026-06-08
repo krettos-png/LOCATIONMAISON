@@ -67,10 +67,10 @@ class MaisonController extends Controller
 public function byCategory($id)
 {
     // On récupère les maisons de la catégorie ET qui ne sont PAS louées
-    $maisons = Maison::all()
-    //$maisons = Maison::where('categorie_id', $id)
-                     //->where('est_loue', false)
-                    // ->get();
+    //$maisons = Maison::all()
+    $maisons = Maison::where('categorie_id', $id)
+                     ->where('est_loue', false)
+                     ->get();
 ;
                      $maisonsss = Maison::where('categorie_id', $id)
                      ->where('est_loue', false)

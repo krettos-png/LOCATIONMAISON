@@ -270,7 +270,7 @@
         .house-card:hover .view-btn { background: #3b82f6; color: white; }
 
         /* Statut Loué */
-        .house-card.rented { position: relative; opacity: 0.85; }
+        .house-card.rented { position: relative; opacity: 0.65; }
         .rented-badge {
             position: absolute; top: 12px; right: 12px; background: #ef4444; color: white;
             padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 11px; z-index: 10;
@@ -568,5 +568,7 @@ document.addEventListener("DOMContentLoaded", function () {
     triggerFilter();
 });
 </script>
+
+
 </body>
 </html>
