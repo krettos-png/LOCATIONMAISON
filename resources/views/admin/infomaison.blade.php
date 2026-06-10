@@ -184,7 +184,9 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link active" href="/">Accueil</a>
+            <a class="nav-link active" href="javascript:window.history.back();">
+              <i class="fa-solid fa-arrow-left me-1"></i> Retour
+            </a>
           </li>
         </ul>
       </div>
@@ -198,13 +200,13 @@
       <div class="carousel-inner text-center">
         {{-- Slide principal --}}
         <div class="carousel-item active">
-          <img src="{{ asset('storage/' . $maisons->image) }}" class="img-fluid mx-auto d-block" style="max-height: 340px;" onclick="openModal(this.src)">
+          <img src="{{ asset($maisons->image) }}" class="img-fluid mx-auto d-block" style="max-height: 340px;" onclick="openModal(this.src)">
         </div>
 
         {{-- Slides secondaires dynamiques --}}
         @foreach($maisons->photos as $index => $photo)
           <div class="carousel-item">
-            <img src="{{ asset('storage/' . $photo->chemin) }}" class="img-fluid mx-auto d-block" style="max-height: 340px;" onclick="openModal(this.src)">
+            <img src="{{ asset($photo->chemin) }}" class="img-fluid mx-auto d-block" style="max-height: 340px;" onclick="openModal(this.src)">
           </div>
         @endforeach
       </div>
@@ -221,11 +223,11 @@
 
     <div class="row justify-content-center g-2 mt-3 mb-5">
       <div class="col-auto">
-        <img src="{{ asset('storage/' . $maisons->image) }}" class="img-thumbnail" width="75" style="cursor: pointer;" onclick="setSlide(0)">
+        <img src="{{ asset($maisons->image) }}" class="img-thumbnail" width="75" style="cursor: pointer;" onclick="setSlide(0)">
       </div>
       @foreach($maisons->photos as $index => $photo)
         <div class="col-auto">
-          <img src="{{ asset('storage/' . $photo->chemin) }}" class="img-thumbnail" width="75" style="cursor: pointer;" onclick="setSlide({{ $index + 1 }})">
+          <img src="{{ asset($photo->chemin) }}" class="img-thumbnail" width="75" style="cursor: pointer;" onclick="setSlide({{ $index + 1 }})">
         </div>
       @endforeach
     </div>
@@ -287,28 +289,67 @@
 
 
 
-          <div class="d-flex flex-column gap-2 mt-3">
-            <a href="{{ route('maisons.visite', ['id' => $maisons->id]) }}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp w-100 py-3">
-              <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91c0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23c-1.48 0-2.93-.4-4.19-1.15l-.3-.18l-3.12.82l.83-3.04l-.2-.31a8.182 8.182 0 0 1-1.26-4.38c0-4.54 3.7-8.22 8.25-8.22m-3.61 4.62c-.2 0-.33.07-.5.26c-.18.19-.69.67-.69 1.63c0 .96.7 1.88.8 2.01c.09.13 1.36 2.08 3.3 2.91c.47.2 1 .34 1.34.45c.49.15.93.13 1.29.08c.39-.06 1.21-.5 1.38-.97c.17-.47.17-.87.12-.96c-.05-.08-.18-.13-.38-.23c-.19-.1-.1.41-.65-.6c-.08-.13-.17-.23-.27-.23c-.1 0-.17.05-.51.22c-.34.17-.58.28-.79.06c-.13-.13-1.49-1.52-2.03-2.01c-.42-.37-.09-.59.13-.81c.21-.21.43-.49.54-.74c.1-.25.05-.48-.02-.63c-.07-.15-.56-1.35-.77-1.85c-.2-.51-.42-.43-.57-.44c-.14-.01-.3-.01-.47-.01Z"/>
-              </svg>
-              Réserver via WhatsApp
-            </a>
+          <!-- Bouton principal unique et moderne pour initier le contact -->
+<div class="mt-3">
+    <button type="button" class="btn btn-primary w-100 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#modalePrudence">
+        <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M20,2H4A2,2 0 0,0 2,4V22L6,18H20A2,2 0 0,0 22,16V4A2,2 0 0,0 20,2M20,16H5.2L4,17.2V4H20V16Z"/>
+        </svg>
+        Contacter le propriétaire
+    </button>
+</div>
 
-            <a href="tel:+22891304000" class="btn btn-phone w-100 py-3">
-              <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24c1.12.37 2.33.57 3.57.57c.55 0 1 .45 1 1V20c0 .55-.45 1-1 1c-9.39 0-17-7.61-17-17c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1c0 1.25.2 2.45.57 3.57c.11.35.03.74-.25 1.02l-2.2 2.2Z"/>
-              </svg>
-              Appeler directement
-            </a>
+<!-- Fenêtre Modale de Prudence Moderne (Bootstrap 5) -->
+<div class="modal fade" id="modalePrudence" tabindex="-1" aria-labelledby="modalePrudenceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            
+            <!-- En-tête de la modale avec avertissement -->
+            <div class="modal-header bg-warning text-dark border-0">
+                <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="modalePrudenceLabel">
+                    <span>⚠️</span> Consignes de sécurité
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <!-- Corps de la modale : Message de prudence -->
+            <div class="modal-body p-4 text-center">
+                <div class="text-warning mb-3">
+                    <svg style="width:64px;height:64px" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M12,2L1,21H23M12,6L19.8,19H4.2M11,10V14H13V10M11,16V18H13V16"/>
+                    </svg>
+                </div>
+                <h5 class="fw-bold text-danger mb-3">Ne versez jamais d'argent à l'avance !</h5>
+                <p class="text-muted mb-0">
+                    Pour votre sécurité, ne payez **aucun frais de visite, de dossier ou d'avance de caution** avant d'avoir visité physiquement le logement et vérifié l'identité du propriétaire.
+                </p>
+            </div>
+            
+            <!-- Pied de la modale : Les vrais boutons de contact -->
+            <div class="modal-footer flex-column gap-2 border-0 p-4 pt-0">
+                <p class="small text-secondary mb-2">Si vous acceptez ces consignes, choisissez votre moyen de contact :</p>
+                
+                <!-- Lien WhatsApp -->
+                <a href="{{ route('maisons.visite', ['id' => $maisons->id]) }}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp w-100 py-2.5 fw-semibold text-white d-flex align-items-center justify-content-center gap-2" style="background-color: #25D366;">
+                    <svg style="width:20px;height:20px" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91c0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23c-1.48 0-2.93-.4-4.19-1.15l-.3-.18l-3.12.82l.83-3.04l-.2-.31a8.182 8.182 0 0 1-1.26-4.38c0-4.54 3.7-8.22 8.25-8.22m-3.61 4.62c-.2 0-.33.07-.5.26c-.18.19-.69.67-.69 1.63c0 .96.7 1.88.8 2.01c.09.13 1.36 2.08 3.3 2.91c.47.2 1 .34 1.34.45c.49.15.93.13 1.29.08c.39-.06 1.21-.5 1.38-.97c.17-.47.17-.87.12-.96c-.05-.08-.18-.13-.38-.23c-.19-.1-.1.41-.65-.6c-.08-.13-.17-.23-.27-.23c-.1 0-.17.05-.51.22c-.34.17-.58.28-.79.06c-.13-.13-1.49-1.52-2.03-2.01c-.42-.37-.09-.59.13-.81c.21-.21.43-.49.54-.74c.1-.25.05-.48-.02-.63c-.07-.15-.56-1.35-.77-1.85c-.2-.51-.42-.43-.57-.44c-.14-.01-.3-.01-.47-.01Z"/></svg>
+                    Réserver via WhatsApp
+                </a>
 
-            <a href="mailto:contact@maisonloc.com?subject=Réservation%20-%20{{ urlencode($maisons->titre) }}&body=Bonjour,%20je%20souhaite%20avoir%20plus%20d'informations%20concernant%20l'annonce%20:%20{{ urlencode($maisons->titre) }}" class="btn btn-email w-100 py-3">
-              <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                <path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 4l-8 5l-8-5V6l8 5l8-5v2Z"/>
-              </svg>
-              Envoyer un message
-            </a>
-          </div>
+                <!-- Lien Appel -->
+                <a href="tel:+22891304000" class="btn btn-dark w-100 py-2.5 fw-semibold d-flex align-items-center justify-content-center gap-2">
+                    <svg style="width:20px;height:20px" viewBox="0 0 24 24"><path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24c1.12.37 2.33.57 3.57.57c.55 0 1 .45 1 1V20c0 .55-.45 1-1 1c-9.39 0-17-7.61-17-17c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1c0 1.25.2 2.45.57 3.57c.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+                    Appeler directement
+                </a>
+
+                <!-- Lien Email -->
+                <a href="mailto:contact@maisonloc.com?subject=Réservation%20-%20{{ urlencode($maisons->titre) }}&body=Bonjour..." class="btn btn-outline-secondary w-100 py-2.5 fw-semibold d-flex align-items-center justify-content-center gap-2">
+                    <svg style="width:20px;height:20px" viewBox="0 0 24 24"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 4l-8 5l-8-5V6l8 5l8-5v2Z"/></svg>
+                    Envoyer un message
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
           @endif
         </div>
 

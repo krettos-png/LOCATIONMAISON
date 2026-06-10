@@ -339,12 +339,12 @@ public function demanderVisite($id)
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'categorie_id' => 'required|exists:categories,id',
+{
+    $request->validate([
+        'categorie_id' => 'required|exists:categories,id',
         'titre' => 'required',
         'description' => 'required',
-        'prix' => 'required|numeric|MAX:999999999',
+        'prix' => 'required|numeric|max:999999999', // Attention : 'max' en minuscules
         'ville' => 'required',
         'adresse' => 'required',
         'image' => 'nullable|image|max:2048',
@@ -353,7 +353,7 @@ public function demanderVisite($id)
         'images_secondaires.*' => 'nullable|image|max:2048'
     ]);
 
-   $utilisateur = Auth::user(); // Récupérer l'utilisateur connecté
+    $utilisateur = Auth::user();
 
     // Enregistrer la maison
     $maison = new Maison();
@@ -364,43 +364,40 @@ public function demanderVisite($id)
     $maison->prix = $request->prix;
     $maison->ville = $request->ville;
     $maison->adresse = $request->adresse;
-
-
-  
-
-    
-    //$maison->utilisateur_id = $utilisateur->id;
-
-
-    if ($request->hasFile('image')) {
-        $maison->image = $request->file('image')->store('maisons/principales', 'public');
-    }
-
     $maison->latitude = $request->latitude;
     $maison->longitude = $request->longitude;
 
+    // Gestion de l'image principale directement dans le dossier public
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        // Déplace le fichier vers public/maisons/principales/
+        $file->move(public_path('maisons/principales'), $filename);
+        // On stocke le chemin relatif en base de données pour garder vos affichages intacts
+        $maison->image = 'maisons/principales/' . $filename;
+    }
+
     $maison->save();
 
-    // Enregistrer les photos secondaires
+    // Gestion des photos secondaires directement dans le dossier public
     if ($request->hasFile('images_secondaires')) {
         foreach ($request->file('images_secondaires') as $photo) {
-            $chemin = $photo->store('maisons/secondaires', 'public');
+            $filenameSecondaire = time() . '_' . $photo->getClientOriginalName();
+            // Déplace le fichier vers public/maisons/secondaires/
+            $photo->move(public_path('maisons/secondaires'), $filenameSecondaire);
+            
+            $chemin = 'maisons/secondaires/' . $filenameSecondaire;
             $maison->photos()->create(['chemin' => $chemin]);
         }
     }
 
-     $maisons = Maison::all(); // ou Maison::with('photos')->get();
-
-     $quartiers = Maison::distinct()->pluck('adresse');
-    $villes = Maison::distinct()->pluck('ville');
-    $categories = Maison::distinct()->pluck('categorie_id');
-     
+    // Note : Les variables générées ici n'étaient pas utilisées à cause de la redirection
+    // $maisons = Maison::all(); 
+    // $quartiers = Maison::distinct()->pluck('adresse');
+    // $villes = Maison::distinct()->pluck('ville');
+    // $categories = Maison::distinct()->pluck('categorie_id');
 
     return redirect('/admin/table');
-    //return view('/admin/modifier', compact('maisons', 'quartiers', 'villes', 'categories')); // transmet la variable à la vue
-
-    
-   // return view('admin/Maisonadmin');
 }
     
 
@@ -428,6 +425,65 @@ public function demanderVisite($id)
     //{
         //
     //}
+// public function update(Request $request, $id)
+// {
+//     // 1. Trouver la maison
+//     $maison = Maison::findOrFail($id);
+
+//     // 2. Validation
+//     $request->validate([
+//         'titre' => 'required',
+//         'description' => 'required',
+//         'prix' => 'required|numeric|MAX:999999999',
+//         'ville' => 'required',
+//         'adresse' => 'required',
+//         'image' => 'nullable|image|max:2048',
+//         'images_secondaires.*' => 'nullable|image|max:2048'
+//     ]);
+
+//     // 3. Préparer les données de base
+//     $data = $request->only(['titre', 'description', 'prix', 'ville', 'adresse', 'latitude', 'longitude']);
+
+//     // 4. Gestion de l'image principale (remplacement)
+//     if ($request->hasFile('image')) {
+//         // Optionnel : Storage::disk('public')->delete($maison->image); 
+//         $data['image'] = $request->file('image')->store('maisons/principales', 'public');
+//     }
+
+//     // 5. Mise à jour des champs de la maison
+//     $maison->update($data);
+
+//     // 6. Gestion des photos secondaires (Remplacement total)
+//     if ($request->hasFile('images_secondaires')) {
+//         // a. Supprimer les anciennes relations en base de données
+//         $maison->photos()->delete();
+
+//         // b. Ajouter les nouvelles photos
+//         foreach ($request->file('images_secondaires') as $photo) {
+//             $chemin = $photo->store('maisons/secondaires', 'public');
+//             $maison->photos()->create(['chemin' => $chemin]);
+//         }
+//     }
+
+//     // 7. Redirection avec les données à jour
+//     $maisons = Maison::all(); 
+//     return redirect('/admin/table');
+
+
+//     //return view('admin.maisonadmin', compact('maisons'))->with('success', 'Mise à jour réussie');
+
+
+// }
+
+
+
+
+
+
+
+
+
+
 public function update(Request $request, $id)
 {
     // 1. Trouver la maison
@@ -435,48 +491,89 @@ public function update(Request $request, $id)
 
     // 2. Validation
     $request->validate([
+        'categorie_id' => 'required|exists:categories,id',
         'titre' => 'required',
         'description' => 'required',
-        'prix' => 'required|numeric|MAX:999999999',
+        'prix' => 'required|numeric|max:999999999',
         'ville' => 'required',
         'adresse' => 'required',
         'image' => 'nullable|image|max:2048',
         'images_secondaires.*' => 'nullable|image|max:2048'
     ]);
 
-    // 3. Préparer les données de base
-    $data = $request->only(['titre', 'description', 'prix', 'ville', 'adresse', 'latitude', 'longitude']);
+    // 3. Mise à jour des données textuelles
+    $maison->categorie_id = $request->categorie_id;
+    $maison->titre = $request->titre;
+    $maison->description = $request->description;
+    $maison->prix = $request->prix;
+    $maison->ville = $request->ville;
+    $maison->adresse = $request->adresse;
+    
+    if ($request->has('latitude')) $maison->latitude = $request->latitude;
+    if ($request->has('longitude')) $maison->longitude = $request->longitude;
 
-    // 4. Gestion de l'image principale (remplacement)
+    // 4. Gestion de l'image principale (avec suppression de l'ancienne)
     if ($request->hasFile('image')) {
-        // Optionnel : Storage::disk('public')->delete($maison->image); 
-        $data['image'] = $request->file('image')->store('maisons/principales', 'public');
+        // Supprimer physiquement l'ancienne image principale si elle existe
+        if ($maison->image && file_exists(public_path($maison->image))) {
+            unlink(public_path($maison->image));
+        }
+
+        $file = $request->file('image');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('maisons/principales'), $filename);
+        
+        $maison->image = 'maisons/principales/' . $filename;
     }
 
-    // 5. Mise à jour des champs de la maison
-    $maison->update($data);
+    $maison->save();
 
-    // 6. Gestion des photos secondaires (Remplacement total)
+    // 5. Gestion des photos secondaires (Remplacement TOTAL et physique)
     if ($request->hasFile('images_secondaires')) {
-        // a. Supprimer les anciennes relations en base de données
+        
+        // ÉTAPE A : Supprimer PHYSIQUEMENT les anciens fichiers du dossier public
+        foreach ($maison->photos as $anciennePhoto) {
+            if ($anciennePhoto->chemin && file_exists(public_path($anciennePhoto->chemin))) {
+                unlink(public_path($anciennePhoto->chemin)); // Supprime le fichier sur le PC
+            }
+        }
+
+        // ÉTAPE B : Supprimer les anciennes lignes dans la base de données
         $maison->photos()->delete();
 
-        // b. Ajouter les nouvelles photos
+        // ÉTAPE C : Ajouter les nouvelles photos physiques et en base de données
         foreach ($request->file('images_secondaires') as $photo) {
-            $chemin = $photo->store('maisons/secondaires', 'public');
+            $filenameSecondaire = time() . '_' . $photo->getClientOriginalName();
+            $photo->move(public_path('maisons/secondaires'), $filenameSecondaire);
+            
+            $chemin = 'maisons/secondaires/' . $filenameSecondaire;
             $maison->photos()->create(['chemin' => $chemin]);
         }
     }
 
-    // 7. Redirection avec les données à jour
-    $maisons = Maison::all(); 
+    // 6. Redirection
     return redirect('/admin/table');
-
-
-    //return view('admin.maisonadmin', compact('maisons'))->with('success', 'Mise à jour réussie');
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Remove the specified resource from storage.
      */

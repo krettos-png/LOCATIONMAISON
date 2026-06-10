@@ -18,7 +18,7 @@
         </div>
     @endif
 
-    <form method="POST" action="/admin/categories/store">
+    <form method="POST" action="{{ route('categories.store') }}">
         @csrf
 
         <div class="input-group">

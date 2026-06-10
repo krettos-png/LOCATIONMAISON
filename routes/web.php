@@ -12,15 +12,12 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 
 Route::get('/admin/ajouter', function () {
     return view('admin/ajouter');
-});
+})->name('admin.ajouter');
 
 route::get('/admin/d', function (){
     return view('admin/dashbord');
 });
 
-route::get('/login', function(){
-    return view('connection/login');
-});
 
 route::get('/inscription', function(){
     return view('connection/inscription');
@@ -39,7 +36,7 @@ route::get('/admin/dev', [AdminController::class, 'dev'])->name('admin.dev');
 
 
 
-route::get('/categories/{id}', [MaisonController::class, 'byCategory'])->name('maisons.byCategory');
+route::get('/categories/{id}', [MaisonController::class, 'byCategory'])->name('maisons.categorie');
 
 
 route::get('/', [MaisonController::class, 'home'])->name('home');
@@ -57,9 +54,9 @@ route::get('/maison/{id}/info', [MaisonController::class, 'index2'])->middleware
 
 
 
-route::get('/maison/{id}/infoA', [MaisonController::class, 'indexadmininfo']);
+route::get('/maison/{id}/infoA', [MaisonController::class, 'indexadmininfo'])->name('maisons.infoA');
 
-route::post('/enregistrer/store', [AdminController::class, 'store']);
+route::post('/enregistrer/store', [AdminController::class, 'store'])->name('enre2');
 
 Route::post('/login', [AdminController::class, 'login'])->name('login');
 
@@ -83,7 +80,7 @@ route::get('/dev/{id}', [MaisonController::class, 'indextableD'])->name('tttD');
 
 
 
-Route::patch('/maison/{id}/toggle-loue', [MaisonController::class, 'toggleLoue']);
+Route::patch('/maison/{id}/toggle-loue', [MaisonController::class, 'toggleLoue'])->name('maisons.toggleLoue');
 
 route::get('/admin/modifier2', [MaisonController::class, 'indexModifier'])->name('hhh');
 
@@ -92,9 +89,9 @@ route::get('/admin/pagemodification', [MaisonController::class, 'indexModifierR'
 
 route::get('maison/{id}/info3', [AdminController::class, 'show'])->name('maisons.show');
 
-route::get('maison/{id}/sup', [MaisonController::class, 'destroy']);
+route::get('maison/{id}/sup', [MaisonController::class, 'destroy'])->name('maisonsSecon.sup');
 
-route::put('/admin/{id}/tt', [MaisonController::class, 'update']);
+route::put('/admin/{id}/tt', [MaisonController::class, 'update'])->name('maisons.update');
 
 route::delete('/maisons/{id}', [AdminController::class, 'destroy'])->name('maisons.sup');
 
@@ -119,21 +116,21 @@ Route::get('/maison/{id}/demander-visite', [MaisonController::class, 'demanderVi
 
 
 // Route pour afficher le formulaire
-Route::get('/admin/categories/creer', [CategorieController::class, 'create']);
+Route::get('/admin/categories/creer', [CategorieController::class, 'create'])->name('categories.create');
 
 // Route pour enregistrer les données
-Route::post('/admin/categories/store', [CategorieController::class, 'store']);
+Route::post('/admin/categories/store', [CategorieController::class, 'store'])->name('categories.store');
 
 
 
 // Formulaire d'édition
-Route::get('/admin/categories/{id}/modifier', [CategorieController::class, 'edit']);
+Route::get('/admin/categories/{id}/modifier', [CategorieController::class, 'edit'])->name('categories.edit');
 
 // Traitement de la modification (PUT)
-Route::put('/admin/categories/{id}/update', [CategorieController::class, 'update']);
+Route::put('/admin/categories/{id}/update', [CategorieController::class, 'update'])->name('categories.update');
 
 // Suppression (DELETE)
-Route::delete('/admin/categories/{id}/delete', [CategorieController::class, 'destroy']);
+Route::delete('/admin/categories/{id}/delete', [CategorieController::class, 'destroy'])->name('categories.destroy');
 
 // Route pour supprimer un utilisateur et ses biens en cascade
-Route::delete('/admin/utilisateurs/{id}/delete', [AdminController::class, 'destroyUtilisateur']);
+Route::delete('/admin/utilisateurs/{id}/delete', [AdminController::class, 'destroyUtilisateur'])->name('utilisateurs.supprimer');

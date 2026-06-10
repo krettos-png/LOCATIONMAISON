@@ -49,23 +49,24 @@
             <div class="nav-buttons">
                 @auth
                     @if(Auth::user()->role === 'admin')
-                        <a href="/admin/table" class="btn-login" title="Manager l'application">Manager</a>
+                        <a href="{{ route('ttt') }}" class="btn-register  bg-primary text-white hover:bg-primary-hover" title="Manager l'application">Manager</a>
                     @endif
 
                     @if(Auth::user()->role === 'dev')
-                        <a href="/admin/dev" class="btn-login">DEVELOPPEUR</a>
-                        <a href="/admin/table" class="btn-login">Manager</a>
+                        <a href="{{ route('admin.dev') }}" class="btn-login">DEVELOPPEUR</a>
+                        <a href="{{ route('ttt') }}" class="btn-login">Manager</a>
                     @endif
                     
                     <span class="user-greeting"><i class="fa-solid fa-user"></i> {{ Auth::user()->name }} !</span>
-                    <a href="/logout" class="btn-logout">Déconnexion</a>
+                    
                         
                     @if(Auth::user()->role === 'admin')
-                        <a href="/admin/ajouter" class="btn-register">Publier un bien</a>
+                        <a href="{{ route('admin.ajouter') }}" class="btn-register">Publier un bien</a>
                     @elseif(Auth::user()->role === 'dev')
                         @else
-                        <a href="#" class="btn-register">Publier un bien</a>
+                        <a href="#" class="btn-register">Devenir propriétaire</a>
                     @endif
+                    <a href="{{ route('logout') }}" class="btn-logout">Déconnexion</a>
                 @endauth
 
                 @guest
@@ -154,7 +155,7 @@
     <div class="houses-grid">
         @auth
             @foreach($categoriess as $categorie)
-            <a class="card-link" href="/categories/{{ $categorie->id }}">
+            <a class="card-link" href="{{ route('maisons.categorie', $categorie->id) }}">
                 <div class="category-card">
                     <img src="{{ $categorie->description }}" alt="{{ $categorie->nom }}">
                     <div class="card-body-custom">
@@ -490,7 +491,7 @@
             <p>Heureux de vous revoir sur MaisonLoc</p>
         </div>
 
-        <form method="POST" action="/login">
+        <form method="POST" action="{{ route('login') }}">
             @if(session('registre_ok'))
                 <div class="success-message-box">✨ Inscription réussie ! Connectez-vous.</div>
             @endif
@@ -532,7 +533,7 @@
             <div class="error-message-box"><i class="fa-solid fa-circle-exclamation"></i> Les mots de passe ne correspondent pas</div>
         @endif
 
-        <form method="POST" action="/enregistrer/store" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('enre2') }}" enctype="multipart/form-data">
             @csrf
             <div class="role-selector">
                 <p>Avez-vous des maisons à louer ?</p>

@@ -19,7 +19,7 @@
         </div>
     @endif
 
-    <form method="POST" action="/admin/categories/{{ $categorie->id }}/update">
+    <form method="POST" action="{{ route('categories.update', $categorie->id) }}">
         @csrf
         @method('PUT') {{-- Obligatoire dans Laravel pour les mises à jour --}}
 
@@ -49,7 +49,7 @@
     <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 25px 0;">
 
     <div style="text-align: center;">
-        <form method="POST" action="/admin/categories/{{ $categorie->id }}/delete" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ? Cette action est irréversible.');">
+        <form method="POST" action="{{ route('categories.destroy', $categorie->id) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ? Cette action est irréversible.');">
             @csrf
             @method('DELETE')
             <button type="submit" style="background: #fff1f2; color: #e11d48; border: 1px solid #ffe4e6; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 13px; transition: 0.2s; width: 100%;">

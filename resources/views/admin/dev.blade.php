@@ -38,7 +38,7 @@
                 </a>
             </nav>
             <div class="sidebar-footer">
-                <a href="/" class="back-home">← Retour au site</a>
+                <a href="{{ route('home') }}" class="back-home">← Retour au site</a>
             </div>
         </aside>
 
@@ -78,8 +78,8 @@
                                     <td><span class="badge {{ $user->role === 'admin' ? 'badge-admin' : 'badge-client' }}">{{ $user->role }}</span></td>
                                     <td>
                                         <div class="actions-btn">
-                                            <a href="/dev/{{ $user->id }}" class="btn-edit">Pubs</a>
-                                            <form method="POST" action="/admin/utilisateurs/{{ $user->id }}/delete" 
+                                            <a href="{{ route('tttD', $user->id) }}" class="btn-edit">Pubs</a>
+                                            <form method="POST" action="{{ route('utilisateurs.supprimer', $user->id) }}" 
                                                 onsubmit="return confirm('⚠️ ATTENTION : Supprimer cet utilisateur supprimera ÉGALEMENT toutes ses maisons enregistrées. Confirmer ?');">
                                                 @csrf
                                                 @method('DELETE')
@@ -99,7 +99,7 @@
                 <section id="tab-categories" class="tab-content">
                     <div class="section-header">
                         <h2>Gestion des Catégories ({{ $totalCategories }})</h2>
-                        <a href="/admin/categories/creer" class="btn-add">+ Nouvelle Catégorie</a>
+                        <a href="{{ route('categories.create') }}" class="btn-add">+ Nouvelle Catégorie</a>
                     </div>
                     <div class="table-responsive">
                         <table class="data-table">
@@ -117,7 +117,7 @@
                                     <td><strong>{{ $categorie->nom }}</strong></td>
                                     <td>
                                         <div class="actions-btn">
-                                            <a href="/admin/categories/{{ $categorie->id }}/modifier" class="btn-edit">Modifier</a>
+                                            <a href="{{ route('categories.edit', $categorie->id) }}" class="btn-edit">Modifier</a>
                                         </div>
                                     </td>
                                 </tr>
@@ -150,7 +150,7 @@
                             <tbody>
                                 @foreach($maisons as $maison)
                                 <tr>
-                                    <td><img src="{{ asset('storage/' . $maison->image) }}" class="img-thumb" alt="Maison"></td>
+                                    <td><img src="{{ asset($maison->image) }}" class="img-thumb" alt="Maison"></td>
                                     <td>
                                         <div class="title-cell">
                                             <strong>{{ $maison->titre }}</strong>

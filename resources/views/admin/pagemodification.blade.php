@@ -6,20 +6,35 @@
   <title>DétailADMINCHANGE - Chambre Meublée à Lomé</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 
- <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">MaisonLoc</a>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link active" href="/">Accueil</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+<style>
+  .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+</style>
+
+ <!-- Barre de Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fa-solid fa-house-chimney me-2"></i>MaisonLoc</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ route('ttt') }}">
+                            <i class="fa-solid fa-arrow-left me-1"></i> Retour
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
 <div class="container mt-5" >
   <div class="card shadow-lg" style="margin-top: 75px;">
@@ -35,14 +50,14 @@
     </div>
 
     <div class="card-body">
-      <form action="/admin/{{ $maisons->id }}/tt" method="POST" enctype="multipart/form-data">
+      <form action="{{ route('maisons.update', $maisons->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
         <div class="form-group">
     <label for="categorie">Catégorie</label>
     <select required name="categorie_id" id="categorie" class="form-control">
-        <option value="" disabled selected>Sélectionnez une catégorie</option>
+        <option value="" disabled selected>{{ $maisons->categorie_id === 1 ? $maisons->categorie->nom : '' }} {{ $maisons->categorie_id === 2 ? $maisons->categorie->nom : '' }} {{ $maisons->categorie_id === 3 ? $maisons->categorie->nom : '' }}</option>
         <option value="1">Habitation</option>
         <option value="2">Bureau</option>
         <option value="3">Boutique/Magasin</option>
@@ -89,7 +104,7 @@
             <div class="col-md-6">
               <p class="small text-muted">Image actuelle :</p>
               @if ($maisons->image)
-                <img id="existing-preview" src="{{ asset('storage/' . $maisons->image) }}" class="img-thumbnail" style="max-height: 150px;">
+                <img id="existing-preview" src="{{ asset($maisons->image) }}" class="img-thumbnail" style="max-height: 150px;">
               @else
                 <span class="text-danger">Aucune image</span>
               @endif
@@ -110,8 +125,8 @@
             <p class="small text-muted">Photos secondaires actuelles :</p>
             @foreach($maisons->photos as $photo)
                 <div class="col-md-3 text-center mb-2">
-                    <img src="{{ asset('storage/' . $photo->chemin) }}" class="img-fluid img-thumbnail">
-                    <a href="/maison/{{$photo->id}}/sup" class="btn btn-danger btn-xs mt-1" style="font-size: 10px;">Supprimer</a>
+                    <img src="{{ asset($photo->chemin) }}" class="img-fluid img-thumbnail">
+                    <a href="{{ route('maisonsSecon.sup', $photo->id) }}" class="btn btn-danger btn-xs mt-1" style="font-size: 10px;">Supprimer</a>
                 </div>
             @endforeach
         </div>
@@ -184,6 +199,8 @@
 
     window.resetMap = function () { map.setView([6.2, 1.2], 13); };
   });
+
 </script>
+
 </body>
 </html>

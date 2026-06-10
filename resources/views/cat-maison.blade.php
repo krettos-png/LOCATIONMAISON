@@ -390,14 +390,18 @@
             @php $isRented = ($maison->est_loue == 1); @endphp
             
             <div class="col house-item" data-ville="{{ strtolower($maison->ville) }}" data-quartier="{{ strtolower($maison->adresse) }}">
-                <a href="/maison/{{ $maison->id }}/infoA" class="house-card-link">
+                <a href="{{ route('maisons.infoA', $maison->id) }}" class="house-card-link">
                     <div class="house-card {{ $isRented ? 'rented' : '' }}">
                         @if($isRented)
                             <div class="rented-badge">LOUÉ</div>
                         @endif
                         
-                        <div class="image-container">
+                        <!-- <div class="image-container">
                             <img src="{{ asset('storage/' . $maison->image) }}" alt="{{ $maison->titre ?? 'Maison' }}">
+                        </div> -->
+
+                        <div class="image-container">
+                            <img src="{{ asset($maison->image) }}" alt="{{ $maison->titre ?? 'Maison' }}">
                         </div>
                         
                         <div class="card-body-content">

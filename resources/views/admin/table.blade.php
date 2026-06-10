@@ -284,7 +284,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="javascript:window.history.back();">
+                        <a class="nav-link active" href="{{ route('home') }}">
                             <i class="fa-solid fa-arrow-left me-1"></i> Retour
                         </a>
                     </li>
@@ -349,7 +349,7 @@
                 
                 <!-- Image avec badge d'état dynamique -->
                 <div class="image-container">
-                    <img src="{{ asset('storage/' . $maison->image) }}" alt="{{ $maison['titre'] }}">
+                    <img src="{{ asset($maison->image) }}" alt="{{ $maison['titre'] }}">
                     
                     @if($maison->est_loue)
                         <span class="status-badge bg-locked"><i class="fa-solid fa-lock me-1"></i> Loué / Verrouillé</span>
@@ -381,18 +381,18 @@
                             </button>
                         @else
                             <!-- Si disponible : Lien de modification normal -->
-                            <a href="/maison/{{ $maison->id }}/info3" class="btn-modify flex-grow-1" onclick="bookNow('{{ $maison['adresse'] }}')">
+                            <a href="{{ route('maisons.show', $maison->id) }}" class="btn-modify flex-grow-1" onclick="bookNow('{{ $maison['adresse'] }}')">
                                 <i class="fa-solid fa-pen-to-square"></i> Modifier
                             </a>
                         @endif
                         
-                        <a href="/maison/{{ $maison->id }}" class="btn-view" title="Aperçu">
+                        <a href="{{ route('maisons.infoA', $maison->id) }}" class="btn-view" title="Aperçu">
                             <i class="fa-solid fa-eye"></i>
                         </a>
                     </div>
 
                     <!-- FORMULAIRE POUR CHANGER LE STATUT (LOUÉ / DISPONIBLE) -->
-                    <form action="/maison/{{ $maison->id }}/toggle-loue" method="POST" class="w-100 m-0">
+                    <form action="{{ route('maisons.toggleLoue', $maison->id) }}" method="POST" class="w-100 m-0">
                         @csrf
                         @method('PATCH')
                         @if($maison->est_loue)
@@ -413,7 +413,7 @@
     </main>
 
     <!-- Bouton Flottant -->
-    <a href="/admin/ajouter" class="fab-add" title="Ajouter un nouveau bien">
+    <a href="{{ route('admin.ajouter') }}" class="fab-add" title="Ajouter un nouveau bien">
         <i class="fa-solid fa-plus"></i>
     </a>
 
