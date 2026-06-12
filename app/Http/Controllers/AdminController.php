@@ -222,28 +222,59 @@ public function login(Request $request)
 
 
 
-    public function destroy($id)
+//     public function destroy($id)
+// {
+//     $maison = Maison::with('photos')->findOrFail($id);
+
+//     // Supprimer les fichiers photo du disque
+//     foreach ($maison->photos as $photo) {
+//         if (Storage::exists($photo->chemin)) {
+//             Storage::delete($photo->chemin);
+//         }
+//         $photo->delete(); // Supprime la ligne de la BDD
+//     }
+
+//     // Supprimer la maison
+//     $maison->delete();
+
+//     $utilisateur = Auth::user(); // Récupère l'utilisateur connecté
+
+//     $maisons = $utilisateur->maisons; // Toutes ses maisons
+
+//     return view('admin.table', compact('maisons')); // transmet la variable à la vue
+
+
+// }
+
+
+
+public function destroy($id)
 {
+    // Récupérer la maison avec ses photos secondaires
     $maison = Maison::with('photos')->findOrFail($id);
 
-    // Supprimer les fichiers photo du disque
-    foreach ($maison->photos as $photo) {
-        if (Storage::exists($photo->chemin)) {
-            Storage::delete($photo->chemin);
+    // 1. Supprimer l'image principale du dossier public
+    if ($maison->image) {
+        $cheminPrincipale = public_path($maison->image);
+        if (file_exists($cheminPrincipale)) {
+            unlink($cheminPrincipale); // Supprime le fichier physique
         }
-        $photo->delete(); // Supprime la ligne de la BDD
     }
 
-    // Supprimer la maison
+    // 2. Supprimer les photos secondaires du dossier public et de la BDD
+    foreach ($maison->photos as $photo) {
+        $cheminSecondaire = public_path($photo->chemin);
+        if (file_exists($cheminSecondaire)) {
+            unlink($cheminSecondaire); // Supprime le fichier physique
+        }
+        $photo->delete(); // Supprime la ligne dans la table 'photos'
+    }
+
+    // 3. Supprimer la maison de la BDD
     $maison->delete();
 
-    $utilisateur = Auth::user(); // Récupère l'utilisateur connecté
-
-    $maisons = $utilisateur->maisons; // Toutes ses maisons
-
-    return view('admin.table', compact('maisons')); // transmet la variable à la vue
-
-
+    // 4. Redirection vers la table admin (ce qui actualise proprement la page)
+    return redirect()->to('/admin/table')->with('success', 'La maison et ses images ont été supprimées avec succès.');
 }
 
 
