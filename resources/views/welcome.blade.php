@@ -533,6 +533,10 @@
             <div class="error-message-box"><i class="fa-solid fa-circle-exclamation"></i> Les mots de passe ne correspondent pas</div>
         @endif
 
+         @if($errors->Demail->any())
+            <div class="error-message-box"><i class="fa-solid fa-circle-exclamation"></i> L'email existe déjà</div>
+        @endif
+
         <form method="POST" action="{{ route('enre2') }}" enctype="multipart/form-data">
             @csrf
             <div class="role-selector">
