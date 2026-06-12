@@ -338,52 +338,150 @@ public function demanderVisite($id)
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+//     public function store(Request $request)
+// {
+//     $request->validate([
+//         'categorie_id' => 'required|exists:categories,id',
+//         'titre' => 'required',
+//         'description' => 'required',
+//         'prix' => 'required|numeric|max:999999999', // Attention : 'max' en minuscules
+//         'ville' => 'required',
+//         'adresse' => 'required',
+//         'image' => 'nullable|image|max:2048',
+//         'latitude' => 'required|numeric|between:-90,90',
+//         'longitude' => 'required|numeric|between:-180,180',
+//         'images_secondaires.*' => 'nullable|image|max:2048'
+//     ]);
+
+//     $utilisateur = Auth::user();
+
+//     // Enregistrer la maison
+//     $maison = new Maison();
+//     $maison->utilisateur_id = $utilisateur->id;
+//     $maison->categorie_id = $request->categorie_id;
+//     $maison->titre = $request->titre;
+//     $maison->description = $request->description;
+//     $maison->prix = $request->prix;
+//     $maison->ville = $request->ville;
+//     $maison->adresse = $request->adresse;
+//     $maison->latitude = $request->latitude;
+//     $maison->longitude = $request->longitude;
+
+//     // Gestion de l'image principale directement dans le dossier public
+//     if ($request->hasFile('image')) {
+//         $file = $request->file('image');
+//         $filename = time() . '_' . $file->getClientOriginalName();
+//         // Déplace le fichier vers public/maisons/principales/
+//         $file->move(public_path('maisons/principales'), $filename);
+//         // On stocke le chemin relatif en base de données pour garder vos affichages intacts
+//         $maison->image = 'maisons/principales/' . $filename;
+//     }
+
+//     $maison->save();
+
+//     // Gestion des photos secondaires directement dans le dossier public
+//     if ($request->hasFile('images_secondaires')) {
+//         foreach ($request->file('images_secondaires') as $photo) {
+//             $filenameSecondaire = time() . '_' . $photo->getClientOriginalName();
+//             // Déplace le fichier vers public/maisons/secondaires/
+//             $photo->move(public_path('maisons/secondaires'), $filenameSecondaire);
+            
+//             $chemin = 'maisons/secondaires/' . $filenameSecondaire;
+//             $maison->photos()->create(['chemin' => $chemin]);
+//         }
+//     }
+
+//     // Note : Les variables générées ici n'étaient pas utilisées à cause de la redirection
+//     // $maisons = Maison::all(); 
+//     // $quartiers = Maison::distinct()->pluck('adresse');
+//     // $villes = Maison::distinct()->pluck('ville');
+//     // $categories = Maison::distinct()->pluck('categorie_id');
+
+//     return redirect('/admin/table');
+// }
+
+
+
+
+public function store(Request $request)
 {
+    // 1. Validation de toutes les entrées (Champs obligatoires + Cautions optionnelles)
     $request->validate([
-        'categorie_id' => 'required|exists:categories,id',
-        'titre' => 'required',
-        'description' => 'required',
-        'prix' => 'required|numeric|max:999999999', // Attention : 'max' en minuscules
-        'ville' => 'required',
-        'adresse' => 'required',
-        'image' => 'nullable|image|max:2048',
-        'latitude' => 'required|numeric|between:-90,90',
-        'longitude' => 'required|numeric|between:-180,180',
-        'images_secondaires.*' => 'nullable|image|max:2048'
+        'categorie_id'        => 'nullable|exists:categories,id', // Devient nullable d'après ta structure
+        'titre'               => 'required|string|max:255',
+        'description'         => 'required|string|max:255',
+        'prix'                => 'required|numeric|max:999999999',
+        'ville'               => 'nullable|string|max:255',       // Nullable d'après ta structure
+        'adresse'             => 'required|string|max:255',
+        'image'               => 'nullable|image|max:2048',
+        'latitude'            => 'nullable|numeric|between:-90,90',  // Nullable d'après ta structure
+        'longitude'           => 'nullable|numeric|between:-180,180', // Nullable d'après ta structure
+        'images_secondaires.*'=> 'nullable|image|max:2048',
+        
+        // Validation des nouveaux champs financiers (optionnels)
+        'caution_mois'        => 'nullable|integer|min:0',
+        'prepaiement_mois'    => 'nullable|integer|min:0',
+        'frais_visite'        => 'nullable|integer|min:0',
+        'commission'          => 'nullable|integer|min:0',
+        'caution_elec'        => 'nullable|integer|min:0',
+        'caution_eau'         => 'nullable|integer|min:0',
+        'caution_elec_eau'    => 'nullable|integer|min:0',
     ]);
 
     $utilisateur = Auth::user();
 
-    // Enregistrer la maison
+    // 2. Initialisation du modèle
     $maison = new Maison();
     $maison->utilisateur_id = $utilisateur->id;
-    $maison->categorie_id = $request->categorie_id;
-    $maison->titre = $request->titre;
-    $maison->description = $request->description;
-    $maison->prix = $request->prix;
-    $maison->ville = $request->ville;
-    $maison->adresse = $request->adresse;
-    $maison->latitude = $request->latitude;
-    $maison->longitude = $request->longitude;
+    $maison->categorie_id   = $request->categorie_id;
+    $maison->titre          = $request->titre;
+    $maison->description    = $request->description;
+    $maison->prix           = $request->prix;
+    $maison->ville          = $request->ville;
+    $maison->adresse        = $request->adresse;
+    $maison->latitude       = $request->latitude;
+    $maison->longitude      = $request->longitude;
 
-    // Gestion de l'image principale directement dans le dossier public
+    // 3. Gestion automatique des cases à cocher (booléens / tinyint)
+    // En HTML, si une checkbox n'est pas cochée, elle n'est pas envoyée dans $request.
+    // On force la valeur à 1 si cochée, sinon 0.
+    $maison->immeuble_etage      = $request->has('immeuble_etage') ? 1 : 0;
+    $maison->meuble              = $request->has('meuble') ? 1 : 0;
+    $maison->climatise           = $request->has('climatise') ? 1 : 0;
+    $maison->sanitaire           = $request->has('sanitaire') ? 1 : 0;
+    $maison->adapte_pmr          = $request->has('adapte_pmr') ? 1 : 0;
+    $maison->compteur_elec_perso = $request->has('compteur_elec_perso') ? 1 : 0;
+    $maison->compteur_eau_perso  = $request->has('compteur_eau_perso') ? 1 : 0;
+
+    // Valeurs par défaut pour une nouvelle insertion
+    $maison->est_loue          = 0;
+    $maison->vues              = 0;
+    $maison->visites_demandees = 0;
+
+    // 4. Assignation des cautions et frais optionnels
+    $maison->caution_mois     = $request->caution_mois;
+    $maison->prepaiement_mois = $request->prepaiement_mois;
+    $maison->frais_visite     = $request->frais_visite;
+    $maison->commission       = $request->commission;
+    $maison->caution_elec     = $request->caution_elec;
+    $maison->caution_eau      = $request->caution_eau;
+    $maison->caution_elec_eau = $request->caution_elec_eau;
+
+    // 5. Gestion de l'image principale (Ta méthode dans le dossier public)
     if ($request->hasFile('image')) {
         $file = $request->file('image');
         $filename = time() . '_' . $file->getClientOriginalName();
-        // Déplace le fichier vers public/maisons/principales/
         $file->move(public_path('maisons/principales'), $filename);
-        // On stocke le chemin relatif en base de données pour garder vos affichages intacts
         $maison->image = 'maisons/principales/' . $filename;
     }
 
+    // Sauvegarde initiale pour générer l'ID de la maison nécessaire aux photos secondaires
     $maison->save();
 
-    // Gestion des photos secondaires directement dans le dossier public
+    // 6. Gestion des photos secondaires (Ta méthode dans le dossier public)
     if ($request->hasFile('images_secondaires')) {
         foreach ($request->file('images_secondaires') as $photo) {
             $filenameSecondaire = time() . '_' . $photo->getClientOriginalName();
-            // Déplace le fichier vers public/maisons/secondaires/
             $photo->move(public_path('maisons/secondaires'), $filenameSecondaire);
             
             $chemin = 'maisons/secondaires/' . $filenameSecondaire;
@@ -391,13 +489,7 @@ public function demanderVisite($id)
         }
     }
 
-    // Note : Les variables générées ici n'étaient pas utilisées à cause de la redirection
-    // $maisons = Maison::all(); 
-    // $quartiers = Maison::distinct()->pluck('adresse');
-    // $villes = Maison::distinct()->pluck('ville');
-    // $categories = Maison::distinct()->pluck('categorie_id');
-
-    return redirect('/admin/table');
+    return redirect('/admin/table')->with('success', 'La maison a été ajoutée avec succès.');
 }
     
 
@@ -483,25 +575,42 @@ public function demanderVisite($id)
 
 
 
-
 public function update(Request $request, $id)
 {
     // 1. Trouver la maison
     $maison = Maison::findOrFail($id);
 
-    // 2. Validation
+    // 2. Validation complète (incluant les caractéristiques et conditions financières)
     $request->validate([
         'categorie_id' => 'required|exists:categories,id',
-        'titre' => 'required',
-        'description' => 'required',
+        'titre' => 'required|string|max:255',
+        'description' => 'required|string',
         'prix' => 'required|numeric|max:999999999',
-        'ville' => 'required',
-        'adresse' => 'required',
+        'ville' => 'required|string|max:255',
+        'adresse' => 'required|string|max:255',
         'image' => 'nullable|image|max:2048',
-        'images_secondaires.*' => 'nullable|image|max:2048'
+        'images_secondaires.*' => 'nullable|image|max:2048',
+        
+        // Validation des nouvelles caractéristiques (booléens/switchs)
+        'immeuble_etage' => 'nullable|boolean',
+        'meuble' => 'nullable|boolean',
+        'climatise' => 'nullable|boolean',
+        'sanitaire' => 'nullable|boolean',
+        'adapte_pmr' => 'nullable|boolean',
+        'compteur_elec_perso' => 'nullable|boolean',
+        'compteur_eau_perso' => 'nullable|boolean',
+
+        // Validation des conditions financières (optionnels ou numériques)
+        'caution_mois' => 'nullable|integer|min:0',
+        'prepaiement_mois' => 'nullable|integer|min:0',
+        'frais_visite' => 'nullable|numeric|min:0',
+        'commission' => 'nullable|numeric|min:0',
+        'caution_elec' => 'nullable|numeric|min:0',
+        'caution_eau' => 'nullable|numeric|min:0',
+        'caution_elec_eau' => 'nullable|numeric|min:0',
     ]);
 
-    // 3. Mise à jour des données textuelles
+    // 3. Mise à jour des données textuelles de base
     $maison->categorie_id = $request->categorie_id;
     $maison->titre = $request->titre;
     $maison->description = $request->description;
@@ -511,6 +620,24 @@ public function update(Request $request, $id)
     
     if ($request->has('latitude')) $maison->latitude = $request->latitude;
     if ($request->has('longitude')) $maison->longitude = $request->longitude;
+
+    // 3b. Mise à jour des Caractéristiques (on force à 0 si le switch n'est pas renvoyé)
+    $maison->immeuble_etage = $request->has('immeuble_etage') ? 1 : 0;
+    $maison->meuble = $request->has('meuble') ? 1 : 0;
+    $maison->climatise = $request->has('climatise') ? 1 : 0;
+    $maison->sanitaire = $request->has('sanitaire') ? 1 : 0;
+    $maison->adapte_pmr = $request->has('adapte_pmr') ? 1 : 0;
+    $maison->compteur_elec_perso = $request->has('compteur_elec_perso') ? 1 : 0;
+    $maison->compteur_eau_perso = $request->has('compteur_eau_perso') ? 1 : 0;
+
+    // 3c. Mise à jour des Conditions Financières
+    $maison->caution_mois = $request->caution_mois;
+    $maison->prepaiement_mois = $request->prepaiement_mois;
+    $maison->frais_visite = $request->frais_visite;
+    $maison->commission = $request->commission;
+    $maison->caution_elec = $request->caution_elec;
+    $maison->caution_eau = $request->caution_eau;
+    $maison->caution_elec_eau = $request->caution_elec_eau;
 
     // 4. Gestion de l'image principale (avec suppression de l'ancienne)
     if ($request->hasFile('image')) {
@@ -528,13 +655,13 @@ public function update(Request $request, $id)
 
     $maison->save();
 
-    // 5. Gestion des photos secondaires (Remplacement TOTAL et physique)
+    // 5. Gestion des photos secondaires (Ajout ou Remplacement selon ta logique actuelle)
     if ($request->hasFile('images_secondaires')) {
         
         // ÉTAPE A : Supprimer PHYSIQUEMENT les anciens fichiers du dossier public
         foreach ($maison->photos as $anciennePhoto) {
             if ($anciennePhoto->chemin && file_exists(public_path($anciennePhoto->chemin))) {
-                unlink(public_path($anciennePhoto->chemin)); // Supprime le fichier sur le PC
+                unlink(public_path($anciennePhoto->chemin));
             }
         }
 
@@ -552,7 +679,7 @@ public function update(Request $request, $id)
     }
 
     // 6. Redirection
-    return redirect('/admin/table');
+    return redirect('/admin/table')->with('success', 'La maison a été modifiée avec succès.');
 }
 
 

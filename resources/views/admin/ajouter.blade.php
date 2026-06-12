@@ -6,20 +6,47 @@
   <title>Ajouter une Maison</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="{{ asset('css/ajouter.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 
 <style>
   .navbar {
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccd1d9;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  /* Style harmonieux pour les sections de cases à cocher */
+  .checkbox-group {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+  }
+  .form-check-label {
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .section-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    color: #495057;
+    border-left: 4px solid #0d6efd;
+    padding-left: 10px;
+  }
 </style>
 
- <!-- Barre de Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+ <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="#"><i class="fa-solid fa-house-chimney me-2"></i>MaisonLoc</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -36,50 +63,34 @@
             </div>
         </div>
     </nav>
-  <div class="container">
-
+    
+  <div class="container" style="margin-top: 80px; margin-bottom: 50px;">
 
   @if(session('error'))
     <div class="alert alert-danger">
         {{ session('error') }}
     </div>
-@endif
+  @endif
 
-@if(session('success'))
+  @if(session('success'))
     <div class="alert alert-success">
         {{ session('success') }}
     </div>
-@endif
+  @endif
 
     <h1>Ajouter une Maison</h1>
     <form action="{{ route('enre') }}" method="POST" enctype="multipart/form-data">
       @csrf
 
       <div class="form-group">
-    <label for="categorie">Catégorie</label>
-    <select required name="categorie_id" id="categorie" class="form-control">
-        <option value="" disabled selected>Sélectionnez la catégorie de votre bien ici</option>
-        <option value="1">Habitation</option>
-        <option value="2">Bureau</option>
-        <option value="3">Boutique/Magasin</option>
-
-    </select>
-</div>
-
-<style>
-  .form-control {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccd1d9;
-  border-radius: 6px;
-  font-size: 14px;
-  margin-bottom: 10px;
-
-  }
-</style>
-
-
-
+        <label for="categorie">Catégorie</label>
+        <select required name="categorie_id" id="categorie" class="form-control">
+            <option value="" disabled selected>Sélectionnez la catégorie de votre bien ici</option>
+            <option value="1">Habitation</option>
+            <option value="2">Bureau</option>
+            <option value="3">Boutique/Magasin</option>
+        </select>
+      </div>
 
       <div class="form-group">
         <label for="titre">Titre de la maison</label>
@@ -88,36 +99,103 @@
 
       <div class="form-group">
         <label for="description">Description</label>
-        <textarea class="form-control" style="text-transform: capitalize;" id="description" name="description" rows="4" placeholder="Decrivez votre bien y compris toutes les informations à savoir Presence d'electricite, climatisation, eau, caution etc. " required></textarea>
+        <textarea class="form-control" style="text-transform: capitalize;" id="description" name="description" rows="4" placeholder="Décrivez les atouts majeurs du bien..." required></textarea>
       </div>
 
       <div class="form-group">
-        <label for="prix">Prix (FCFA)</label>
-        <input type="number" id="prix" name="prix" max="999999999" placeholder="Entrez le prix mensuel de la maison " required />
+        <label for="prix">Prix du loyer (FCFA / mois)</label>
+        <input type="number" id="prix" name="prix" max="999999999" placeholder="Entrez le prix mensuel de la maison" required />
         <small class="form-text text-muted">Le prix doit être inférieur à 999 999 999 FCFA.</small>
       </div>
 
-
-
       <div class="form-group">
         <label for="ville">Ville</label>
-        <input type="text" style="text-transform: uppercase;" id="ville" name="ville" placeholder="Entrez la ville où se trouve la maison" required />
+        <input type="text" style="text-transform: uppercase;" id="ville" name="ville" placeholder="Entrez la ville (ex: LOMÉ)" required />
       </div>
 
       <div class="form-group">
         <label for="adresse">Quartier</label>
-        <input type="text" style="text-transform: capitalize;" id="adresse"  name="adresse" placeholder="Entrez le quartier où se trouve la maison" required />
+        <input type="text" style="text-transform: capitalize;" id="adresse" name="adresse" placeholder="Entrez le quartier où se trouve la maison" required />
       </div>
 
+      <div class="section-title">Caractéristiques du bien</div>
+      <div class="checkbox-group mb-4">
+        <div class="row g-3">
+          <div class="col-md-4 col-sm-6">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="immeuble_etage" name="immeuble_etage" value="1">
+              <label class="form-check-label" for="immeuble_etage">Immeuble à étage</label>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="meuble" name="meuble" value="1">
+              <label class="form-check-label" for="meuble">Meublé</label>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="climatise" name="climatise" value="1">
+              <label class="form-check-label" for="climatise">Climatisé</label>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="sanitaire" name="sanitaire" value="1">
+              <label class="form-check-label" for="sanitaire">Sanitaire intégré</label>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="adapte_pmr" name="adapte_pmr" value="1">
+              <label class="form-check-label" for="adapte_pmr">Adapté PMR</label>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="compteur_elec_perso" name="compteur_elec_perso" value="1">
+              <label class="form-check-label" for="compteur_elec_perso">Compteur d'Électricité Personnel</label>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="compteur_eau_perso" name="compteur_eau_perso" value="1">
+              <label class="form-check-label" for="compteur_eau_perso">Compteur d'Eau Personnel</label>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <div class="section-title">Conditions Financières & Cautions (Optionnel)</div>
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label for="caution_mois">Nombre de mois de caution</label>
+          <input type="number" id="caution_mois" name="caution_mois" min="0" placeholder="Ex: 3" />
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="prepaiement_mois">Nombre de mois d'avance/prépaiement</label>
+          <input type="number" id="prepaiement_mois" name="prepaiement_mois" min="0" placeholder="Ex: 2" />
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="frais_visite">Frais de visite (FCFA)</label>
+          <input type="number" id="frais_visite" name="frais_visite" min="0" placeholder="Ex: 5000" />
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="commission">Commission de l'agence (FCFA)</label>
+          <input type="number" id="commission" name="commission" min="0" placeholder="Montant de la commission" />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="caution_elec">Caution Électricité (FCFA)</label>
+          <input type="number" id="caution_elec" name="caution_elec" min="0" placeholder="Montant caution élec" />
+        </div>
+        <div class="col-md-4 form-group">
+          <label for="caution_eau">Caution Eau (FCFA)</label>
+          <input type="number" id="caution_eau" name="caution_eau" min="0" placeholder="Montant caution eau" />
+        </div>
+        
+      </div>
 
-
-
-
-
-
-
-      <div class="form-group">
+      <div class="form-group mt-3">
         <label for="image">Image principale</label>
         <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(event)" />
         <img id="preview" class="preview" alt="Aperçu de l'image" />
@@ -128,8 +206,7 @@
         <input type="file" id="images_secondaires" name="images_secondaires[]" accept="image/*" multiple />
       </div>
 
-      <!-- Carte -->
-      <div class="card">
+      <div class="card my-4">
         <div class="card-header">Localisation précise sur la carte</div>
         <div class="card-body">
           <div class="row">
