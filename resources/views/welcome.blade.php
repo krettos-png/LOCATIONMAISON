@@ -81,8 +81,6 @@
         <span class="hero-badge">🏡 Trouvez votre logement idéal</span>
         <h1>Louez ou faites louer une maison moderne facilement</h1>
         <p>Découvrez des milliers de maisons, villas et appartements disponibles partout au Togo.</p>
-
-        
     </div>
 </section>
 
@@ -93,9 +91,7 @@
                     url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070');
         background-size: cover;
         background-position: center;
-       
         padding: 20px 3%;
-        
         color: white;
     }
     .navbar-custom { display: flex; justify-content: space-between; align-items: center; height: 80px; }
@@ -137,6 +133,9 @@
     /* RESPONSIVE HERO & NAVBAR */
     @media (max-width: 992px) {
         .menu-toggle { display: flex; position: absolute; top: 25px; right: 20px; }
+        /* Version active : passe en fixed pour que la croix reste figée sur l'écran */
+        .menu-toggle.active { position: fixed; right: 20px; top: 25px; }
+        
         .nav-container { position: fixed; top: 0; right: -100%; height: 100vh; width: 280px; background: #111827; flex-direction: column; padding: 100px 30px; transition: 0.4s; overflow-y: auto; z-index: 100; gap: 30px; align-items: flex-start; box-shadow: -10px 0 30px rgba(0,0,0,0.3); }
         .nav-container.active { right: 0; }
         .nav-links { flex-direction: column; width: 100%; gap: 20px; }
@@ -199,7 +198,7 @@
     .card-body-custom p { font-size: 14px; color: var(--text-light); margin-bottom: 20px; }
     
     .card-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; width: 100%; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-    .card-btn:hover { background: #219150; } /* Garde ton effet vert d'origine au survol */
+    .card-btn:hover { background: #219150; }
 </style>
 
 <section class="why-section">
@@ -266,7 +265,6 @@
     .feature-card h3 { font-size: 20px; margin-bottom: 12px; font-weight: 700; color: var(--text-dark); }
     .feature-card p { color: var(--text-light); line-height: 1.6; font-size: 15px; }
 
-    /* OFFERS DESIGN RESPONSIVE */
     .offers-section { margin-top: 60px; background: white; border-radius: 24px; padding: 40px; display: flex; align-items: center; justify-content: space-between; gap: 40px; border: 1px solid #e5e7eb; }
     .offer-badge { background: #dbeafe; color: var(--primary); padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-block; }
     .offers-content h2 { margin-top: 20px; font-size: clamp(24px, 4vw, 38px); line-height: 1.3; font-weight: 800; color: var(--text-dark); }
@@ -282,7 +280,7 @@
     .offers-image img { width: 100%; max-width: 420px; height: auto; border-radius: 20px; object-fit: cover; box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
 
     @media (max-width: 992px) {
-        .offers-section { flex-direction: column; text-align: center; padding: 30px 20px; }
+        .offers-section { flex-direction: column; text-align: center; padding: 30px 20px; gap: 40px; }
         .offer-list li { justify-content: center; }
         .offers-image img { max-width: 100%; }
     }
@@ -699,12 +697,34 @@
     const menuToggle = document.getElementById('mobile-menu');
     const navContainer = document.querySelector('.nav-container');
 
-    menuToggle.addEventListener('click', () => {
+    function closeMobileMenu() {
+        navContainer.classList.remove('active');
+        menuToggle.classList.remove('active'); // Retire la classe active du bouton
+        const bars = document.querySelectorAll('.bar');
+        bars[0].style.transform = 'none';
+        bars[1].style.opacity = '1';
+        bars[2].style.transform = 'none';
+    }
+
+    menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation(); // Évite que le clic sur le bouton ne déclenche la fermeture immédiate
         navContainer.classList.toggle('active');
+        menuToggle.classList.toggle('active'); // Alterne l'état pour figer la croix
+        
         const bars = document.querySelectorAll('.bar');
         bars[0].style.transform = navContainer.classList.contains('active') ? 'rotate(45deg) translate(5px, 6px)' : 'none';
         bars[1].style.opacity = navContainer.classList.contains('active') ? '0' : '1';
         bars[2].style.transform = navContainer.classList.contains('active') ? 'rotate(-45deg) translate(5px, -6px)' : 'none';
+    });
+
+    // Fermer le menu mobile en cliquant n'importe où dans le vide
+    document.addEventListener('click', (e) => {
+        if (navContainer.classList.contains('active')) {
+            // Si le clic n'est ni à l'intérieur du menu nav-container ni sur le bouton menuToggle
+            if (!navContainer.contains(e.target) && !menuToggle.contains(e.target)) {
+                closeMobileMenu();
+            }
+        }
     });
 
     // Fonctions Modales Authentification
@@ -715,7 +735,6 @@
     const showRegister = () => { registerModal.style.display = 'flex'; loginModal.style.display = 'none'; };
     const closeAll = () => { loginModal.style.display = 'none'; registerModal.style.display = 'none'; };
 
-    // Assignation conditionnelle des événements (évite les erreurs si déconnecté/connecté)
     if(document.getElementById('openLoginBtn')) document.getElementById('openLoginBtn').onclick = showLogin;
     if(document.getElementById('openRegisterBtn')) document.getElementById('openRegisterBtn').onclick = showRegister;
     
@@ -726,7 +745,6 @@
     document.querySelector('.toggle-to-login').onclick = (e) => { e.preventDefault(); showLogin(); };
 
     function preparerMessage() {
-        // Optionnel : tu peux créer une div d'alerte ou injecter un message dans ton formulaire de connexion
         console.log("Tentative d'exploration hors ligne.");
     }
 
@@ -734,7 +752,6 @@
         showLogin();
     }
 
-    // Gestion de l'affichage automatique basé sur les retours de sessions Laravel Flash
     window.onload = () => {
         @if(session('registre_ok'))
             showLogin();
@@ -745,7 +762,7 @@
         @endif
     };
 
-    // Fermeture en cliquant en dehors de la boîte blanche
+    // Gestion de la fermeture des fenêtres modales
     window.onclick = (e) => {
         if (e.target == loginModal || e.target == registerModal) closeAll();
     };
