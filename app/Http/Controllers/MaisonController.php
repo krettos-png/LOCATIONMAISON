@@ -70,6 +70,7 @@ public function byCategory($id)
     //$maisons = Maison::all()
     $maisons = Maison::where('categorie_id', $id)
                     // ->where('est_loue', true)
+                    ->where('statut_moderation', 'publiee')
                      ->get();
 ;
                      $maisonsss = Maison::where('categorie_id', $id)

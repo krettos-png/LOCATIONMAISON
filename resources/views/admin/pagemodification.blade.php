@@ -97,18 +97,34 @@
         </div>
 
         <div class="row">
-          <div class="col-md-4 mb-3">
+          <div class="col-md-3 mb-3">
             <label for="prix" class="form-label fw-bold">Prix (FCFA/mois)</label>
             <input type="number" class="form-control" id="prix" max="999999999" name="prix" value="{{ old('prix', $maisons->prix) }}" required>
-            <small class="form-text text-muted">Inférieur à 999 999 999 FCFA.</small>
+            <small class="form-text text-muted">Inférieur à 999 999 999.</small>
           </div>
 
-          <div class="col-md-4 mb-3">
+          <!-- Section Région dynamique en édition -->
+          <div class="col-md-3 mb-3">
+            <label for="region" class="form-label fw-bold">Région</label>
+            <select required name="region" id="region" class="form-control">
+                <option value="" disabled selected>Sélectionnez la région</option>
+                <option value="Maritime">Maritime (Grand Lomé)</option>
+                <option value="Plateaux">Plateaux</option>
+                <option value="Centrale">Centrale</option>
+                <option value="Kara">Kara</option>
+                <option value="Savanes">Savanes</option>
+            </select>
+          </div>
+
+          <!-- Section Ville dynamique en édition -->
+          <div class="col-md-3 mb-3">
             <label for="ville" class="form-label fw-bold">Ville</label>
-            <input type="text" class="form-control" style="text-transform: uppercase;" id="ville" name="ville" value="{{ old('ville', $maisons->ville) }}" required>
+            <select required name="ville" id="ville" class="form-control" disabled>
+                <option value="" disabled selected>Choisissez d'abord une région</option>
+            </select>
           </div>
           
-          <div class="col-md-4 mb-3">
+          <div class="col-md-3 mb-3">
             <label for="adresse" class="form-label fw-bold">Quartier</label>
             <input type="text" class="form-control" style="text-transform: capitalize;" id="adresse" name="adresse" value="{{ old('adresse', $maisons->adresse) }}" required>
           </div>
@@ -120,7 +136,7 @@
             <div class="col-md-4 col-sm-6">
               <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="immeuble_etage" name="immeuble_etage" value="1" {{ old('immeuble_etage', $maisons->immeuble_etage) == 1 ? 'checked' : '' }}>
-                <label class="form-check-label" for="immeuble_etage">Immeuble à étage</label>
+                <label class="form-check-label" for="immeuble_etage">Immeuble à étape</label>
               </div>
             </div>
             <div class="col-md-4 col-sm-6">
@@ -224,7 +240,7 @@
             @foreach($maisons->photos as $photo)
                 <div class="col-md-3 text-center mb-2">
                     <img src="{{ asset($photo->chemin) }}" class="img-fluid img-thumbnail" style="max-height: 110px; object-fit: cover;">
-                    <a href="{{ route('maisonsSecon.sup', $photo->id) }}" class="btn btn-danger btn-xs mt-1w-100" style="font-size: 10px; display: block;">Supprimer</a>
+                    <a href="{{ route('maisonsSecon.sup', $photo->id) }}" class="btn btn-danger btn-xs mt-1 w-100" style="font-size: 10px; display: block;">Supprimer</a>
                 </div>
             @endforeach
         </div>
@@ -271,6 +287,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
+    // ---- LOGIQUE CARTOGRAPHIE ----
     const initialLat = {{ $maisons->latitude ?? 6.2 }};
     const initialLng = {{ $maisons->longitude ?? 1.2 }};
     const map = L.map('map').setView([initialLat, initialLng], 15);
@@ -296,6 +313,74 @@
     });
 
     window.resetMap = function () { map.setView([6.131, 1.223], 13); };
+
+
+    // ---- LOGIQUE RÉGIONS ET VILLES DYNAMIQUES ----
+    const villesParRegion = {
+      "Maritime": ["Lomé", "Tsévié", "Aného", "Tabligbo", "Vogan", "Kévé", "Afagnangan", "Baguida", "Agbodrafo", "Togoville"],
+      "Plateaux": ["Atakpamé", "Kpalimé", "Badou", "Notsé", "Anié", "Amlamé", "Danyi Apéyemé", "Elavagnon", "Adéta", "Tohoun"],
+      "Centrale": ["Sokodé", "Tchamba", "Sotouboua", "Blitta", "Djarkpanga", "Kambolé", "Ayengré"],
+      "Kara": ["Kara", "Bassar", "Niamtougou", "Bafilo", "Pagouda", "Kandé", "Guérin-Kouka", "Kabou", "Kétao"],
+      "Savanes": ["Dapaong", "Sansanné-Mango", "Cinkassé", "Mandouri", "Tandjouaré", "Gando", "Bombouaka", "Biankouri"]
+    };
+
+    const regionSelect = document.getElementById('region');
+    const villeSelect = document.getElementById('ville');
+
+    // Récupération de la valeur de la ville déjà enregistrée (mise en majuscule pour correspondre au format d'origine si besoin)
+    // Nous la transformons pour matcher la casse de notre tableau (ex: LOMÉ -> Lomé)
+    const villeActuelleRaw = "{{ old('ville', $maisons->ville) }}";
+    const villeActuelle = villeActuelleRaw.charAt(0).toUpperCase() + villeActuelleRaw.slice(1).toLowerCase();
+
+    // Trouver automatiquement la région correspondante à la ville actuelle
+    let regionInitiale = "";
+    for (const [region, villes] of Object.entries(villesParRegion)) {
+      if (villes.map(v => v.toLowerCase()).includes(villeActuelle.toLowerCase())) {
+        regionInitiale = region;
+        break;
+      }
+    }
+
+    // Fonction de mise à jour des villes
+    function updateVilles(regionSelectionnee, villeASelectionner = "") {
+      villeSelect.innerHTML = '<option value="" disabled selected>Sélectionnez la ville</option>';
+      
+      if (regionSelectionnee && villesParRegion[regionSelectionnee]) {
+        villeSelect.disabled = false;
+        
+        villesParRegion[regionSelectionnee].forEach(function(ville) {
+          const option = document.createElement('option');
+          option.value = ville;
+          option.textContent = ville;
+          // Pré-sélectionner si elle correspond à la ville de la maison
+          if (ville.toLowerCase() === villeASelectionner.toLowerCase()) {
+            option.selected = true;
+          }
+          villeSelect.appendChild(option);
+        });
+      } else {
+        villeSelect.disabled = true;
+      }
+    }
+
+    // Écouteur de changement manuel
+    regionSelect.addEventListener('change', function() {
+      updateVilles(this.value);
+    });
+
+    // Initialisation automatique au chargement de la page
+    if (regionInitiale) {
+      regionSelect.value = regionInitiale;
+      updateVilles(regionInitiale, villeActuelle);
+    } else if (villeActuelleRaw) {
+      // Cas de secours si la ville enregistrée n'est pas dans notre liste par défaut
+      villeSelect.disabled = false;
+      const option = document.createElement('option');
+      option.value = villeActuelleRaw;
+      option.textContent = villeActuelleRaw;
+      option.selected = true;
+      villeSelect.appendChild(option);
+    }
   });
 </script>
 

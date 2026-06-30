@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\http\Controllers\MaisonController;
 use App\http\Controllers\AdminController;
 use App\http\Controllers\CategorieController;
+use App\http\Controllers\VilleController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 
 //Route::get('/', function () {
@@ -134,3 +135,21 @@ Route::delete('/admin/categories/{id}/delete', [CategorieController::class, 'des
 
 // Route pour supprimer un utilisateur et ses biens en cascade
 Route::delete('/admin/utilisateurs/{id}/delete', [AdminController::class, 'destroyUtilisateur'])->name('utilisateurs.supprimer');
+
+
+
+
+// Tu peux placer ces routes dans ton groupe de middleware d'administration si tu en as un
+Route::get('/admin/villes', [VilleController::class, 'index'])->name('villes.index');
+Route::post('/admin/villes', [VilleController::class, 'store'])->name('villes.store');
+Route::put('/admin/villes/{id}', [VilleController::class, 'update'])->name('villes.update');
+Route::delete('/admin/villes/{id}', [VilleController::class, 'destroy'])->name('villes.destroy');
+
+
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    // Route pour valider (PATCH est idéal pour une mise à jour partielle)
+    Route::patch('/maisons/{id}/valider', [AdminController::class, 'valider'])->name('admin.maisons.valider');
+    
+    // Route pour rejeter (DELETE car on supprime l'annonce non conforme)
+    Route::delete('/maisons/{id}/rejeter', [AdminController::class, 'rejeter'])->name('admin.maisons.rejeter');
+});

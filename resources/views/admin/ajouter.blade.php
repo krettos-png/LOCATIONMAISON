@@ -108,9 +108,25 @@
         <small class="form-text text-muted">Le prix doit être inférieur à 999 999 999 FCFA.</small>
       </div>
 
-      <div class="form-group">
-        <label for="ville">Ville</label>
-        <input type="text" style="text-transform: uppercase;" id="ville" name="ville" placeholder="Entrez la ville (ex: LOMÉ)" required />
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label for="region">Région</label>
+          <select required name="region" id="region" class="form-control">
+              <option value="" disabled selected>Sélectionnez la région</option>
+              <option value="Maritime">Maritime (Grand Lomé)</option>
+              <option value="Plateaux">Plateaux</option>
+              <option value="Centrale">Centrale</option>
+              <option value="Kara">Kara</option>
+              <option value="Savanes">Savanes</option>
+          </select>
+        </div>
+
+        <div class="col-md-6 form-group">
+          <label for="ville">Ville</label>
+          <select required name="ville" id="ville" class="form-control" disabled>
+              <option value="" disabled selected>Veuillez d'abord choisir une région</option>
+          </select>
+        </div>
       </div>
 
       <div class="form-group">
@@ -235,5 +251,40 @@
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="{{ asset('js/ajouter.js') }}"></script>
+
+  <script>
+    const villesParRegion = {
+      "Maritime": ["Lomé", "Tsévié", "Aného", "Tabligbo", "Vogan", "Kévé", "Afagnangan", "Baguida", "Agbodrafo", "Togoville"],
+      "Plateaux": ["Atakpamé", "Kpalimé", "Badou", "Notsé", "Anié", "Amlamé", "Danyi Apéyemé", "Elavagnon", "Adéta", "Tohoun"],
+      "Centrale": ["Sokodé", "Tchamba", "Sotouboua", "Blitta", "Djarkpanga", "Kambolé", "Ayengré"],
+      "Kara": ["Kara", "Bassar", "Niamtougou", "Bafilo", "Pagouda", "Kandé", "Guérin-Kouka", "Kabou", "Kétao"],
+      "Savanes": ["Dapaong", "Sansanné-Mango", "Cinkassé", "Mandouri", "Tandjouaré", "Gando", "Bombouaka", "Biankouri"]
+    };
+
+    const regionSelect = document.getElementById('region');
+    const villeSelect = document.getElementById('ville');
+
+    regionSelect.addEventListener('change', function() {
+      const regionSelectionnee = this.value;
+      
+      // Vider le menu des villes
+      villeSelect.innerHTML = '<option value="" disabled selected>Sélectionnez la ville</option>';
+      
+      if (regionSelectionnee && villesParRegion[regionSelectionnee]) {
+        // Activer le select des villes
+        villeSelect.disabled = false;
+        
+        // Ajouter les villes correspondantes
+        villesParRegion[regionSelectionnee].forEach(function(ville) {
+          const option = document.createElement('option');
+          option.value = ville;
+          option.textContent = ville;
+          villeSelect.appendChild(option);
+        });
+      } else {
+        villeSelect.disabled = true;
+      }
+    });
+  </script>
 </body>
 </html>

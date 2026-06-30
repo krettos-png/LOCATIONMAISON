@@ -290,12 +290,21 @@ public function destroy($id)
         $totalCategories = $categories->count();
         $totalMaisons = $maisons->count();
         $totalMaisonsLouees = Maison::where('est_loue', true)->count();
-        $totalMaisonsDisponibles = Maison::where('est_loue', false)->count();
+        $totalMaisonsDisponibles = Maison::where('est_loue', false)
+                                        ->where('statut_moderation', 'publiee')
+                                        ->count();
         $totalUtilisateursadmin = Utilisateur::where('role', 'admin')->count();
         $totalUtilisateursclient = Utilisateur::where('role', 'client')->count();
+        $totalMaisonsEnAttente = Maison::where('statut_moderation', 'en_attente')->count();
+
+        $villes = DB::table('villes')
+                    ->orderBy('region', 'asc')
+                    ->orderBy('nom', 'asc')
+                    ->get();
+
 
         // Retourne la vue admin avec les variables nécessaires
-        return view('admin.dev', compact('utilisateurs', 'categories', 'maisons', 'totalUtilisateurs', 'totalCategories', 'totalMaisons', 'totalMaisonsLouees', 'totalMaisonsDisponibles', 'totalUtilisateursadmin', 'totalUtilisateursclient'));
+        return view('admin.dev', compact('utilisateurs', 'villes', 'categories', 'maisons', 'totalUtilisateurs', 'totalCategories', 'totalMaisons', 'totalMaisonsLouees', 'totalMaisonsDisponibles', 'totalUtilisateursadmin', 'totalUtilisateursclient', 'totalMaisonsEnAttente'));
     }
 
 
@@ -321,6 +330,51 @@ public function destroy($id)
         // 3. Redirection avec un message de confirmation
         return redirect('/admin/dev')->with('success', 'L’utilisateur et toutes ses annonces ont été supprimés avec succès.');
     }
+
+
+    
+
+
+
+
+public function valider($id)
+{
+    $maison = Maison::findOrFail($id);
+    
+    // Ton code actuel pour valider la maison, par exemple :
+    $maison->statut_moderation = 'publiee'; // ou selon ta logique
+    $maison->save();
+
+    // On recalcule le nombre de maisons en attente pour mettre à jour le compteur
+    $totalMaisonsEnAttente = Maison::where('statut_moderation', 'en_attente')->count();
+
+    // C'EST ICI QUE TOUT SE JOUE : On renvoie du JSON pour le script AJAX
+    return response()->json([
+        'success' => true,
+        'message' => "L'annonce \"" . $maison->titre . "\" a été validée avec succès !",
+        'totalEnAttente' => $totalMaisonsEnAttente
+    ]);
+}
+
+public function rejeter($id)
+{
+    $maison = Maison::findOrFail($id);
+    
+    // Ton code actuel pour supprimer ou rejeter la maison, par exemple :
+    $maison->delete();
+
+    // On recalcule le compteur
+    $totalMaisonsEnAttente = Maison::where('statut_moderation', 'en_attente')->count();
+
+    // On renvoie du JSON
+    return response()->json([
+        'success' => true,
+        'message' => "L'annonce a été rejetée et supprimée avec succès.",
+        'totalEnAttente' => $totalMaisonsEnAttente
+    ]);
+}
+
+    
 
 
 
