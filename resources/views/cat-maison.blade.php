@@ -10,14 +10,44 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+
+        :root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-soft: #eff6ff;
+    --text-dark: #111827;
+    --text-light: #4b5563;
+    --text-muted: #9ca3af;
+    --bg-light: #f4f7fb;
+    --bg-card: #ffffff;
+    --border-color: #e5e7eb;
+}
+
+/* Variables pour le Mode Sombre à inclure partout */
+body.dark-theme {
+    --bg-light: #0f172a;
+    --bg-card: #1e293b;
+    --text-dark: #f8fafc;
+    --text-light: #cbd5e1;
+    --text-muted: #64748b;
+    --primary-soft: #1e293b;
+    --border-color: #334155;
+}
+
+/* Applique ensuite ces variables sur tes éléments (ex: background: var(--bg-light); color: var(--text-dark);) */
+
+
+
+
+
         /* ===================================
            GLOBAL STYLES
         =================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Poppins', sans-serif; 
-            background: #f8fafc; 
-            color: #1e293b;
+            background: var(--bg-light); 
+            color: var(--text-dark);
             overflow-x: hidden; 
         }
 
@@ -151,11 +181,11 @@
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 35px;
-            color: #0f172a;
+            color: var(--text-dark);
             position: relative;
             padding-left: 15px;
         }
-        .section-title span { color: #3b82f6; }
+        .section-title span { color: var(--primary); }
         .section-title::before {
             content: ''; position: absolute; left: 0; top: 15%; height: 70%; width: 4px; background: #3b82f6; border-radius: 4px;
         }
@@ -370,6 +400,16 @@
 </head>
 <body>
 
+<body>
+<!-- INITIALISATION IMMÉDIATE DU THÈME (À mettre sur toutes les pages) -->
+<script>
+    (function () {
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    })();
+</script>
 <section class="hero-rental">
     <header class="navbar">
         <div class="logo">
@@ -443,15 +483,14 @@
 
     <div class="modal fade" id="advancedFilterModal" tabindex="-1" aria-labelledby="advancedFilterModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" style="border-radius: 12px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
-          <div class="modal-header" style="border-bottom: 1px solid #f1f5f9;">
+        <div class="modal-content" style="border-radius: 12px; border: none; background-color: var(--bg-card); color: var(--text-dark); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);">          <div class="modal-header" style="border-bottom: 1px solid #f1f5f9;">
             <h6 class="modal-title fw-bold" id="advancedFilterModalLabel"><i class="fa-solid fa-sliders text-primary me-2"></i>Filtres avancés</h6>
             <button type="button" class="btn-close" data-bs-shadow="none" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <div class="row g-2 mb-3">
                 <div class="col-6 col-md-6">
-                    <label class="form-label fw-semibold small text-uppercase text-muted">Ville</label>
+                   <label class="form-label fw-semibold small text-uppercase" style="color: var(--text-dark) !important;">Ville</label>
                     <select id="modal-search-ville" class="form-select" style="border-radius: 6px;">
                         <option value="">Toutes...</option>
                         @foreach($maisons->unique('ville')->sortBy('ville') as $maison)
@@ -462,7 +501,7 @@
                     </select>
                 </div>
                 <div class="col-6 col-md-6">
-                    <label class="form-label fw-semibold small text-uppercase text-muted">Quartier</label>
+                    <label class="form-label fw-semibold small text-uppercase" style="color: var(--text-dark) !important;">Quartier</label>
                     <select id="modal-search-quartier" class="form-select" style="border-radius: 6px;">
                         <option value="">Tous...</option>
                         @foreach($maisons->unique('adresse')->sortBy('adresse') as $maison)
@@ -475,18 +514,18 @@
                     </select>
                 </div>
                 <div class="col-6 col-md-6">
-                    <label class="form-label fw-semibold small text-uppercase text-muted">Budget Min (FCFA)</label>
+                    <label class="form-label fw-semibold small text-uppercase" style="color: var(--text-dark) !important;">Budget Min (FCFA)</label>
                     <input type="number" id="modal-price-min" class="form-control" placeholder="Ex: 50000" style="border-radius: 6px;">
                 </div>
                 <div class="col-6 col-md-6">
-                    <label class="form-label fw-semibold small text-uppercase text-muted">Budget Max (FCFA)</label>
+                    <label class="form-label fw-semibold small text-uppercase" style="color: var(--text-dark) !important;">Budget Max (FCFA)</label>
                     <input type="number" id="modal-price-max" class="form-control" placeholder="Ex: 200000" style="border-radius: 6px;">
                 </div>
             </div>
 
             <hr style="color: #e2e8f0; margin: 10px 0;">
 
-            <label class="form-label fw-semibold small text-uppercase text-muted mb-2 d-block">Commodités</label>
+            <label class="form-label fw-semibold small text-uppercase" style="color: var(--text-dark) !important;">Commodités</label>
             <div class="row modal-filter-checkboxes">
                 <div class="col-6 col-md-6">
                     <div class="form-check form-switch">

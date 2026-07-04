@@ -10,11 +10,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-soft: #eff6ff;
+            --text-dark: #111827;
+            --text-light: #4b5563;
+            --text-muted: #9ca3af;
+            --bg-light: #f4f7fb;
+            --bg-card: #ffffff;
+            --border-color: #e5e7eb;
+        }
+
+        /* Variables pour le Mode Sombre */
+        body.dark-theme {
+            --bg-light: #0f172a;
+            --bg-card: #1e293b;
+            --text-dark: #f8fafc;
+            --text-light: #cbd5e1;
+            --text-muted: #64748b;
+            --primary-soft: #1e293b;
+            --border-color: #334155;
+        }
+
+        /* --- CORRECTION DES COULEURS AVEC LES VARIABLES --- */
         body {
             margin: 0;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: #f4f6f9;
-            color: #2c3e50;
+            background: var(--bg-light); /* Modifié */
+            color: var(--text-dark);     /* Modifié */
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .navbar {
@@ -50,11 +75,11 @@
         }
 
         .stat-card {
-            background: white;
+            background: var(--bg-card); /* Modifié */
             border-radius: 12px;
             padding: 15px 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: none;
+            border: 1px solid var(--border-color); /* Modifié */
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -70,12 +95,12 @@
             font-size: 1.4rem;
             font-weight: 700;
             margin: 0;
-            color: #2c3e50;
+            color: var(--text-dark); /* Modifié */
         }
 
         .stat-details p {
             margin: 0;
-            color: #7f8c8d;
+            color: var(--text-muted); /* Modifié */
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -92,8 +117,8 @@
             font-size: 1.3rem;
             font-weight: 600;
             margin-bottom: 20px;
-            color: #2c3e50;
-            border-left: 4px solid #3498db;
+            color: var(--text-dark); /* Modifié */
+            border-left: 4px solid var(--primary); /* Modifié */
             padding-left: 10px;
         }
 
@@ -105,16 +130,16 @@
 
         /* Style de la Carte */
         .card {
-            background: white;
+            background: var(--bg-card); /* Modifié */
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.04);
             overflow: hidden;
-            border: none;
+            border: 1px solid var(--border-color); /* Modifié */
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
             position: relative;
         }
 
@@ -124,11 +149,10 @@
         }
 
         .card.house-locked {
-            background: #fdfefe;
-            border: 1px solid #e5e8e8;
+            background: var(--bg-light); /* Modifié */
+            border: 1px solid var(--border-color);
         }
         
-        /* Floutage si la maison est en attente ou verrouillée */
         .card.house-locked .image-container img,
         .card.house-pending .image-container img {
             filter: grayscale(40%) blur(1px);
@@ -161,7 +185,7 @@
         }
         .bg-available { background: rgba(39, 174, 96, 0.9); }
         .bg-locked { background: rgba(231, 76, 60, 0.95); }
-        .bg-pending { background: rgba(245, 158, 11, 0.95); } /* Couleur Orange Ambre */
+        .bg-pending { background: rgba(245, 158, 11, 0.95); }
 
         .card-body-content {
             padding: 15px;
@@ -175,16 +199,16 @@
             margin: 0 0 8px 0;
             font-size: 1.15rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--text-dark); /* Modifié */
             line-height: 1.4;
         }
         
-        .house-locked h2, .house-pending h2 { color: #7f8c8d; }
+        .house-locked h2, .house-pending h2 { color: var(--text-muted); }
 
         .card p.description {
             margin: 0 0 12px 0;
             font-size: 0.85rem;
-            color: #7f8c8d;
+            color: var(--text-light); /* Modifié */
             line-height: 1.5;
         }
 
@@ -197,7 +221,7 @@
 
         .price-tag span {
             font-size: 0.75rem;
-            color: #95a5a6;
+            color: var(--text-muted); /* Modifié */
             font-weight: normal;
         }
 
@@ -206,7 +230,7 @@
         }
 
         .btn-modify {
-            background: #2563eb;
+            background: var(--primary);
             color: white;
             border: none;
             padding: 10px;
@@ -222,7 +246,7 @@
             font-size: 0.85rem;
         }
 
-        .btn-modify:hover { background: #0f38ec; color: white; }
+        .btn-modify:hover { background: var(--primary-hover); color: white; }
 
         .btn-modify.disabled-lock {
             background: #bdc3c7 !important;
@@ -232,8 +256,8 @@
         }
 
         .btn-view {
-            background: #f0f3f4;
-            color: #7f8c8d;
+            background: var(--primary-soft); /* Modifié */
+            color: var(--text-light);        /* Modifié */
             border: none;
             width: 40px;
             height: 40px;
@@ -244,13 +268,13 @@
             text-decoration: none;
         }
 
-        .btn-view:hover { background: #e5e8e8; color: #2c3e50; }
+        .btn-view:hover { background: var(--border-color); color: var(--text-dark); }
 
         .fab-add {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: #3498db;
+            background: var(--primary);
             color: white;
             width: 55px;
             height: 55px;
@@ -278,6 +302,15 @@
     </style>
 </head>
 <body>
+
+<script>
+    (function () {
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    })();
+</script>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
@@ -356,7 +389,6 @@
         
         <section class="houses">
             @foreach($maisons as $maison)
-            {{-- Attribution d'une classe CSS spécifique selon l'état de modération ou de location --}}
             @php
                 $isPending = ($maison->statut_moderation ?? 'publiee') === 'en_attente';
             @endphp
@@ -386,7 +418,6 @@
                 <div class="card-actions d-flex flex-column gap-2">
                     <div class="d-flex gap-2 w-100">
                         @if($isPending)
-                            {{-- Bloquer la modification tant que ce n'est pas validé --}}
                             <button class="btn-modify disabled-lock flex-grow-1" title="Cette annonce est en cours d'examen par l'admin." type="button">
                                 <i class="fa-solid fa-ban"></i> En cours d'examen
                             </button>
@@ -420,7 +451,6 @@
                             @endif
                         </form>
                     @else
-                        {{-- Message informatif discret si l'annonce attend l'admin --}}
                         <button class="btn btn-sm btn-light w-100" disabled style="font-size: 0.75rem; color: var(--text-light);">
                             Indisponible au public tant qu'en attente
                         </button>

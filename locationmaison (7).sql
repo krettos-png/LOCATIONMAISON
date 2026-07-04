@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 29 juin 2026 à 14:02
+-- Généré le : mer. 01 juil. 2026 à 21:28
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -64,7 +64,7 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `nom`, `description`, `created_at`, `updated_at`) VALUES
-(1, 'Habitations', 'https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=1400', NULL, '2026-06-10 08:06:20'),
+(1, 'Habitations', 'https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=1400', NULL, '2026-07-01 19:10:40'),
 (2, 'Bureauxs', 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400', NULL, '2026-06-12 21:11:29'),
 (3, 'Boutiques', 'https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200', NULL, NULL);
 
@@ -130,6 +130,7 @@ CREATE TABLE `maisons` (
   `titre` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   `prix` int(18) NOT NULL,
+  `statut_moderation` varchar(255) NOT NULL DEFAULT 'en_attente',
   `vues` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
   `est_loue` tinyint(1) NOT NULL DEFAULT 0,
   `adresse` varchar(255) NOT NULL,
@@ -162,20 +163,21 @@ CREATE TABLE `maisons` (
 -- Déchargement des données de la table `maisons`
 --
 
-INSERT INTO `maisons` (`id`, `titre`, `description`, `prix`, `vues`, `est_loue`, `adresse`, `image`, `latitude`, `longitude`, `created_at`, `updated_at`, `utilisateur_id`, `categorie_id`, `ville`, `visites_demandees`, `immeuble_etage`, `meuble`, `climatise`, `sanitaire`, `adapte_pmr`, `compteur_elec_perso`, `compteur_eau_perso`, `caution_mois`, `prepaiement_mois`, `frais_visite`, `commission`, `caution_elec`, `caution_eau`, `caution_elec_eau`) VALUES
-(43, 'Deux Chambres Salon WC Douche Interne', 'jkvlbljkhlv', 65876, 15, 1, 'legbassito', 'maisons/principales/1781272202_ab6b7d38d066c6a4f1649237d113f6ad.png', 6.1939738, 1.1900425, '2026-06-12 13:50:03', '2026-06-26 12:27:24', 13, 1, 'lome', 1, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 4000, 4000, 5000),
-(44, 'Deux Chambres Salon WC Douche Interne', 'etbrevwc', 3443435, 29, 0, 'agoe', 'maisons/principales/1781279161_Capture d’écran 2025-09-16 050923.png', 6.1781023, 1.1991405, '2026-06-12 15:34:51', '2026-06-26 19:03:19', 13, 1, 'Kétao', 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 5000, NULL, 4000, 5000, NULL),
-(45, 'rhgfdhdhhd', 'rstbrythnbrsv', 54354, 10, 0, 'agoe', 'maisons/principales/1781279753_Capture d’écran 2025-09-16 003110.png', 6.2054079, 1.1816311, '2026-06-12 15:55:53', '2026-06-26 13:46:12', 13, 1, 'lome', 0, 1, 0, 1, 1, 0, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
-(46, '5e64gyetrjy', 'ternyertyum,ountrbyevt', 3456534, 4, 0, 'agoe', 'maisons/principales/1781279799_Capture d’écran 2025-09-16 002742.png', 6.5650000, 5.5550000, '2026-06-12 15:56:39', '2026-06-15 19:19:23', 13, 1, 'lome', 0, 1, 0, 1, 0, 0, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
-(47, '5e64gyetrjyehutr', 'rwetytnurebywvtca', 5344, 3, 1, 'apessito', 'maisons/principales/1781279837_Capture d’écran 2025-09-16 044922.png', 6.5650000, 5.5550000, '2026-06-12 15:57:17', '2026-06-25 20:42:49', 13, 1, 'lome', 2, 1, 0, 1, 0, 1, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
-(48, '3 chmabre salon', 'gfh drtsevrbht d', 5344, 8, 0, 'apessito', 'maisons/principales/1781279879_Capture d’écran 2025-09-16 051058.png', 6.5650000, 5.5550000, '2026-06-12 15:57:59', '2026-06-26 08:07:16', 13, 1, 'lome', 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
-(49, '3 chmabre 5salon', 'gttnfjdhbrgvsf', 500000, 5, 0, 'apessito', 'maisons/principales/1781279916_Capture d’écran 2025-09-16 003110.png', 6.1304848, 1.2154484, '2026-06-12 15:58:36', '2026-06-16 07:24:20', 13, 1, 'lome', 1, 0, 1, 1, 0, 0, 1, 0, 4, 4, 5000, 645, 4000, 354, NULL),
-(50, '5 chambre', 'vghfjygkmujfynhtdbfss', 40000, 6, 0, 'avedji', 'maisons/principales/1781279972_Capture d’écran 2025-09-16 002742.png', 6.5650000, 5.5550000, '2026-06-12 15:59:32', '2026-06-25 20:50:15', 13, 1, 'sokode', 2, 1, 1, 0, 0, 0, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
-(51, 'evsgvbrebsv', 'rbh tjyftdrgsef', 3456435, 1, 1, 'kolo', 'maisons/principales/1781280030_Capture d’écran 2025-09-16 003110.png', 6.5650000, 5.5550000, '2026-06-12 16:00:30', '2026-06-20 18:59:14', 13, 1, 'anie', 0, 1, 0, 1, 0, 0, 0, 0, 5, 4, 4000, NULL, NULL, NULL, NULL),
-(52, 'rwnjdnfgf', 'tdyfnbg hjyr td', 5645, 3, 1, 'hhhh', 'maisons/principales/1781285080_Capture d’écran 2025-09-16 002902.png', 6.1919259, 1.1967373, '2026-06-12 17:24:40', '2026-06-26 07:26:50', 13, 2, 'kpala', 0, 1, 0, 0, 1, 0, 0, 0, 5, NULL, NULL, NULL, NULL, NULL, NULL),
-(53, 'uneChambres Salon WC Douche Interne', 'gcmbvn, jdbfc hj nklyhjv', 6544, 2, 0, 'logote', 'maisons/principales/1782254762_Capture d’écran 2026-05-11 111806.png', 6.5650000, 5.5550000, '2026-06-23 22:46:02', '2026-06-23 22:47:25', 13, 1, 'lome', 0, 1, 1, 1, 1, 0, 1, 1, 4, 4, 3400, NULL, 2000, 2000, NULL),
-(54, 'trxxxxxx', 'Jxgxxihxohx', 50000, 3, 0, 'Lamde', 'maisons/principales/1782254983_747127.jpg', 6.2155811, 1.2014992, '2026-06-23 22:49:43', '2026-06-26 07:31:51', 13, 1, 'Kara', 0, 1, 1, 1, 0, 0, 0, 0, 5, 2, NULL, NULL, NULL, NULL, NULL),
-(55, 'Deux Chambres Salon WC Douche Interne', 'kjgffjghkhgjlnuignou', 60000, 2, 0, 'afonouvi kome', 'maisons/principales/1782473437_Capture d’écran 2026-05-11 112137.png', 6.2151352, 1.2008572, '2026-06-26 11:30:37', '2026-06-26 13:51:01', 13, 1, 'Tabligbo', 0, 1, 0, 1, 1, 0, 0, 0, 5, 3, 5000, NULL, NULL, NULL, NULL);
+INSERT INTO `maisons` (`id`, `titre`, `description`, `prix`, `statut_moderation`, `vues`, `est_loue`, `adresse`, `image`, `latitude`, `longitude`, `created_at`, `updated_at`, `utilisateur_id`, `categorie_id`, `ville`, `visites_demandees`, `immeuble_etage`, `meuble`, `climatise`, `sanitaire`, `adapte_pmr`, `compteur_elec_perso`, `compteur_eau_perso`, `caution_mois`, `prepaiement_mois`, `frais_visite`, `commission`, `caution_elec`, `caution_eau`, `caution_elec_eau`) VALUES
+(43, 'Deux Chambres Salon WC Douche Interne', 'jkvlbljkhlv', 65876, 'publiee', 37, 0, 'legbassito', 'maisons/principales/1781272202_ab6b7d38d066c6a4f1649237d113f6ad.png', 6.1939738, 1.1900425, '2026-06-12 13:50:03', '2026-07-01 07:58:13', 13, 1, 'Lomé', 2, 0, 1, 1, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 4000, 4000, 5000),
+(44, 'Deux Chambres Salon WC Douche Interne', 'etbrevwc', 3443435, 'publiee', 35, 1, 'agoe', 'maisons/principales/1781279161_Capture d’écran 2025-09-16 050923.png', 6.1781023, 1.1991405, '2026-06-12 15:34:51', '2026-07-01 09:01:26', 13, 1, 'Kétao', 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 5000, NULL, 4000, 5000, NULL),
+(45, 'rhgfdhdhhd', 'rstbrythnbrsv', 54354, 'en_attente', 10, 0, 'agoe', 'maisons/principales/1781279753_Capture d’écran 2025-09-16 003110.png', 6.2054079, 1.1816311, '2026-06-12 15:55:53', '2026-06-30 13:03:04', 13, 1, 'lome', 0, 1, 0, 1, 1, 0, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
+(46, '5e64gyetrjy', 'ternyertyum,ountrbyevt', 3456534, 'en_attente', 4, 0, 'agoe', 'maisons/principales/1781279799_Capture d’écran 2025-09-16 002742.png', 6.5650000, 5.5550000, '2026-06-12 15:56:39', '2026-06-30 14:15:02', 13, 1, 'lome', 0, 1, 0, 1, 0, 0, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
+(47, '5e64gyetrjyehutr', 'rwetytnurebywvtca', 5344, 'en_attente', 4, 0, 'apessito', 'maisons/principales/1781279837_Capture d’écran 2025-09-16 044922.png', 6.5650000, 5.5550000, '2026-06-12 15:57:17', '2026-06-30 14:15:17', 13, 1, 'lome', 2, 1, 0, 1, 0, 1, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
+(48, '3 chmabre salon', 'gfh drtsevrbht d', 5344, 'publiee', 25, 0, 'apessito', 'maisons/principales/1781279879_Capture d’écran 2025-09-16 051058.png', 6.1394941, 1.2145632, '2026-06-12 15:57:59', '2026-06-30 20:18:41', 13, 1, 'Lomé', 1, 0, 0, 0, 0, 0, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
+(49, '3 chmabre 5salon', 'gttnfjdhbrgvsf', 500000, 'publiee', 7, 0, 'apessito', 'maisons/principales/1781279916_Capture d’écran 2025-09-16 003110.png', 6.1304848, 1.2154484, '2026-06-12 15:58:36', '2026-06-30 20:21:26', 13, 1, 'Lomé', 1, 0, 1, 1, 0, 0, 1, 0, 4, 4, 5000, 645, 4000, 354, NULL),
+(50, '5 chambre', 'vghfjygkmujfynhtdbfss', 40000, 'publiee', 12, 0, 'avedji', 'maisons/principales/1781279972_Capture d’écran 2025-09-16 002742.png', 8.9841380, 1.1304667, '2026-06-12 15:59:32', '2026-06-30 20:23:15', 13, 1, 'Sokodé', 2, 1, 1, 0, 0, 0, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
+(51, 'evsgvbrebsv', 'rbh tjyftdrgsef', 3456435, 'publiee', 4, 0, 'kolo', 'maisons/principales/1781280030_Capture d’écran 2025-09-16 003110.png', 6.1360318, 1.2275940, '2026-06-12 16:00:30', '2026-06-30 20:17:49', 13, 1, 'Anié', 0, 1, 1, 1, 1, 1, 1, 1, 5, 4, 4000, NULL, NULL, NULL, NULL),
+(52, 'rwnjdnfgf', 'tdyfnbg hjyr td', 5645, 'publiee', 4, 0, 'hhhh', 'maisons/principales/1781285080_Capture d’écran 2025-09-16 002902.png', 6.1919259, 1.1967373, '2026-06-12 17:24:40', '2026-06-30 20:26:41', 13, 2, 'Togoville', 0, 1, 0, 0, 1, 0, 0, 0, 5, NULL, NULL, NULL, NULL, NULL, NULL),
+(53, 'uneChambres Salon WC Douche Interne', 'gcmbvn, jdbfc hj nklyhjv', 6544, 'en_attente', 2, 0, 'logote', 'maisons/principales/1782254762_Capture d’écran 2026-05-11 111806.png', 6.5650000, 5.5550000, '2026-06-23 22:46:02', '2026-06-30 14:40:11', 13, 1, 'lome', 0, 1, 1, 1, 1, 0, 1, 1, 4, 4, 3400, NULL, 2000, 2000, NULL),
+(54, 'trxxxxxx', 'Jxgxxihxohx', 50000, 'en_attente', 3, 0, 'Lamde', 'maisons/principales/1782254983_747127.jpg', 6.2155811, 1.2014992, '2026-06-23 22:49:43', '2026-06-30 14:27:58', 13, 1, 'Kara', 0, 1, 1, 1, 0, 0, 0, 0, 5, 2, NULL, NULL, NULL, NULL, NULL),
+(55, 'Deux Chambres Salon WC Douche Interne', 'kjgffjghkhgjlnuignou', 60000, 'en_attente', 2, 0, 'afonouvi kome', 'maisons/principales/1782473437_Capture d’écran 2026-05-11 112137.png', 6.2151352, 1.2008572, '2026-06-26 11:30:37', '2026-06-30 14:17:28', 13, 1, 'Tabligbo', 0, 1, 0, 1, 1, 0, 0, 0, 5, 3, 5000, NULL, NULL, NULL, NULL),
+(57, 'Cchjbnju', 'Ccvjj vhv', 50000, 'publiee', 0, 0, 'Pagala', 'maisons/principales/1782901413_777221.jpg', 6.1888936, 1.1894879, '2026-07-01 10:23:33', '2026-07-01 10:25:12', 22, 2, 'Bafilo', 0, 1, 1, 1, 1, 0, 1, 1, 2, 5, 3000, 5000, 2000, 2000, NULL);
 
 -- --------------------------------------------------------
 
@@ -227,7 +229,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (14, '2026_05_17_053900_add_vues_to_maisons_table', 5),
 (15, '2026_05_17_054914_add_visites_to_maisons_table', 6),
 (16, '2026_06_07_192619_create_messages_table', 7),
-(17, '2026_06_12_131043_add_options_to_maisons_table', 8);
+(17, '2026_06_12_131043_add_options_to_maisons_table', 8),
+(18, '2026_06_30_122619_add_moderation_to_maisons_table', 9);
 
 -- --------------------------------------------------------
 
@@ -316,7 +319,13 @@ INSERT INTO `photos` (`id`, `maison_id`, `chemin`, `created_at`, `updated_at`) V
 (223, 54, 'maisons/secondaires/1782254983_748721.jpg', '2026-06-23 22:49:43', '2026-06-23 22:49:43'),
 (224, 55, 'maisons/secondaires/1782473437_Capture d’écran 2026-05-11 123755.png', '2026-06-26 11:30:37', '2026-06-26 11:30:37'),
 (225, 55, 'maisons/secondaires/1782473437_Capture d’écran 2026-05-12 074847.png', '2026-06-26 11:30:37', '2026-06-26 11:30:37'),
-(226, 55, 'maisons/secondaires/1782473437_CONNECTION.png', '2026-06-26 11:30:37', '2026-06-26 11:30:37');
+(226, 55, 'maisons/secondaires/1782473437_CONNECTION.png', '2026-06-26 11:30:37', '2026-06-26 11:30:37'),
+(231, 57, 'maisons/secondaires/1782901413_781084.png', '2026-07-01 10:23:33', '2026-07-01 10:23:33'),
+(232, 57, 'maisons/secondaires/1782901414_780447.png', '2026-07-01 10:23:34', '2026-07-01 10:23:34'),
+(233, 57, 'maisons/secondaires/1782901414_779999.jpg', '2026-07-01 10:23:34', '2026-07-01 10:23:34'),
+(234, 57, 'maisons/secondaires/1782901414_779806.jpg', '2026-07-01 10:23:34', '2026-07-01 10:23:34'),
+(235, 57, 'maisons/secondaires/1782901414_778014.jpg', '2026-07-01 10:23:34', '2026-07-01 10:23:34'),
+(236, 57, 'maisons/secondaires/1782901414_779705.jpg', '2026-07-01 10:23:34', '2026-07-01 10:23:34');
 
 -- --------------------------------------------------------
 
@@ -338,7 +347,10 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('k8ugkhNhUbBZcIK5TEw4xX3sa0IpGgZ3EjOKlSci', 13, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 Edg/149.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiVm5kb0h4YkNtS1dRWWsxNFhJdkhSaDZHd0xjbWEzUENwVkROWHNMZSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDg6Imh0dHA6Ly9sb2NhbGhvc3QvbG9jYXRpb24vcHVibGljL21haXNvbi80NC9pbmZvQSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjEzO30=', 1782500599);
+('cyZ0GW4PsCFmICzfkK97XU7nCXDw1osERpHGtj0k', 22, '192.168.43.36', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiVEhnaExUWGc0ZWRnMDhJaVZRbDI1d3FqUXZYcXlsYmZkdFBkbzVSTSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mzc6Imh0dHA6Ly8xOTIuMTY4LjQzLjE1OS9sb2NhdGlvbi9wdWJsaWMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyMjt9', 1782901616),
+('IKFMaUrnExixNI9oxU1V0ayngLIM1HcWbkWTtuCU', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 Edg/149.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiOGlxNmxPYVJIa3NVUzBEdlM0bVBXSHZoMTk2M2Q4dWJMSXI0STBmZiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDI6Imh0dHA6Ly9sb2NhbGhvc3QvbG9jYXRpb24vcHVibGljL2FkbWluL2RldiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1782896703),
+('NK3zw58jxuHZotYOY60ZKSZ5DaMap8URbvbJ8BYq', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 Edg/149.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiYlM1ZzBvYzN5bnlrREVTdFFiTkRJUUlvSndncXlmTXZXRlZFY1hJZSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9sb2NhbGhvc3QvbG9jYXRpb24vcHVibGljIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1782906830),
+('xCxAFKsaZnM9Jpm9DSroKhiWeTtIZ6XdEoS20esh', 13, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 Edg/149.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiSkF0WG9KSDhZdHF3b1ZKSWdrQ1BqZTFoUEJWeWdTQ2d4ZFJ2RTJxdCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9sb2NhbGhvc3QvbG9jYXRpb24vcHVibGljIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTM7fQ==', 1782933056);
 
 -- --------------------------------------------------------
 
@@ -388,7 +400,8 @@ INSERT INTO `utilisateurs` (`id`, `name`, `prenom`, `contact`, `email`, `passwor
 (18, 'rr', 'rr', '56878768', 'rr@gmail.com', '$2y$12$ha27iAH4iskvvomiMdtu4.0wt2c46EUURt3Q8ajUn02vIPa2ezkwq', 'admin', '2026-06-12 10:39:15', '2026-06-12 10:39:15', NULL),
 (19, 'rr', 'rr', '6588575', '00@gmail.com', '$2y$12$aEUznxmhkkbo/i9ZmMGc5.ocoPF9GxYgWLt0oaYrsD284A/uJGdRK', 'admin', '2026-06-12 10:40:59', '2026-06-12 10:40:59', NULL),
 (20, 'rr', 'rr', '789978', 'rer@gmail.com', '$2y$12$AWcIZpt2Ib5UdUenukOSfewb/AtWyYHr3Y2guwhHJxDfUB1HG8FaO', 'admin', '2026-06-12 11:52:28', '2026-06-12 11:52:28', NULL),
-(21, 'Kadjo', 'Koffi', '93625807', 'razak@gmail.com', '$2y$12$awzkiRr1lFHL58lPSzKaCuxnzt4Z1cwPsueRLnchUGxVxeJJLhqJe', 'admin', '2026-06-12 12:01:33', '2026-06-12 12:01:33', 'mSpauV8ENq6qIb39PwEEQlLgbSMfz7bG6zVYjgvLgnFnLZYko2LybkciQkUr');
+(21, 'Kadjo', 'Koffi', '93625807', 'razak@gmail.com', '$2y$12$awzkiRr1lFHL58lPSzKaCuxnzt4Z1cwPsueRLnchUGxVxeJJLhqJe', 'admin', '2026-06-12 12:01:33', '2026-06-12 12:01:33', 'mSpauV8ENq6qIb39PwEEQlLgbSMfz7bG6zVYjgvLgnFnLZYko2LybkciQkUr'),
+(22, 'Gg', 'Gg', '91304000', 'smithkrettos@gmail.com', '$2y$12$En/enMjy5p7KoRTZMQqKmOGhvNpGrFiHFajxfva2qU2Z6iguh.iFW', 'admin', '2026-07-01 10:19:14', '2026-07-01 10:19:14', NULL);
 
 -- --------------------------------------------------------
 
@@ -585,7 +598,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT pour la table `maisons`
 --
 ALTER TABLE `maisons`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT pour la table `messages`
@@ -597,13 +610,13 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT pour la table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT pour la table `photos`
 --
 ALTER TABLE `photos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=227;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=237;
 
 --
 -- AUTO_INCREMENT pour la table `users`
@@ -615,7 +628,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT pour la table `villes`

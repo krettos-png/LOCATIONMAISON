@@ -12,16 +12,35 @@
   
   <style>
     :root {
-      --primary-color: #4F46E5;
+      --primary: #4F46E5;
+      --primary-hover: #1d4ed8;
+      --primary-soft: #eff6ff;
+      --text-dark: #111827;
+      --text-light: #4b5563;
+      --text-muted: #9ca3af;
+      --bg-light: #f4f7fb;
+      --bg-card: #ffffff;
+      --border-color: #e5e7eb;
+      
       --whatsapp-color: #25D366;
       --whatsapp-hover: #128C7E;
       --phone-color: #0EA5E9;
       --phone-hover: #0284C7;
       --email-color: #64748B;
       --email-hover: #475569;
-      --text-dark: #1F2937;
-      --text-muted: #4B5563;
-      --bg-light: #F9FAFB;
+      --nav-bg: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Variables pour le Mode Sombre */
+    body.dark-theme {
+      --bg-light: #0f172a;
+      --bg-card: #1e293b;
+      --text-dark: #f8fafc;
+      --text-light: #cbd5e1;
+      --text-muted: #64748b;
+      --primary-soft: #1e293b;
+      --border-color: #334155;
+      --nav-bg: rgba(15, 23, 42, 0.8);
     }
 
     body {
@@ -29,18 +48,20 @@
       background-color: var(--bg-light);
       color: var(--text-dark);
       padding-top: 90px;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     /* Navbar Moderne */
     .navbar {
-      background: rgba(255, 255, 255, 0.8) !important;
+      background: var(--nav-bg) !important;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      border-bottom: 1px solid var(--border-color);
+      transition: background 0.3s ease, border-color 0.3s ease;
     }
     .navbar-brand {
       font-weight: 800;
-      color: var(--primary-color) !important;
+      color: var(--primary) !important;
       letter-spacing: -0.5px;
     }
     .nav-link {
@@ -48,17 +69,18 @@
       font-weight: 500;
     }
     .nav-link.active {
-      color: var(--primary-color) !important;
+      color: var(--primary) !important;
       font-weight: 700;
     }
 
-    /* Blocs de contenu modernes */
+    /* Blocs de contenu */
     .modern-card {
-      background: #ffffff;
-      border: 1px solid rgba(0, 0, 0, 0.04);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
       border-radius: 16px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
       padding: 24px;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
     .section-title {
       font-weight: 700;
@@ -77,20 +99,20 @@
       border-radius: 12px;
       font-size: 0.9rem;
       font-weight: 600;
-      background: #F3F4F6;
-      color: #374151;
-      border: 1px solid #E5E7EB;
+      background: var(--bg-light);
+      color: var(--text-light);
+      border: 1px solid var(--border-color);
     }
     .feature-badge i {
       font-size: 1.05rem;
     }
     .feature-badge.available {
-      background: #EEF2FF;
-      color: var(--primary-color);
-      border-color: #E0E7FF;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: var(--primary);
     }
 
-    /* Bouton WhatsApp Premium */
+    /* Boutons de Contact Premium */
     .btn-whatsapp {
       background-color: var(--whatsapp-color) !important;
       border: none !important;
@@ -109,10 +131,8 @@
     .btn-whatsapp:hover {
       background-color: var(--whatsapp-hover) !important;
       transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(37, 211, 102, 0.35);
     }
 
-    /* Bouton Appeler Premium */
     .btn-phone {
       background-color: var(--phone-color) !important;
       border: none !important;
@@ -131,10 +151,8 @@
     .btn-phone:hover {
       background-color: var(--phone-hover) !important;
       transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(14, 165, 233, 0.35);
     }
 
-    /* Bouton Email Premium */
     .btn-email {
       background-color: var(--email-color) !important;
       border: none !important;
@@ -153,7 +171,6 @@
     .btn-email:hover {
       background-color: var(--email-hover) !important;
       transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(100, 116, 139, 0.35);
     }
 
     .zoomable {
@@ -163,9 +180,6 @@
     .zoomable:active {
       cursor: zoom-out;
     }
-    #modalImage {
-      transform-origin: center;
-    }
 
     .custom-close-btn {
       background-color: rgba(0, 0, 0, 0.6) !important;
@@ -173,26 +187,70 @@
       padding: 12px;
       z-index: 1060;
       opacity: 0.85;
-      transition: opacity 0.2s;
-    }
-    .custom-close-btn:hover {
-      opacity: 1;
     }
 
     .stat-box {
-      background-color: #F3F4F6;
+      background-color: var(--bg-light);
       border-radius: 10px;
       padding: 10px 14px;
       font-size: 0.95rem;
+      border: 1px solid var(--border-color);
     }
 
     #map {
       border-radius: 14px;
       overflow: hidden;
     }
+
+    footer {
+      background-color: var(--bg-card) !important;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* Fix pour les tableaux et textes secondaires en mode sombre */
+    .text-secondary, .text-muted {
+      color: var(--text-light) !important;
+    }
+    .table td {
+      color: var(--text-dark) !important;
+    }
+    .modal-content {
+      background-color: var(--bg-card) !important;
+      color: var(--text-dark) !important;
+    }
+
+    /* BLOC TECHNIQUE : Zone Financière Forcée en Style Clair permanent */
+    .bg-light-fixed {
+      background-color: #f8fafc !important; /* Fond gris très clair fixe */
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid #e2e8f0;
+    }
+    /* On force l'écriture en noir/sombre pour TOUS les éléments à l'intérieur */
+    .bg-light-fixed h5 {
+      color: #0f172a !important;
+    }
+    .bg-light-fixed .table td {
+      color: #0f172a !important; /* Texte de droite en noir */
+    }
+    .bg-light-fixed .table td.text-muted {
+      color: #475569 !important; /* Libellés de gauche en gris foncé */
+    }
+    .bg-light-fixed .table td.text-danger {
+      color: #dc2626 !important; /* Frais de visite en rouge bien visible */
+    }
   </style>
 </head>
 <body>
+
+<script>
+    (function () {
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    })();
+</script>
 
   <nav class="navbar navbar-expand-lg fixed-top py-3">
     <div class="container">
@@ -330,8 +388,9 @@
             <span class="ms-2 text-muted fw-medium">FCFA / mois</span>
           </div>
 
-          <div class="mt-4 pt-3 border-top">
-            <h5 class="fw-bold mb-3 style" style="font-size: 0.95rem; color: var(--text-dark);">Conditions financières :</h5>
+          <!-- Utilisation du conteneur clair fixe bg-light-fixed -->
+          <div class="mt-4 pt-3 border-top bg-light-fixed">
+            <h5 class="fw-bold mb-3" style="font-size: 0.95rem;">Conditions financières :</h5>
             <table class="table table-borderless table-sm mb-0" style="font-size: 0.9rem;">
               <tbody>
                 @if($maisons->caution_mois)
@@ -419,7 +478,7 @@
                         <div class="modal-footer flex-column gap-2 border-0 p-4 pt-0">
                             <p class="small text-secondary mb-2">Si vous acceptez ces consignes, choisissez votre moyen de contact :</p>
                             
-                            <a href="{{ route('maisons.visite', ['id' => $maisons->id]) }}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp w-100 py-2.5 fw-semibold text-white d-flex align-items-center justify-content-center gap-2" style="background-color: #25D366;">
+                            <a href="{{ route('maisons.visite', ['id' => $maisons->id]) }}" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp w-100 py-2.5 fw-semibold text-white d-flex align-items-center justify-content-center gap-2">
                                 <svg style="width:20px;height:20px" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91c0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23c-1.48 0-2.93-.4-4.19-1.15l-.3-.18l-3.12.82l.83-3.04l-.2-.31a8.182 8.182 0 0 1-1.26-4.38c0-4.54 3.7-8.22 8.25-8.22m-3.61 4.62c-.2 0-.33.07-.5.26c-.18.19-.69.67-.69 1.63c0 .96.7 1.88.8 2.01c.09.13 1.36 2.08 3.3 2.91c.47.2 1 .34 1.34.45c.49.15.93.13 1.29.08c.39-.06 1.21-.5 1.38-.97c.17-.47.17-.87.12-.96c-.05-.08-.18-.13-.38-.23c-.19-.1-.1.41-.65-.6c-.08-.13-.17-.23-.27-.23c-.1 0-.17.05-.51.22c-.34.17-.58.28-.79.06c-.13-.13-1.49-1.52-2.03-2.01c-.42-.37-.09-.59.13-.81c.21-.21.43-.49.54-.74c.1-.25.05-.48-.02-.63c-.07-.15-.56-1.35-.77-1.85c-.2-.51-.42-.43-.57-.44c-.14-.01-.3-.01-.47-.01Z"/></svg>
                                 Réserver via WhatsApp
                             </a>
@@ -455,7 +514,7 @@
     </div>
   </div>
 
-  <footer class="bg-light text-center py-3 mt-5 border-top">
+  <footer class="text-center py-3 mt-5">
     <p class="mb-0 text-muted">© 2026 MaisonLoc. Tous droits réservés.</p>
   </footer>
 
@@ -494,7 +553,7 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
-      const lat = {{ $maisons->latitude ?? 6.131 }}; // Fallback par défaut sur Lomé si NULL
+      const lat = {{ $maisons->latitude ?? 6.131 }};
       const lng = {{ $maisons->longitude ?? 1.223 }};
 
       const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

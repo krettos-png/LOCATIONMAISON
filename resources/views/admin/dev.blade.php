@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 <body>
+  
+<!-- INITIALISATION IMMÉDIATE DU THÈME (À mettre sur toutes les pages) -->
+<script>
+    (function () {
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    })();
+</script>
 
     {{-- Bouton de bascule de navigation pour mobile --}}
     <button class="mobile-nav-toggle" id="menuToggle" aria-label="Ouvrir le menu">
@@ -578,6 +588,38 @@ document.addEventListener("DOMContentLoaded", function() {
     </script>
 
     <style>
+
+        :root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-soft: #eff6ff;
+    --text-dark: #111827;
+    --text-light: #4b5563;
+    --text-muted: #9ca3af;
+    --bg-light: #f4f7fb;
+    --bg-card: #ffffff;
+    --border-color: #e5e7eb;
+}
+
+/* Variables pour le Mode Sombre à inclure partout */
+body.dark-theme {
+    --bg-light: #0f172a;
+    --bg-card: #1e293b;
+    --text-dark: #f8fafc;
+    --text-light: #cbd5e1;
+    --text-muted: #64748b;
+    --primary-soft: #1e293b;
+    --border-color: #334155;
+}
+
+
+
+/* Applique ensuite ces variables sur tes éléments (ex: background: var(--bg-light); color: var(--text-dark);) */
+
+
+
+
+
         :root {
             --primary: #2563eb;
             --primary-soft: #eff6ff;

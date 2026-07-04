@@ -11,38 +11,120 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+  <script>
+    (function () {
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    })();
+</script>
 
 <style>
+  :root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-soft: #eff6ff;
+    --text-dark: #111827;
+    --text-light: #4b5563;
+    --text-muted: #9ca3af;
+    --bg-light: #f4f7fb;
+    --bg-card: #ffffff;
+    --border-color: #e5e7eb;
+  }
+
+  /* Variables pour le Mode Sombre - On force le sombre partout */
+  body.dark-theme, body {
+    --bg-light: #0f172a;
+    --bg-card: #1e293b;
+    --text-dark: #f8fafc;
+    --text-light: #cbd5e1;
+    --text-muted: #64748b;
+    --primary-soft: #1e293b;
+    --border-color: #334155;
+  }
+
+  /* --- APPLICATION DES VARIABLES --- */
+  body {
+    background-color: var(--bg-light) !important;
+    color: var(--text-dark) !important;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1 {
+    color: var(--text-dark) !important;
+  }
+
   .navbar {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
-  .form-control {
+
+  /* Inputs, Selects et Textareas */
+  .form-control, input[type="text"], input[type="number"], select, textarea {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccd1d9;
+    border: 1px solid var(--border-color) !important;
     border-radius: 6px;
     font-size: 14px;
     margin-bottom: 10px;
+    background-color: var(--bg-card) !important;
+    color: var(--text-dark) !important;
   }
-  /* Style harmonieux pour les sections de cases à cocher */
+
+  .form-control:focus, input:focus, select:focus, textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+    outline: none;
+  }
+
+  /* Block des switchs / Checkbox group */
   .checkbox-group {
-    background-color: #f8f9fa;
+    background-color: var(--primary-soft) !important;
     border-radius: 8px;
     padding: 15px;
-    border: 1px solid #e9ecef;
+    border: 1px solid var(--border-color) !important;
   }
+
   .form-check-label {
     font-size: 14px;
     cursor: pointer;
+    color: var(--text-dark) !important;
   }
+
   .section-title {
     font-size: 16px;
     font-weight: bold;
     margin-top: 20px;
     margin-bottom: 15px;
-    color: #495057;
-    border-left: 4px solid #0d6efd;
+    color: var(--text-dark) !important;
+    border-left: 4px solid var(--primary);
     padding-left: 10px;
+  }
+
+  /* Conteneur de la Carte Leaflet - Tout en sombre */
+  .card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-dark) !important;
+  }
+  .card-header {
+    background-color: var(--bg-light) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    color: var(--text-dark) !important;
+    font-weight: 600;
+  }
+
+  /* LA CARTE RESTE PROPRE ET CLAIRE SANS IMPLIQUER DE BLANC SUR LE RESTE DU FORMULAIRE */
+  #map {
+    background-color: #cbd5e1 !important; /* Couleur neutre de chargement des tuiles */
+    filter: none !important;
+    -webkit-filter: none !important;
+  }
+  
+  /* On s'assure que les images de la carte ne subissent aucun filtre sombre */
+  .leaflet-tile-container img {
+    filter: none !important;
+    -webkit-filter: none !important;
   }
 </style>
 
@@ -267,14 +349,11 @@
     regionSelect.addEventListener('change', function() {
       const regionSelectionnee = this.value;
       
-      // Vider le menu des villes
       villeSelect.innerHTML = '<option value="" disabled selected>Sélectionnez la ville</option>';
       
       if (regionSelectionnee && villesParRegion[regionSelectionnee]) {
-        // Activer le select des villes
         villeSelect.disabled = false;
         
-        // Ajouter les villes correspondantes
         villesParRegion[regionSelectionnee].forEach(function(ville) {
           const option = document.createElement('option');
           option.value = ville;

@@ -10,6 +10,16 @@
 </head>
 <body>
 
+<!-- INITIALISATION IMMÉDIATE DU THÈME -->
+<script>
+    (function () {
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    })();
+</script>
+
 <style>
     :root {
         --primary: #2563eb;
@@ -20,11 +30,43 @@
         --text-muted: #9ca3af;
         --bg-light: #f4f7fb;
         --bg-card: #ffffff;
+        --border-color: #e5e7eb;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* Variables pour le Mode Sombre */
+    body.dark-theme {
+        --bg-light: #0f172a;
+        --bg-card: #1e293b;
+        --text-dark: #f8fafc;
+        --text-light: #cbd5e1;
+        --text-muted: #64748b;
+        --primary-soft: #1e293b;
+        --border-color: #334155;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
     body { font-family: 'Poppins', sans-serif; background: var(--bg-light); color: var(--text-dark); overflow-x: hidden; }
     .container { max-width: 1300px; margin: auto; padding: 0 20px; }
+
+    /* Bouton Mode Sombre / Mode Clair */
+    .theme-toggle-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: 0.3s;
+    }
+    .theme-toggle-btn:hover {
+        background: var(--primary);
+        transform: scale(1.05);
+    }
 </style>
 
 <section class="hero-rental">
@@ -47,9 +89,14 @@
             </div>
 
             <div class="nav-buttons">
+                <!-- Bouton Bascule Thème -->
+                <button id="theme-toggle" class="theme-toggle-btn" title="Changer de mode">
+                    <i class="fa-solid fa-moon" id="theme-icon"></i>
+                </button>
+
                 @auth
                     @if(Auth::user()->role === 'admin')
-                        <a href="{{ route('ttt') }}" class="btn-register  bg-primary text-white hover:bg-primary-hover" title="Manager l'application">Manager</a>
+                        <a href="{{ route('ttt') }}" class="btn-register bg-primary text-white hover:bg-primary-hover" title="Manager l'application">Manager</a>
                     @endif
 
                     @if(Auth::user()->role === 'dev')
@@ -59,11 +106,10 @@
                     
                     <span class="user-greeting"><i class="fa-solid fa-user"></i> {{ Auth::user()->name }} !</span>
                     
-                        
                     @if(Auth::user()->role === 'admin')
                         <a href="{{ route('admin.ajouter') }}" class="btn-register">Publier un bien</a>
                     @elseif(Auth::user()->role === 'dev')
-                        @else
+                    @else
                         <a href="#" class="btn-register">Devenir propriétaire</a>
                     @endif
                     <a href="{{ route('logout') }}" class="btn-logout">Déconnexion</a>
@@ -87,7 +133,7 @@
 <style>
     .hero-rental {
         min-height: 8vh;
-        background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
                     url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070');
         background-size: cover;
         background-position: center;
@@ -107,33 +153,20 @@
     .btn-login { color: white; text-decoration: none; font-weight: 500; transition: 0.3s; }
     .btn-login:hover { color: var(--primary); }
     .btn-logout { background: #ef4444; color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; }
-    .btn-register { background: white; color: var(--text-dark); padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; }
+    .btn-register { background: white; color: #111827; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; }
     .btn-register:hover { background: var(--primary); color: white; }
     .user-greeting { font-size: 14px; background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px; }
 
-    /* MENU MOBILE TOGGLE */
     .menu-toggle { display: none; cursor: pointer; flex-direction: column; gap: 6px; z-index: 110; }
     .menu-toggle .bar { width: 28px; height: 3px; background: white; transition: 0.3s; border-radius: 2px; }
 
-    /* HERO CONTENT */
     .hero-content { margin-top: 60px; }
     .hero-badge { background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 50px; backdrop-filter: blur(5px); font-size: 13px; font-weight: 500; display: inline-block; }
     .hero-content h1 { font-size: clamp(28px, 5vw, 54px); line-height: 1.2; margin-top: 20px; font-weight: 800; max-width: 800px; }
     .hero-content p { margin-top: 20px; font-size: clamp(16px, 2vw, 20px); color: #e5e7eb; max-width: 600px; }
 
-    /* SEARCH BOX */
-    .search-container { margin-top: 50px; background: white; border-radius: 15px; padding: 10px; display: flex; box-shadow: 0 15px 30px rgba(0,0,0,0.25); }
-    .search-item { flex: 1; display: flex; align-items: center; gap: 10px; padding: 10px 15px; border-right: 1px solid #e5e7eb; }
-    .search-item:last-of-type { border-right: none; }
-    .search-item i { color: var(--primary); font-size: 18px; }
-    .search-item select { border: none; outline: none; width: 100%; font-size: 15px; color: var(--text-dark); background: transparent; cursor: pointer; }
-    .search-btn { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-    .search-btn:hover { background: var(--primary-hover); }
-
-    /* RESPONSIVE HERO & NAVBAR */
     @media (max-width: 992px) {
         .menu-toggle { display: flex; position: absolute; top: 25px; right: 20px; }
-        /* Version active : passe en fixed pour que la croix reste figée sur l'écran */
         .menu-toggle.active { position: fixed; right: 20px; top: 25px; }
         
         .nav-container { position: fixed; top: 0; right: -100%; height: 100vh; width: 280px; background: #111827; flex-direction: column; padding: 100px 30px; transition: 0.4s; overflow-y: auto; z-index: 100; gap: 30px; align-items: flex-start; box-shadow: -10px 0 30px rgba(0,0,0,0.3); }
@@ -142,9 +175,7 @@
         .nav-links a { font-size: 18px; }
         .nav-buttons { flex-direction: column; width: 100%; gap: 15px; align-items: stretch; }
         .btn-register, .btn-logout, .btn-login { text-align: center; width: 100%; }
-        .search-container { flex-direction: column; gap: 5px; }
-        .search-item { border-right: none; border-bottom: 1px solid #eee; padding: 15px 5px; }
-        .search-btn { width: 100%; margin-top: 10px; }
+        .theme-toggle-btn { align-self: center; }
     }
 </style>
 
@@ -189,7 +220,7 @@
     .houses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; justify-content: center; }
     .card-link { text-decoration: none; color: inherit; display: block; }
     
-    .category-card { background: white; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.06); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%; display: flex; flex-direction: column; }
+    .category-card { background: var(--bg-card); border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.06); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%; display: flex; flex-direction: column; border: 1px solid var(--border-color); }
     .category-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.12); }
     .category-card img { width: 100%; height: 200px; object-fit: cover; }
     
@@ -198,7 +229,7 @@
     .card-body-custom p { font-size: 14px; color: var(--text-light); margin-bottom: 20px; }
     
     .card-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; width: 100%; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-    .card-btn:hover { background: #219150; }
+    .card-btn:hover { background: var(--primary-hover); }
 </style>
 
 <section class="why-section">
@@ -255,18 +286,19 @@
 </section>
 
 <style>
-    .why-section { padding: 80px 0; background: #f5f7fb; }
+    .why-section { padding: 80px 0; background: var(--bg-light); }
     .section-title { font-size: clamp(26px, 4vw, 38px); color: var(--text-dark); margin-bottom: 40px; font-weight: 800; text-align: center; }
     
     .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
-    .feature-card { background: white; padding: 30px; border-radius: 18px; border: 1px solid #e5e7eb; transition: 0.3s; }
+    .feature-card { background: var(--bg-card); padding: 30px; border-radius: 18px; border: 1px solid var(--border-color); transition: 0.3s; }
     .feature-card:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
     .feature-icon { font-size: 35px; color: var(--primary); margin-bottom: 15px; }
     .feature-card h3 { font-size: 20px; margin-bottom: 12px; font-weight: 700; color: var(--text-dark); }
     .feature-card p { color: var(--text-light); line-height: 1.6; font-size: 15px; }
 
-    .offers-section { margin-top: 60px; background: white; border-radius: 24px; padding: 40px; display: flex; align-items: center; justify-content: space-between; gap: 40px; border: 1px solid #e5e7eb; }
+    .offers-section { margin-top: 60px; background: var(--bg-card); border-radius: 24px; padding: 40px; display: flex; align-items: center; justify-content: space-between; gap: 40px; border: 1px solid var(--border-color); }
     .offer-badge { background: #dbeafe; color: var(--primary); padding: 8px 16px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-block; }
+    body.dark-theme .offer-badge { background: #1e3a8a; color: #3b82f6; }
     .offers-content h2 { margin-top: 20px; font-size: clamp(24px, 4vw, 38px); line-height: 1.3; font-weight: 800; color: var(--text-dark); }
     .offers-content p { margin-top: 15px; color: var(--text-light); line-height: 1.7; font-size: 16px; }
     
@@ -334,7 +366,7 @@
 </section>
 
 <style>
-    .about-section { padding: 80px 0; background: white; }
+    .about-section { padding: 80px 0; background: var(--bg-card); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
     .about-grid { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 60px; }
     
     .about-visual { position: relative; }
@@ -355,7 +387,7 @@
     .mission-item h4 { font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 5px; }
     .mission-item p { font-size: 15px; color: var(--text-light); }
     
-    .about-footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #f3f4f6; }
+    .about-footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); }
     .signature strong { display: block; font-size: 16px; color: var(--text-dark); }
     .signature span { color: var(--text-muted); font-size: 13px; }
 
@@ -446,8 +478,8 @@
 </section>
 
 <style>
-    .contact-section { background: #f5f7fb; padding: 80px 0; }
-    .contact-wrapper { display: flex; gap: 40px; background: white; padding: 40px; border-radius: 24px; border: 1px solid #e5e7eb; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
+    .contact-section { background: var(--bg-light); padding: 80px 0; }
+    .contact-wrapper { display: flex; gap: 40px; background: var(--bg-card); padding: 40px; border-radius: 24px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
     
     .contact-info, .contact-form-container { flex: 1; }
     .contact-info h3 { font-size: 26px; font-weight: 700; color: var(--text-dark); margin-bottom: 15px; }
@@ -461,16 +493,16 @@
     .contact-form { display: flex; flex-direction: column; gap: 15px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group label { font-weight: 600; font-size: 14px; color: var(--text-dark); }
-    .form-group input, .form-group select, .form-group textarea { padding: 12px 15px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 15px; outline: none; transition: 0.2s; background: #f9fafb; }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
+    .form-group input, .form-group select, .form-group textarea { padding: 12px 15px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 15px; outline: none; transition: 0.2s; background: var(--bg-light); color: var(--text-dark); }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); background: var(--bg-card); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
     
     .submit-btn { background: var(--primary); color: white; padding: 14px; border: none; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.3s; }
     .submit-btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
 
-    .social-links { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; }
+    .social-links { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); }
     .social-icons { display: flex; gap: 12px; margin-top: 10px; }
-    .social-icons a { text-decoration: none; width: 36px; height: 36px; background: var(--text-dark); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; font-size: 14px; }
-    .social-icons a:hover { background: var(--primary); transform: translateY(-2px); }
+    .social-icons a { text-decoration: none; width: 36px; height: 36px; background: var(--text-dark); color: var(--bg-card); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; font-size: 14px; }
+    .social-icons a:hover { background: var(--primary); color: white; transform: translateY(-2px); }
 
     @media (max-width: 992px) {
         .contact-wrapper { flex-direction: column; padding: 30px 20px; gap: 40px; }
@@ -480,6 +512,7 @@
     }
 </style>
 
+<!-- MODALS -->
 <div id="loginModal" class="modal-overlay">
     <div class="auth-card">
         <div class="close-modal" id="closeLogin">&times;</div>
@@ -568,7 +601,7 @@
 
 <style>
     .modal-overlay { display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
-    .auth-card { background: white; width: 100%; max-width: 480px; border-radius: 20px; padding: 30px; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); margin: auto; }
+    .auth-card { background: var(--bg-card); width: 100%; max-width: 480px; border-radius: 20px; padding: 30px; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); margin: auto; border: 1px solid var(--border-color); }
     
     .success-message-box { background: #f0fdf4; color: #16a34a; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 15px; text-align: center; }
     .error-message-box { background: #fff1f2; color: #e11d48; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 15px; text-align: center; }
@@ -580,17 +613,17 @@
     .input-group { margin-bottom: 15px; width: 100%; }
     .input-row { display: flex; gap: 15px; width: 100%; }
     .input-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-dark); margin-bottom: 5px; }
-    .input-group input { width: 100%; padding: 10px 14px; border-radius: 8px; border: 2px solid #f1f5f9; background: #f8fafc; font-size: 14px; outline: none; }
-    .input-group input:focus { border-color: var(--primary); background: white; }
+    .input-group input { width: 100%; padding: 10px 14px; border-radius: 8px; border: 2px solid var(--border-color); background: var(--bg-light); color: var(--text-dark); font-size: 14px; outline: none; }
+    .input-group input:focus { border-color: var(--primary); background: var(--bg-card); }
     
-    .auth-options { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 15px; }
+    .auth-options { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 15px; color: var(--text-light); }
     .forgot-link { color: var(--primary); text-decoration: none; font-weight: 600; }
     .auth-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; }
     .auth-btn:hover { background: var(--primary-hover); }
     
-    .role-selector { background: #f1f5f9; padding: 12px; border-radius: 10px; margin-bottom: 15px; text-align: center; }
-    .role-selector p { font-size: 13px; font-weight: 600; margin-bottom: 5px; }
-    .radio-group { display: flex; justify-content: center; gap: 20px; }
+    .role-selector { background: var(--bg-light); padding: 12px; border-radius: 10px; margin-bottom: 15px; text-align: center; border: 1px solid var(--border-color); }
+    .role-selector p { font-size: 13px; font-weight: 600; margin-bottom: 5px; color: var(--text-dark); }
+    .radio-group { display: flex; justify-content: center; gap: 20px; color: var(--text-dark); }
     .radio-btn { font-size: 13px; font-weight: 600; cursor: pointer; }
     
     .auth-footer { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-light); }
@@ -657,31 +690,35 @@
 </footer>
 
 <style>
-    .main-footer { background: #111827; color: #e5e7eb; padding: 60px 0 30px 0; }
+    .main-footer { background: #111827; color: #e5e7eb; padding: 60px 0 30px 0; border-top: 1px solid #1f2937; }
     .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 40px; }
     
     .footer-logo { font-size: 26px; font-weight: 800; color: white; margin-bottom: 15px; }
     .footer-logo span { color: var(--primary); }
-    .about-col p { line-height: 1.6; color: var(--text-muted); font-size: 14px; max-width: 280px; }
+    .about-col p { line-height: 1.6; color: #9ca3af; font-size: 14px; max-width: 280px; }
     
     .footer-col h4 { color: white; font-size: 16px; font-weight: 700; margin-bottom: 20px; position: relative; }
     .footer-col h4::after { content: ''; position: absolute; left: 0; bottom: -6px; width: 30px; height: 2px; background: var(--primary); }
     
     .footer-links { list-style: none; padding: 0; }
     .footer-links li { margin-bottom: 10px; }
-    .footer-links a { color: var(--text-muted); text-decoration: none; transition: 0.2s; font-size: 14px; }
+    .footer-links a { color: #9ca3af; text-decoration: none; transition: 0.2s; font-size: 14px; }
     .footer-links a:hover { color: white; padding-left: 4px; }
     
-    .small-text { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+    .small-text { font-size: 13px; color: #9ca3af; margin-bottom: 12px; }
     .newsletter-form { display: flex; gap: 8px; }
     .newsletter-form input { flex: 1; background: #1f2937; border: 1px solid #374151; padding: 10px 12px; border-radius: 6px; color: white; outline: none; font-size: 14px; }
     .newsletter-form button { background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 14px; }
     .newsletter-form button:hover { background: var(--primary-hover); }
 
+    .footer-socials { display: flex; gap: 10px; margin-top: 15px; }
+    .footer-socials a { text-decoration: none; background: #1f2937; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; transition: 0.3s; }
+    .footer-socials a:hover { background: var(--primary); }
+
     .footer-bottom { padding-top: 25px; border-top: 1px solid #1f2937; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #6b7280; flex-wrap: wrap; gap: 15px; }
     .footer-legal { display: flex; gap: 20px; }
     .footer-legal a { color: #6b7280; text-decoration: none; }
-    .footer-legal a:hover { color: var(--text-muted); }
+    .footer-legal a:hover { color: #9ca3af; }
 
     @media (max-width: 768px) {
         .footer-grid { text-align: center; }
@@ -693,13 +730,39 @@
 </style>
 
 <script>
+    // GESTION DU MODE SOMBRE (DARK MODE) Synchronisé
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+
+    function updateThemeIcon() {
+        if (document.body.classList.contains('dark-theme')) {
+            themeIcon.className = 'fa-solid fa-sun';
+        } else {
+            themeIcon.className = 'fa-solid fa-moon';
+        }
+    }
+
+    // Ajuste l'icône dès l'ouverture de la page si le mode sombre est déjà chargé
+    updateThemeIcon();
+
+    themeToggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme');
+        
+        let theme = 'light';
+        if (document.body.classList.contains('dark-theme')) {
+            theme = 'dark';
+        }
+        localStorage.setItem('theme', theme);
+        updateThemeIcon();
+    });
+
     // Gestion Menu Mobile Navbar
     const menuToggle = document.getElementById('mobile-menu');
     const navContainer = document.querySelector('.nav-container');
 
     function closeMobileMenu() {
         navContainer.classList.remove('active');
-        menuToggle.classList.remove('active'); // Retire la classe active du bouton
+        menuToggle.classList.remove('active');
         const bars = document.querySelectorAll('.bar');
         bars[0].style.transform = 'none';
         bars[1].style.opacity = '1';
@@ -707,9 +770,9 @@
     }
 
     menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation(); // Évite que le clic sur le bouton ne déclenche la fermeture immédiate
+        e.stopPropagation();
         navContainer.classList.toggle('active');
-        menuToggle.classList.toggle('active'); // Alterne l'état pour figer la croix
+        menuToggle.classList.toggle('active');
         
         const bars = document.querySelectorAll('.bar');
         bars[0].style.transform = navContainer.classList.contains('active') ? 'rotate(45deg) translate(5px, 6px)' : 'none';
@@ -717,10 +780,8 @@
         bars[2].style.transform = navContainer.classList.contains('active') ? 'rotate(-45deg) translate(5px, -6px)' : 'none';
     });
 
-    // Fermer le menu mobile en cliquant n'importe où dans le vide
     document.addEventListener('click', (e) => {
         if (navContainer.classList.contains('active')) {
-            // Si le clic n'est ni à l'intérieur du menu nav-container ni sur le bouton menuToggle
             if (!navContainer.contains(e.target) && !menuToggle.contains(e.target)) {
                 closeMobileMenu();
             }
@@ -762,7 +823,6 @@
         @endif
     };
 
-    // Gestion de la fermeture des fenêtres modales
     window.onclick = (e) => {
         if (e.target == loginModal || e.target == registerModal) closeAll();
     };

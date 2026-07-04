@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-bs-theme="auto">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,30 +10,113 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+  
+<script>
+    (function () {
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+        } else if (currentTheme === 'light') {
+            document.documentElement.setAttribute('data-bs-theme', 'light');
+        }
+    })();
+</script>
 
 <style>
+  :root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-soft: #eff6ff;
+    --text-dark: #111827;
+    --text-light: #4b5563;
+    --text-muted: #9ca3af;
+    --bg-light: #f4f7fb;
+    --bg-card: #ffffff;
+    --border-color: #e5e7eb;
+  }
+
+  /* Variables pour le Mode Sombre */
+  body.dark-theme,
+  [data-bs-theme="dark"] body {
+    --bg-light: #0f172a;
+    --bg-card: #1e293b;
+    --text-dark: #f8fafc;
+    --text-light: #cbd5e1;
+    --text-muted: #64748b;
+    --primary-soft: #1e293b;
+    --border-color: #334155;
+  }
+
+  /* Application globale de la structure de fond */
+  body {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Conteneur de la carte et du formulaire principal */
+  .card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-dark) !important;
+  }
+
   .navbar {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
-  /* Style harmonieux pour les switchs en édition */
-  .checkbox-group {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    padding: 15px;
-    border: 1px solid #e9ecef;
+
+  /* Inputs, Selects, Textareas et Labels */
+  .form-label, label {
+    color: var(--text-dark) !important;
   }
+
+  .form-control, select.form-control, textarea.form-control {
+    background-color: var(--bg-card) !important;
+    color: var(--text-dark) !important;
+    border: 1px solid var(--border-color) !important;
+  }
+
+  .form-control:focus {
+    background-color: var(--bg-card) !important;
+    color: var(--text-dark) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+  }
+
+  /* Blocs internes / Groupes grisés */
+  .checkbox-group, .bg-body-tertiary {
+    background-color: var(--primary-soft) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-dark) !important;
+  }
+
   .form-check-label {
     font-size: 14px;
     cursor: pointer;
+    color: var(--text-dark) !important;
   }
+
   .section-title {
     font-size: 16px;
     font-weight: bold;
     margin-top: 20px;
     margin-bottom: 15px;
-    color: #495057;
-    border-left: 4px solid #0d6efd;
+    color: var(--text-dark) !important;
+    border-left: 4px solid var(--primary);
     padding-left: 10px;
+  }
+
+  /* Textes d'aide */
+  .form-text, .text-muted, p.small.text-muted {
+    color: var(--text-light) !important;
+  }
+
+  /* CORRECTION ICI : On supprime l'inversion de couleurs sur la carte Leaflet
+     pour qu'elle reste toujours claire, naturelle et parfaitement lisible.
+  */
+  #map {
+    background-color: #e5e9f0 !important;
   }
 </style>
 
@@ -103,7 +186,6 @@
             <small class="form-text text-muted">Inférieur à 999 999 999.</small>
           </div>
 
-          <!-- Section Région dynamique en édition -->
           <div class="col-md-3 mb-3">
             <label for="region" class="form-label fw-bold">Région</label>
             <select required name="region" id="region" class="form-control">
@@ -116,7 +198,6 @@
             </select>
           </div>
 
-          <!-- Section Ville dynamique en édition -->
           <div class="col-md-3 mb-3">
             <label for="ville" class="form-label fw-bold">Ville</label>
             <select required name="ville" id="ville" class="form-control" disabled>
@@ -179,7 +260,7 @@
         </div>
 
         <div class="section-title">Conditions Financières & Cautions (Optionnel)</div>
-        <div class="row bg-light border rounded p-3 mb-4 mx-0">
+        <div class="row bg-body-tertiary border rounded p-3 mb-4 mx-0">
           <div class="col-md-6 mb-3">
             <label for="caution_mois" class="form-label fw-semibold">Nombre de mois de caution</label>
             <input type="number" class="form-control" id="caution_mois" name="caution_mois" min="0" value="{{ old('caution_mois', $maisons->caution_mois) }}" placeholder="Ex: 3" />
@@ -210,7 +291,7 @@
           </div>
         </div>
 
-        <div class="mb-3 border p-3 rounded bg-light">
+        <div class="mb-3 border p-3 rounded bg-body-tertiary">
           <label for="image" class="form-label"><strong>Photo principale (laisser vide pour ne pas changer)</strong></label>
           <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="previewImage(event)">
           
@@ -327,12 +408,9 @@
     const regionSelect = document.getElementById('region');
     const villeSelect = document.getElementById('ville');
 
-    // Récupération de la valeur de la ville déjà enregistrée (mise en majuscule pour correspondre au format d'origine si besoin)
-    // Nous la transformons pour matcher la casse de notre tableau (ex: LOMÉ -> Lomé)
     const villeActuelleRaw = "{{ old('ville', $maisons->ville) }}";
     const villeActuelle = villeActuelleRaw.charAt(0).toUpperCase() + villeActuelleRaw.slice(1).toLowerCase();
 
-    // Trouver automatiquement la région correspondante à la ville actuelle
     let regionInitiale = "";
     for (const [region, villes] of Object.entries(villesParRegion)) {
       if (villes.map(v => v.toLowerCase()).includes(villeActuelle.toLowerCase())) {
@@ -341,7 +419,6 @@
       }
     }
 
-    // Fonction de mise à jour des villes
     function updateVilles(regionSelectionnee, villeASelectionner = "") {
       villeSelect.innerHTML = '<option value="" disabled selected>Sélectionnez la ville</option>';
       
@@ -352,7 +429,6 @@
           const option = document.createElement('option');
           option.value = ville;
           option.textContent = ville;
-          // Pré-sélectionner si elle correspond à la ville de la maison
           if (ville.toLowerCase() === villeASelectionner.toLowerCase()) {
             option.selected = true;
           }
@@ -363,17 +439,14 @@
       }
     }
 
-    // Écouteur de changement manuel
     regionSelect.addEventListener('change', function() {
       updateVilles(this.value);
     });
 
-    // Initialisation automatique au chargement de la page
     if (regionInitiale) {
       regionSelect.value = regionInitiale;
       updateVilles(regionInitiale, villeActuelle);
     } else if (villeActuelleRaw) {
-      // Cas de secours si la ville enregistrée n'est pas dans notre liste par défaut
       villeSelect.disabled = false;
       const option = document.createElement('option');
       option.value = villeActuelleRaw;
