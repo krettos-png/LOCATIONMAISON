@@ -110,7 +110,7 @@
                         <a href="{{ route('admin.ajouter') }}" class="btn-register">Publier un bien</a>
                     @elseif(Auth::user()->role === 'dev')
                     @else
-                        <a href="{{ route('locataire.dashboard') }}" class="btn-register">Devenir propriétaire</a>
+                        <a href="{{ route('locataire.dashboard') }}" class="btn-register">Gerer Factures</a>
                     @endif
                     <a href="{{ route('logout') }}" class="btn-logout">Déconnexion</a>
                 @endauth
