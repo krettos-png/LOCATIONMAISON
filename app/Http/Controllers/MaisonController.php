@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Maison;
+use App\Models\Contrat;
 use App\Models\Photo;
 use App\Models\Categorie;
 use App\Models\Utilisateur;
@@ -243,17 +244,105 @@ public function indextableD($id)
 
 
 
-public function toggleLoue($id)
+// public function toggleLoue($id)
+// {
+//     // 1. On cherche la maison, sinon erreur 404 propre
+//     $maison = Maison::findOrFail($id);
+    
+//     // 2. On inverse l'état (si true devient false, si false devient true)
+//     $maison->est_loue = !$maison->est_loue; 
+//     $maison->save();
+
+//     // 3. On recharge la page avec le nouveau statut visuel
+//     return back();
+// }
+
+
+// public function toggleLoue(Request $request, $id)
+// {
+//     // 1. On cherche la maison, sinon erreur 404 propre
+//     $maison = Maison::findOrFail($id);
+    
+//     // Si la maison était déjà louée, on la remet juste à "disponible" (Bouton vert "Rendre Disponible")
+//     if ($maison->est_loue) {
+//         $maison->est_loue = false;
+//         // Optionnel : si tu as des colonnes pour la source ou le locataire, tu peux les vider ici
+//         // $maison->tenant_source = null;
+//         $maison->save();
+        
+//         return back()->with('success', 'La maison est de nouveau disponible.');
+//     }
+
+//     // --- LE PROPRIÉTAIRE MARQUE LA MAISON COMME LOUÉE ---
+//     $maison->est_loue = true;
+//     $source = $request->input('tenant_source', 'aucun'); // Récupère le choix du modal
+    
+//     // Si tu as ajouté une colonne 'tenant_source' dans ta base de données, tu peux la stocker :
+//     // $maison->tenant_source = $source;
+//     $maison->save();
+
+//     // 2. Gestion des redirections et des actions selon le choix du modal
+//     switch ($source) {
+//         case 'site':
+//             // Redirige vers la page de création de contrat en passant l'ID de la maison
+//             // Ajuste le nom de la route 'contrats.create' selon ton application
+//             return redirect()->route('contrats.create', ['maison_id' => $maison->id])
+//                              ->with('success', 'Maison marquée comme louée sur le site. Créez le contrat maintenant !');
+
+//         case 'hors_site':
+//             // Le script JS de ta vue s'est déjà chargé d'ouvrir l'onglet WhatsApp.
+//             // On a juste à recharger la page avec un message de succès.
+//             return back()->with('success', 'Annonce retirée. L\'invitation WhatsApp a été lancée.');
+
+//         case 'aucun':
+//         default:
+//             // Simple clôture de l'annonce, on retourne juste en arrière
+//             return back()->with('success', 'La maison a bien été marquée comme louée.');
+//     }
+// }
+
+
+
+
+
+public function toggleLoue(Request $request, $id)
 {
-    // 1. On cherche la maison, sinon erreur 404 propre
     $maison = Maison::findOrFail($id);
     
-    // 2. On inverse l'état (si true devient false, si false devient true)
-    $maison->est_loue = !$maison->est_loue; 
-    $maison->save();
+    // Si la maison était déjà louée, on la remet à disponible (Bouton "Rendre Disponible")
+    if ($maison->est_loue) {
+        $maison->est_loue = false;
+        
+        // OPTIONNEL : Si tu veux aussi résilier ou passer le contrat en "terminé" automatiquement :
+        // \App\Models\Contrat::where('maison_id', $maison->id)->where('statut', 'actif')->update(['statut' => 'termine']);
+        
+        $maison->save();
+        return back()->with('success', 'La maison est de nouveau disponible.');
+    }
 
-    // 3. On recharge la page avec le nouveau statut visuel
-    return back();
+    // --- LE PROPRIÉTAIRE VEUT LOUER LA MAISON ---
+    $source = $request->input('tenant_source', 'aucun');
+    
+    switch ($source) {
+        case 'site':
+            // ATTENTION : On ne passe PAS encore est_loue à true ici !
+            // On redirige juste vers le formulaire. C'est la création du contrat qui validera la location.
+            return redirect()->route('contrats.create', ['maison_id' => $maison->id])
+                             ->with('info', 'Veuillez remplir les informations pour générer le contrat.');
+
+        case 'hors_site':
+            // Loué hors site : pas de contrat sur la plateforme, donc on la marque louée directement
+            $maison->est_loue = true;
+            $maison->save();
+            return back()->with('success', 'Annonce retirée. L\'invitation WhatsApp a été lancée.');
+
+        case 'aucun':
+        default:
+            // Clôture simple : on la marque louée directement
+            $maison->est_loue = true;
+            $maison->save();
+            return back()->with('success', 'La maison a bien été marquée comme louée.');
+    }
 }
 
 

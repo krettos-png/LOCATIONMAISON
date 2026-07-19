@@ -68,4 +68,18 @@ class Maison extends Model
     {
         return $this->belongsTo(Categorie::class, 'categorie_id');
     }
+
+    public function proprietaire()
+{
+    // Si ta colonne dans la table maisons s'appelle 'user_id'
+    return $this->belongsTo(User::class, 'utilisateur_id'); 
+    
+    // Si ta colonne s'appelle 'utilisateur_id', remplace par :
+    // return $this->belongsTo(User::class, 'utilisateur_id');
+}
+
+    public function contrats()
+    {
+        return $this->hasMany(Contrat::class, 'maison_id');
+    }
 }

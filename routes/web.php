@@ -6,6 +6,8 @@ use App\http\Controllers\AdminController;
 use App\http\Controllers\CategorieController;
 use App\http\Controllers\VilleController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\ContratController;
+use App\Http\Controllers\LocataireController;
 
 //Route::get('/', function () {
    // return view('welcome');
@@ -153,3 +155,33 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     // Route pour rejeter (DELETE car on supprime l'annonce non conforme)
     Route::delete('/maisons/{id}/rejeter', [AdminController::class, 'rejeter'])->name('admin.maisons.rejeter');
 });
+
+Route::get('/contrats/creer/{maison_id}', [ContratController::class, 'create'])->name('contrats.create');
+
+Route::get('/api/users/recherche-email', [ContratController::class, 'rechercherParEmail'])->name('users.rechercheEmail');
+
+Route::post('/contrats/stocker', [ContratController::class, 'store'])->name('contrats.store');
+
+Route::get('/contrats/{id}', [ContratController::class, 'show'])->name('contrats.show');
+
+
+
+Route::middleware(['auth'])->group(function () {
+    // Espace locataire
+    Route::get('/mon-espace', [LocataireController::class, 'index'])->name('locataire.dashboard');
+    // Action de paiement
+    Route::post('/paiements/{id}/payer', [LocataireController::class, 'payerFacture'])->name('locataire.payer');
+});
+
+Route::get('/gestion-contrats', [ContratController::class, 'index'])->name('contrats.index');
+
+
+Route::post('/locataire/contrat/{id}/payer-avance', [LocataireController::class, 'storeAvance'])
+    ->name('locataire.payerAvance');
+
+
+
+
+// Route pour payer une facture ou un frais individuel spécifique (loyer, caution, commission...)
+Route::post('/locataire/paiement/{id}/regler', [LocataireController::class, 'payerFactureSeule'])
+    ->name('locataire.payerSeul');

@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ajouter une Maison</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link rel="stylesheet" href="{{ asset('css/ajouter.css') }}">
+  <!-- CSS EXTERNE RETIRÉ POUR ÉVITER LES CONFLITS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-  <script>
+  <!-- INITIALISATION IMMÉDIATE DU THÈME -->
+<script>
     (function () {
         const currentTheme = localStorage.getItem('theme');
         if (currentTheme === 'dark') {
@@ -27,102 +28,191 @@
     --primary-soft: #eff6ff;
     --text-dark: #111827;
     --text-light: #4b5563;
-    --text-muted: #9ca3af;
+    --text-muted: #6b7280;
     --bg-light: #f4f7fb;
     --bg-card: #ffffff;
-    --border-color: #e5e7eb;
+    --border-color: #d1d5db;
+    --placeholder-color: #9ca3af;
   }
 
-  /* Variables pour le Mode Sombre - On force le sombre partout */
-  body.dark-theme, body {
+  /* Variables pour le Mode Sombre */
+  body.dark-theme {
     --bg-light: #0f172a;
     --bg-card: #1e293b;
     --text-dark: #f8fafc;
     --text-light: #cbd5e1;
-    --text-muted: #64748b;
-    --primary-soft: #1e293b;
-    --border-color: #334155;
+    --text-muted: #94a3b8;
+    --primary-soft: #334155;
+    --border-color: #475569;
+    --placeholder-color: #64748b;
   }
 
-  /* --- APPLICATION DES VARIABLES --- */
-  body {
+  /* --- APPLICATION DE STYLE GLOBAUX --- */
+  body, html {
     background-color: var(--bg-light) !important;
     color: var(--text-dark) !important;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  h1 {
+  /* Ajustements espacements */
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  /* FORCE LA VISIBILITÉ DE TOUS LES LABELS ET TITRES */
+  h1, h2, h3, 
+  label, 
+  .form-group label, 
+  .form-check-label, 
+  .section-title, 
+  .card-header,
+  .control-label {
     color: var(--text-dark) !important;
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: inline-block;
+  }
+
+  /* Petites descriptions ou textes d'aide */
+  small, .form-text, .text-muted {
+    color: var(--text-muted) !important;
+    display: block;
+    margin-top: 4px;
   }
 
   .navbar {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
-  /* Inputs, Selects et Textareas */
-  .form-control, input[type="text"], input[type="number"], select, textarea {
+  /* Éléments de formulaires harmonisés */
+  .form-control, 
+  input[type="text"], 
+  input[type="number"], 
+  input[type="file"], 
+  select, 
+  textarea {
     width: 100%;
-    padding: 10px;
+    padding: 10px 12px;
     border: 1px solid var(--border-color) !important;
     border-radius: 6px;
     font-size: 14px;
-    margin-bottom: 10px;
     background-color: var(--bg-card) !important;
     color: var(--text-dark) !important;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  /* Rendre les Placeholders parfaitement lisibles */
+  ::placeholder { color: var(--placeholder-color) !important; opacity: 1; }
+  :-ms-input-placeholder { color: var(--placeholder-color) !important; }
+  ::-ms-input-placeholder { color: var(--placeholder-color) !important; }
+
+  /* GESTION CRITIQUE DU COMPORTEMENT DÉSACTIVÉ (ex: VILLE) */
+  .form-control:disabled, select:disabled, input:disabled {
+    background-color: var(--bg-light) !important;
+    color: var(--text-muted) !important;
+    border-color: var(--border-color) !important;
+    opacity: 0.65 !important;
+    cursor: not-allowed;
   }
 
   .form-control:focus, input:focus, select:focus, textarea:focus {
     border-color: var(--primary) !important;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
-    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
   }
 
-  /* Block des switchs / Checkbox group */
+  /* Bloc Caractéristiques (Switchs) */
   .checkbox-group {
     background-color: var(--primary-soft) !important;
     border-radius: 8px;
-    padding: 15px;
+    padding: 20px;
     border: 1px solid var(--border-color) !important;
   }
 
-  .form-check-label {
-    font-size: 14px;
-    cursor: pointer;
-    color: var(--text-dark) !important;
-  }
-
   .section-title {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
-    margin-top: 20px;
+    margin-top: 30px;
     margin-bottom: 15px;
-    color: var(--text-dark) !important;
     border-left: 4px solid var(--primary);
     padding-left: 10px;
   }
 
-  /* Conteneur de la Carte Leaflet - Tout en sombre */
+  /* Cartes (Zone Leaflet) */
   .card {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border-color) !important;
-    color: var(--text-dark) !important;
+    border-radius: 8px;
+    overflow: hidden;
   }
   .card-header {
-    background-color: var(--bg-light) !important;
+    background-color: var(--primary-soft) !important;
     border-bottom: 1px solid var(--border-color) !important;
-    color: var(--text-dark) !important;
-    font-weight: 600;
+    padding: 12px 20px;
+    margin-bottom: 0;
   }
 
-  /* LA CARTE RESTE PROPRE ET CLAIRE SANS IMPLIQUER DE BLANC SUR LE RESTE DU FORMULAIRE */
-  #map {
-    background-color: #cbd5e1 !important; /* Couleur neutre de chargement des tuiles */
-    filter: none !important;
-    -webkit-filter: none !important;
+  /* Boutons */
+  .btn-ajouter {
+    background-color: var(--primary);
+    color: white !important;
+    border: none;
+    padding: 12px 25px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+    font-size: 16px;
+    margin-top: 15px;
   }
-  
-  /* On s'assure que les images de la carte ne subissent aucun filtre sombre */
-  .leaflet-tile-container img {
+  .btn-ajouter:hover {
+    background-color: var(--primary-hover);
+  }
+
+  .btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary) !important;
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin-top: 15px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .btn-outline:hover {
+    background-color: var(--primary);
+    color: white !important;
+  }
+
+  .back-link {
+    color: var(--primary) !important;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+  }
+  .back-link:hover {
+    color: var(--primary-hover) !important;
+    text-decoration: underline;
+  }
+
+  /* Aperçu d'image */
+  .preview {
+    max-width: 200px;
+    max-height: 200px;
+    margin-top: 10px;
+    display: none;
+    border-radius: 6px;
+    object-fit: cover;
+  }
+
+  /* Zone de la carte */
+  #map {
+    height: 350px;
+    width: 100%;
+    margin-top: 15px;
+    border-radius: 6px;
+    background-color: #e5e9f0 !important;
     filter: none !important;
     -webkit-filter: none !important;
   }
@@ -146,7 +236,7 @@
         </div>
     </nav>
     
-  <div class="container" style="margin-top: 80px; margin-bottom: 50px;">
+  <div class="container" style="margin-top: 100px; margin-bottom: 50px;">
 
   @if(session('error'))
     <div class="alert alert-danger">
@@ -160,7 +250,7 @@
     </div>
   @endif
 
-    <h1>Ajouter une Maison</h1>
+    <h1 class="mb-4">Ajouter une Maison</h1>
     <form action="{{ route('enre') }}" method="POST" enctype="multipart/form-data">
       @csrf
 
@@ -328,7 +418,7 @@
       
     </form>
 
-    <a href="/admin/table" class="back-link">← Retour à l'accueil admin</a>
+    <a href="{{ route('ttt') }}" class="back-link">← Retour à l'accueil admin</a>
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -364,6 +454,19 @@
         villeSelect.disabled = true;
       }
     });
+
+    // Fonction d'aperçu de l'image (si besoin)
+    function previewImage(event) {
+      const reader = new FileReader();
+      reader.onload = function(){
+        const output = document.getElementById('preview');
+        output.src = reader.result;
+        output.style.display = 'block';
+      };
+      if(event.target.files[0]) {
+        reader.readAsDataURL(event.target.files[0]);
+      }
+    }
   </script>
 </body>
 </html>
