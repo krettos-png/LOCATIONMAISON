@@ -54,7 +54,6 @@
         header h1 { font-size: 1.8rem; font-weight: 600; margin-bottom: 5px; }
         header p { color: #bdc3c7; font-size: 0.95rem; margin-bottom: 15px; }
 
-        /* Style personnalisé pour le bouton de gestion des contrats */
         .btn-contracts-nav {
             background-color: #27ae60;
             color: white;
@@ -208,7 +207,6 @@
             z-index: 1000;
         }
 
-        /* Styles spécifiques pour le modal personnalisé */
         .modal-content {
             background-color: var(--bg-card);
             color: var(--text-dark);
@@ -228,12 +226,25 @@
             border-color: var(--primary);
             background-color: var(--primary-soft);
         }
+        .border-dashed { border-style: dashed !important; }
 
         @media (min-width: 576px) { header h1 { font-size: 2rem; } .houses { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); } }
         @media (min-width: 768px) { .stats-container { margin: -20px auto 30px auto; } .stat-details h3 { font-size: 1.6rem; } .houses { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); } .image-container { height: 200px; } }
     </style>
 </head>
 <body>
+
+    @if(session('success'))
+        <div class="alert alert-success position-fixed top-0 start-50 translate-middle-x mt-5 shadow-sm border-0 z-3" role="alert" style="z-index: 9999;">
+            {{ session('success') }}
+        </div>
+    @endif
+    
+    @if(session('error'))
+        <div class="alert alert-danger position-fixed top-0 start-50 translate-middle-x mt-5 shadow-sm border-0 z-3" role="alert" style="z-index: 9999;">
+            {{ session('error') }}
+        </div>
+    @endif
 
 <script>
     (function () {
@@ -252,7 +263,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
-                    <!-- AJOUT : Lien direct aussi dans la Navbar pour le confort mobile -->
                     <li class="nav-item me-2">
                         <a class="nav-link text-success fw-bold" href="{{ route('contrats.index') }}">
                             <i class="fa-solid fa-file-signature me-1"></i> Contrats & Paiements
@@ -270,9 +280,8 @@
 
     <header>
         <h1>Mon Tableau de Bord</h1>
-        <p>Gerez vos biens et suivez la modération de vos annonces.</p>
+        <p>Gérez vos biens et suivez la modération de vos annonces.</p>
         
-        <!-- AJOUT DU BOUTON CENTRAL ICI -->
         <div class="mt-3">
             <a href="{{ route('contrats.index') }}" class="btn-contracts-nav">
                 <i class="fa-solid fa-file-signature"></i> Suivi des Contrats & Paiements
@@ -281,7 +290,6 @@
     </header>
 
     <div class="stats-container">
-        <!-- Statistiques existantes -->
         <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-4">
             <div class="col">
                 <div class="stat-card">
@@ -376,13 +384,10 @@
 
                     @if(!$isPending)
                         @if($maison->est_loue)
-                            <form action="{{ route('maisons.toggleLoue', $maison->id) }}" method="POST" class="w-100 m-0">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-sm btn-outline-success w-100">
-                                    <i class="fa-solid fa-lock-open me-1"></i> Rendre Disponible
-                                </button>
-                            </form>
+                            <!-- MODIFICATION ICI : DÉCLENCHE LE MODAL DE RÉSILIATION OPTION B -->
+                            <button type="button" class="btn btn-sm btn-outline-danger w-100" data-bs-toggle="modal" data-bs-target="#resiliationModal{{ $maison->id }}">
+                                <i class="fa-solid fa-lock-open me-1"></i> Rendre Disponible
+                            </button>
                         @else
                             <button type="button" 
                                     class="btn btn-sm btn-outline-danger w-100 open-rented-modal" 
@@ -398,17 +403,92 @@
                     @endif
                 </div>
             </div>
+
+            <!-- --- MODAL DE CONFIRMATION DE RÉSILIATION (OPTION B) MULTI-LOGEMENT --- -->
+            @if($maison->est_loue)
+            {{-- Par celui-ci : --}}
+@php
+    $contratActif = method_exists($maison, 'contrats') ? $maison->contrats->where('statut', 'actif')->first() : null;
+@endphp
+            <div class="modal fade" id="resiliationModal{{ $maison->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="resiliationLabel{{ $maison->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white border-0">
+                            <h5 class="modal-title fw-bold" id="resiliationLabel{{ $maison->id }}">
+                                <i class="fa-solid fa-triangle-exclamation me-2"></i>Résiliation & Clôture de Bail
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        
+                        <form action="{{ route('maisons.toggleLoue', $maison->id) }}" method="POST">
+                            @csrf
+                            @method('PATCH')
+                            <div class="modal-body p-4 text-start">
+                                <p class="text-dark fw-medium mb-3">Vous demandez à libérer le logement : <strong>{{ $maison->titre }}</strong>.</p>
+                                
+                                @if($contratActif)
+                                    <div class="bg-light p-3 rounded mb-3 border-start border-danger border-3">
+                                        <small class="text-muted d-block text-uppercase fw-bold tracking-wide" style="font-size: 0.65rem;">Locataire actuel</small>
+                                        <span class="fw-bold text-dark">
+                                            {{ $contratActif->locataire->prenom ?? '' }} {{ $contratActif->locataire->nom ?? $contratActif->locataire->name ?? 'Inconnu' }}
+                                        </span>
+                                        <small class="d-block text-muted">Bail actif depuis le : {{ \Carbon\Carbon::parse($contratActif->date_debut)->format('d/m/Y') }}</small>
+                                    </div>
+                                    
+                                    @php
+                                        $impayes = $contratActif->paiements->where('statut', 'En attente')->count();
+                                    @endphp
+                                    
+                                    @if($impayes > 0)
+                                        <div class="alert alert-warning py-2 small border-0 mb-3 text-dark">
+                                            <i class="fa-solid fa-wallet me-1 text-warning"></i> 
+                                            <strong>Attention :</strong> Ce locataire a encore <strong>{{ $impayes }} versement(s) en attente</strong>.
+                                        </div>
+                                    @endif
+                                @endif
+
+                                <div class="mb-3">
+                                    <label for="motif_depart_{{ $maison->id }}" class="form-label small fw-bold text-muted">Motif de libération du logement <span class="text-danger">*</span></label>
+                                    <select class="form-select form-select-sm text-dark" id="motif_depart_{{ $maison->id }}" name="motif_depart" required>
+                                        <option value="" disabled selected>Choisir une raison...</option>
+                                        <option value="Fin de bail standard">Fin de bail réglementaire / Standard</option>
+                                        <option value="Départ anticipé du locataire">Départ anticipé à la demande du locataire</option>
+                                        <option value="Non-paiement / Expulsion">Rupture pour impayés / Expulsion</option>
+                                        <option value="Erreur de manipulation">Correction d'une erreur de saisie</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input check-securite-resiliation" type="checkbox" id="confirmCheck{{ $maison->id }}" data-target="btnSubmitResil{{ $maison->id }}">
+                                    <label class="form-check-label small text-muted ms-1" for="confirmCheck{{ $maison->id }}">
+                                        Je confirme que ce logement est vide et que le bail associé est officiellement clos.
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="modal-footer bg-light border-0">
+                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annuler</button>
+                                <button type="submit" id="btnSubmitResil{{ $maison->id }}" class="btn btn-danger btn-sm px-3 fw-bold" disabled>
+                                    <i class="fa-solid fa-house-circle-xmark me-1"></i> Confirmer la disponibilité
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             @endforeach
         </section>
     </main>
 
-    <!-- --- MODAL DE SÉLECTION DE SOURCE DU LOCATAIRE --- -->
+    <!-- --- MODAL DE SÉLECTION DE SOURCE DU LOCATAIRE (POUR LOUER) --- -->
     <div class="modal fade" id="rentedSourceModal" tabindex="-1" aria-labelledby="rentedSourceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">
                     <h5 class="modal-title fw-bold" id="rentedSourceModalLabel">Finaliser la mise en location</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-close="modal" aria-label="Close" style="filter: invert(1);"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
                 </div>
                 <form id="rentedForm" action="" method="POST">
                     @csrf
@@ -493,6 +573,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            // --- LOGIQUE EXISTANTE MODAL MARQUER COMME LOUÉ ---
             const rentedModal = new bootstrap.Modal(document.getElementById('rentedSourceModal'));
             const rentedForm = document.getElementById('rentedForm');
             const modalTitleElement = document.getElementById('modal-house-title');
@@ -539,10 +620,20 @@
                     if(phone) {
                         const message = encodeURIComponent("Bonjour ! J'ai marqué le logement que vous louez comme occupé sur MaisonLoc. Pour suivre vos quittances, vos paiements et votre contrat en ligne, créez votre compte en cliquant ici : " + window.location.origin + "/register");
                         const whatsappUrl = `https://wa.me/${phone}?text=${message}`;
-                        
                         window.open(whatsappUrl, '_blank');
                     }
                 }
+            });
+
+            // --- NOUVELLE LOGIQUE : SÉCURISATION CASE À COCHER DU MODAL DE RÉSILIATION ---
+            document.querySelectorAll('.check-securite-resiliation').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const targetButtonId = this.getAttribute('data-target');
+                    const submitButton = document.getElementById(targetButtonId);
+                    if (submitButton) {
+                        submitButton.disabled = !this.checked;
+                    }
+                });
             });
         });
     </script>

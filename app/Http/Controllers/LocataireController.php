@@ -27,13 +27,22 @@ public function index()
     // 1. Récupérer l'utilisateur connecté
     $locataire = Auth::user();
 
-    // 2. Chercher le contrat relié à son ID d'utilisateur
-    $contrat = Contrat::with(['maison', 'paiements'])
-        ->where('utilisateur_id', $locataire->id) // 💡 Utilise bien 'utilisateur_id' ici
-        ->first();
+    // 2. Récupérer TOUS les contrats reliés à cet utilisateur avec leurs relations
+    // (Pense à remplacer "Contrat" par le nom exact de ton modèle s'il est différent, ex: App\Models\Contrat)
+    $contrats = \App\Models\Contrat::with(['maison', 'paiements'])
+        ->where('utilisateur_id', $locataire->id)
+        ->get();
 
-    // 3. Envoyer le contrat à la vue
-    return view('locataire.dashboard', compact('contrat'));
+    // 3. Envoyer la collection de contrats à la vue
+    return view('locataire.dashboard', compact('contrats'));
+}
+
+public function monEspace()
+{
+    // Récupère tous les contrats du locataire avec les relations chargées
+    $contrats = Auth::user()->contrats()->with(['maison', 'paiements'])->get();
+
+    return view('locataire.espace', compact('contrats'));
 }
 
     // Simuler ou initialiser le paiement d'une échéance
