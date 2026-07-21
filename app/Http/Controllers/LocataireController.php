@@ -68,9 +68,51 @@ public function monEspace()
         return back()->with('success', 'Votre loyer pour ' . $paiement->mois_concerne . ' a bien été payé !');
     }
 
-    public function storeAvance(Request $request, $id)
+//     public function storeAvance(Request $request, $id)
+// {
+//     // Valider le nombre de mois reçus du formulaire
+//     $request->validate([
+//         'nombre_mois' => 'required|integer|min:1|max:12',
+//     ]);
+
+//     $contrat = Contrat::with('maison', 'paiements')->findOrFail($id);
+//     $loyerMensuel = $contrat->maison->prix;
+//     $nombreMois = (int) $request->nombre_mois;
+
+//     // Déterminer le point de départ des mois
+//     $dernierPaiement = $contrat->paiements()->orderBy('id', 'desc')->first();
+
+//     if ($dernierPaiement) {
+//         // Si un paiement existe déjà, on se base sur la date de création de celui-ci + 1 mois
+//         $dateDepart = Carbon::parse($dernierPaiement->created_at)->addMonth();
+//     } else {
+//         $dateDepart = Carbon::now();
+//     }
+
+//     // Créer un enregistrement de paiement pour chaque mois sélectionné
+//     for ($i = 0; $i < $nombreMois; $i++) {
+//         $moisFutur = $dateDepart->copy()->addMonths($i);
+//         $nomMoisFormate = $moisFutur->locale('fr')->isoFormat('MMMM YYYY');
+
+//         Paiement::create([
+//             'contrat_id'         => $contrat->id,
+//             'montant'            => $loyerMensuel,
+//             'type' => '1', // ou 'Loyer', 'Caution', selon le contexte
+//             'mois_concerne'      => ucfirst($nomMoisFormate),
+//             'statut'             => 'Payé', // Devient directement payé pour ta simulation locale
+//             'reference_paiement' => 'PAY-' . strtoupper(Str::random(8)),
+//             'date_paiement'      => Carbon::now(),
+//         ]);
+//     }
+
+//     return redirect()->back()->with('success', "Votre paiement de {$nombreMois} mois a été traité avec succès !");
+// }
+
+
+
+
+public function storeAvance(Request $request, $id)
 {
-    // Valider le nombre de mois reçus du formulaire
     $request->validate([
         'nombre_mois' => 'required|integer|min:1|max:12',
     ]);
@@ -79,17 +121,27 @@ public function monEspace()
     $loyerMensuel = $contrat->maison->prix;
     $nombreMois = (int) $request->nombre_mois;
 
-    // Déterminer le point de départ des mois
+    // Récupérer le tout dernier paiement enregistré
     $dernierPaiement = $contrat->paiements()->orderBy('id', 'desc')->first();
 
-    if ($dernierPaiement) {
-        // Si un paiement existe déjà, on se base sur la date de création de celui-ci + 1 mois
-        $dateDepart = Carbon::parse($dernierPaiement->created_at)->addMonth();
+    if ($dernierPaiement && !empty($dernierPaiement->mois_concerne)) {
+        // Option A : Si tu as une colonne 'date_mois_concerne' (Recommandé)
+        // $dateDepart = Carbon::parse($dernierPaiement->date_mois_concerne)->addMonth();
+
+        // Option B : Si tu dois parser la chaîne "Août 2026"
+        try {
+            // On convertit la chaîne française en objet Carbon puis on ajoute 1 mois
+            $dateDepart = Carbon::createFromLocaleFormat('F Y', 'fr', $dernierPaiement->mois_concerne)->addMonth();
+        } catch (\Exception $e) {
+            // Fallback au cas où le parsing de la chaîne échoue
+            $dateDepart = Carbon::now();
+        }
     } else {
+        // Aucun paiement préalable : on démarre au mois en cours
         $dateDepart = Carbon::now();
     }
 
-    // Créer un enregistrement de paiement pour chaque mois sélectionné
+    // Créer un enregistrement pour chaque mois d'avance
     for ($i = 0; $i < $nombreMois; $i++) {
         $moisFutur = $dateDepart->copy()->addMonths($i);
         $nomMoisFormate = $moisFutur->locale('fr')->isoFormat('MMMM YYYY');
@@ -97,15 +149,15 @@ public function monEspace()
         Paiement::create([
             'contrat_id'         => $contrat->id,
             'montant'            => $loyerMensuel,
-            'type' => '1', // ou 'Loyer', 'Caution', selon le contexte
+            'type'               => '1', 
             'mois_concerne'      => ucfirst($nomMoisFormate),
-            'statut'             => 'Payé', // Devient directement payé pour ta simulation locale
+            'statut'             => 'Payé',
             'reference_paiement' => 'PAY-' . strtoupper(Str::random(8)),
             'date_paiement'      => Carbon::now(),
         ]);
     }
 
-    return redirect()->back()->with('success', "Votre paiement de {$nombreMois} mois a été traité avec succès !");
+    return redirect()->back()->with('success', "Votre avance de {$nombreMois} mois a été enregistrée avec succès !");
 }
 
 

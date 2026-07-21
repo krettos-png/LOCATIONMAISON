@@ -28,6 +28,11 @@
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
         }
 
+        /* Animation pour la disparition fluide des alertes */
+        .alert-dismissible-custom {
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out, margin 0.5s ease-out;
+        }
+
         /* STYLES RESPONSIFS APPAREILS MOBILES */
         @media (max-width: 767.98px) {
             .mobile-card-row {
@@ -81,11 +86,21 @@
         </a>
     </div>
 
+    {{-- ALERTES ET NOTIFICATIONS AUTO-DISPARAISSANTES --}}
     @if(session('success'))
-        <div class="alert alert-success shadow-sm border-0 mb-4">{{ session('success') }}</div>
+        <div class="alert alert-success shadow-sm border-0 mb-4 alert-dismissible-custom">
+            <i class="fa-solid fa-circle-check me-2"></i>{{ session('success') }}
+        </div>
     @endif
     @if(session('info'))
-        <div class="alert alert-info shadow-sm border-0 mb-4">{{ session('info') }}</div>
+        <div class="alert alert-info shadow-sm border-0 mb-4 alert-dismissible-custom">
+            <i class="fa-solid fa-circle-info me-2"></i>{{ session('info') }}
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger shadow-sm border-0 mb-4 alert-dismissible-custom">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>{{ session('error') }}
+        </div>
     @endif
 
     {{-- 1. VÉRIFICATION DU NOMBRE DE CONTRATS DISPONIBLES --}}
@@ -399,5 +414,32 @@
 
 <!-- SCRIPTS BOOTSTRAP OBLIGATOIRES POUR L'OUVERTURE DU MODAL -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- SCRIPT JS POUR LA DISPARITION AUTOMATIQUE DES MESSAGES D'ALERTE -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Sélectionne toutes les alertes personnalisées
+        const alerts = document.querySelectorAll('.alert-dismissible-custom');
+
+        if (alerts.length > 0) {
+            // Attend 4 secondes (4000ms) avant de commencer à masquer
+            setTimeout(() => {
+                alerts.forEach(alert => {
+                    // Rend l'alerte transparente et la rétrécit
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-10px)';
+                    alert.style.marginBottom = '0';
+                    alert.style.paddingTop = '0';
+                    alert.style.paddingBottom = '0';
+
+                    // Supprime définitivement l'élément du DOM après l'animation (500ms)
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 500);
+                });
+            }, 4000); // <-- Modifie ce chiffre (en millisecondes) pour ajuster le temps d'affichage
+        }
+    });
+</script>
 </body>
 </html>

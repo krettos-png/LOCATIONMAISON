@@ -131,7 +131,7 @@
     
     <!-- BARRE D'ACTIONS (Optimisée Flex-Wrap pour Mobile) -->
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3 d-print-none">
-        <a href="javascript:history.back()" class="btn btn-secondary shadow-sm w-100 w-sm-auto">
+        <a href="{{ route('ttt') }}" class="btn btn-secondary shadow-sm w-100 w-sm-auto">
             <i class="fa-solid fa-arrow-left me-1"></i> Retour
         </a>
         
