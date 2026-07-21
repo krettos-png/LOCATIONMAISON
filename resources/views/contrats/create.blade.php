@@ -90,7 +90,7 @@
                             </div>
 
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="{{ route('home') }}" class="btn btn-light">Plus tard</a>
+                                <a href="javascript:history.back()" class="btn btn-light">Plus tard</a>
                                 <button type="submit" class="btn btn-primary px-4" id="btn-submit-contrat" disabled>
                                     <i class="fa-solid fa-floppy-disk me-1"></i> Générer le contrat
                                 </button>

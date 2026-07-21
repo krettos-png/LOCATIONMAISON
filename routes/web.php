@@ -185,3 +185,10 @@ Route::post('/locataire/contrat/{id}/payer-avance', [LocataireController::class,
 // Route pour payer une facture ou un frais individuel spécifique (loyer, caution, commission...)
 Route::post('/locataire/paiement/{id}/regler', [LocataireController::class, 'payerFactureSeule'])
     ->name('locataire.payerSeul');
+
+
+    Route::get('/paiement/{id}/imprimer-facture', [LocataireController::class, 'imprimerFactureMois'])->name('paiement.imprimerFacture');
+
+
+
+    Route::post('/locataire/contrat/{contrat_id}/payer-toutes-avances', [LocataireController::class, 'payerToutesAvances'])->name('locataire.payerToutesAvances');

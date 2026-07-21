@@ -346,8 +346,8 @@ public function toggleLoue(Request $request, $id)
                              ->with('info', 'Veuillez renseigner les éléments pour générer le contrat officiel.');
 
         case 'hors_site':
-            $maison->update(['est_loue' => 1]);
-            return back()->with('success', 'Annonce retirée de la plateforme publique.');
+            $maison->update(['est_loue' => 0]);
+            return back()->with('success', 'Invitation WhatsApp envoyée.');
 
         case 'aucun':
         default:

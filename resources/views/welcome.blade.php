@@ -551,6 +551,28 @@
     </div>
 </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div id="registerModal" class="modal-overlay">
     <div class="auth-card">
         <div class="close-modal" id="closeRegister">&times;</div>

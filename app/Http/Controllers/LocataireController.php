@@ -59,6 +59,7 @@ public function monEspace()
         // Pour l'instant, on simule une réussite du paiement :
         $paiement->update([
             'statut' => 'Payé',
+            'type' => '1', // ou 'Loyer', 'Caution', selon le contexte
             'moyen_paiement' => 'Mobile Money', // ou 'Stripe'
             'transaction_id' => 'TXN-' . strtoupper(uniqid()),
             'date_paiement' => now()
@@ -96,6 +97,7 @@ public function monEspace()
         Paiement::create([
             'contrat_id'         => $contrat->id,
             'montant'            => $loyerMensuel,
+            'type' => '1', // ou 'Loyer', 'Caution', selon le contexte
             'mois_concerne'      => ucfirst($nomMoisFormate),
             'statut'             => 'Payé', // Devient directement payé pour ta simulation locale
             'reference_paiement' => 'PAY-' . strtoupper(Str::random(8)),
@@ -120,6 +122,7 @@ public function payerFactureSeule($id)
     // 3. Mettre à jour les informations de paiement
     $paiement->update([
         'statut' => 'Payé',
+        //'type' => '1', // ou 'Loyer', 'Caution', selon le contexte
         'date_paiement' => Carbon::now(),
         // Si ta table n'a pas encore de référence pour cette ligne existante, on en génère une
         'reference_paiement' => $paiement->reference_paiement ?? 'PAY-' . strtoupper(Str::random(8)),
@@ -128,6 +131,52 @@ public function payerFactureSeule($id)
     return redirect()->back()->with('success', "Le règlement pour \"{$paiement->mois_concerne}\" a été validé !");
 }
 
+
+/**
+ * Règle uniquement tous les paiements de type 0 (avances/frais initiaux) non payés du contrat.
+ */
+public function payerToutesAvances($contrat_id)
+{
+    $contrat = Contrat::with('paiements')->findOrFail($contrat_id);
+
+    // On sélectionne exclusivement les paiements de TYPE 0 qui ne sont PAS payés
+    $avancesNonPayees = $contrat->paiements
+        ->where('type', 0)
+        ->where('statut', '!=', 'Payé');
+
+    if ($avancesNonPayees->isEmpty()) {
+        return redirect()->back()->with('info', 'Toutes vos avances sont déjà réglées.');
+    }
+
+    // Mise à jour groupée
+    foreach ($avancesNonPayees as $paiement) {
+        $paiement->update([
+            'statut' => 'Payé',
+            'date_paiement' => Carbon::now(),
+            'reference_paiement' => $paiement->reference_paiement ?? 'PAY-' . strtoupper(Str::random(8)),
+        ]);
+    }
+
+    return redirect()->back()->with('success', 'Toutes vos avances (frais initiaux) ont été réglées avec succès !');
+}
+
+
+
+/**
+ * Affiche et imprime la facture pour un mois spécifique (Type 1)
+ */
+public function imprimerFactureMois($id)
+{
+    // On charge le paiement avec ses relations
+    $paiement = Paiement::with(['contrat.locataire', 'contrat.maison.utilisateur'])->findOrFail($id);
+
+    // Sécurité : Vérifier qu'il s'agit bien d'un loyer mensuel et qu'il est payé
+    if ($paiement->statut !== 'Payé') {
+        return redirect()->back()->with('error', 'Impossible d\'imprimer une facture pour un paiement non réglé.');
+    }
+
+    return view('factures.facture-mois', compact('paiement'));
+}
 
 
 }

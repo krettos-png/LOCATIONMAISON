@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Maison;
 use App\Models\Contrat;
 use App\Models\Paiement;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 
@@ -51,27 +52,72 @@ class ContratController extends Controller
     }
 
 
-    public function rechercherParEmail(Request $request)
+//     public function rechercherParEmail(Request $request)
+// {
+//     $request->validate([
+//         'email' => 'required|email'
+//     ]);
+
+
+//     //nettoyer les espaces invisibles autour de l'email
+//     $email = trim($request->email);
+
+//     // Recherche dans la table 'utilisateurs' grâce au modèle
+//     $user = \App\Models\Utilisateur::where('email', $request->email)->first();
+
+//     if ($user) {
+//         // On combine le nom et le prénom récupérés de ta table
+//         $nomComplet = trim($user->prenom . ' ' . $user->name);
+
+//         return response()->json([
+//             'success' => true,
+//             'user_id' => $user->id,
+//             'name' => $nomComplet // Envoie "Gerard TAGBA" ou "Matthieu TAGBA" au JS
+//         ]);
+//     }
+
+//     return response()->json([
+//         'success' => false,
+//         'message' => 'Aucun utilisateur trouvé avec cette adresse e-mail.'
+//     ]);
+// }
+
+
+
+
+
+
+
+
+
+public function rechercherParEmail(Request $request)
 {
     $request->validate([
         'email' => 'required|email'
     ]);
 
-
-    //nettoyer les espaces invisibles autour de l'email
+    // Nettoyer les espaces invisibles autour de l'email
     $email = trim($request->email);
 
-    // Recherche dans la table 'utilisateurs' grâce au modèle
-    $user = \App\Models\Utilisateur::where('email', $request->email)->first();
+    // 1. VÉRIFICATION : L'email recherché est-il celui du propriétaire connecté ?
+    if (Auth::check() && strtolower(Auth::user()->email) === strtolower($email)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Vous avez saisi votre propre adresse e-mail. Vous ne pouvez pas vous sélectionner vous-même.'
+        ], 422); // Code HTTP 422 (Unprocessable Entity) ou 400
+    }
+
+    // 2. Recherche dans la table 'utilisateurs' grâce au modèle
+    $user = \App\Models\Utilisateur::where('email', $email)->first();
 
     if ($user) {
-        // On combine le nom et le prénom récupérés de ta table
+        // On combine le nom et le prénom récupérés de la table
         $nomComplet = trim($user->prenom . ' ' . $user->name);
 
         return response()->json([
             'success' => true,
             'user_id' => $user->id,
-            'name' => $nomComplet // Envoie "Gerard TAGBA" ou "Matthieu TAGBA" au JS
+            'name' => $nomComplet
         ]);
     }
 
@@ -80,6 +126,15 @@ class ContratController extends Controller
         'message' => 'Aucun utilisateur trouvé avec cette adresse e-mail.'
     ]);
 }
+
+
+
+
+
+
+
+
+
 
 
 public function store(Request $request)
