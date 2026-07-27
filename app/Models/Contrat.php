@@ -14,7 +14,9 @@ class Contrat extends Model
         'utilisateur_id',
         'maison_id',
         'date_debut',
-        'statut'
+        'statut',
+        'motif',
+        'date_fin'
     ];
 
     // Ajoute ceci pour lier les paiements et la maison au contrat
