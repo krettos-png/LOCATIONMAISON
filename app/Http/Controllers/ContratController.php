@@ -146,7 +146,6 @@ public function store(Request $request)
         'utilisateur_id' => $request->tenant_id,
         'maison_id'      => $request->maison_id,
         'date_debut'     => $request->start_date,
-        'statut'         => 'actif'
     ]);
 
     // 2. Récupérer la maison pour extraire ses tarifs et cautions

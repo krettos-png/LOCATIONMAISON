@@ -325,9 +325,11 @@ public function toggleLoue(Request $request, $id)
             // Mettre fin au contrat proprement
             $contratActif->update([
                 'statut' => 'termine',
+                'motif' => $request->motif_depart,
+                
                 // Si tu as créé ou veux créer ces colonnes optionnelles plus tard :
-                // 'motif_fin' => $request->motif_depart,
-                // 'date_fin'  => \Carbon\Carbon::now()
+                
+                'date_fin'  => \Carbon\Carbon::now()
             ]);
         }
 
