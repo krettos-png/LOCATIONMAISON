@@ -23,6 +23,8 @@ return new class extends Migration
         // Informations du bail
         $table->date('date_debut');
         $table->string('statut')->default('actif'); // actif, terminé, etc.
+        $table->string('motif')->nullable(); // Motif de résiliation ou autre
+        $table->date('date_fin')->nullable(); // Date de fin du contrat, si
         
         $table->timestamps();
     });
