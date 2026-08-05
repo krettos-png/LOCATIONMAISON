@@ -14,24 +14,59 @@ class ContratController extends Controller
 
 
 
-    public function index()
-{
-    // On récupère tous les contrats avec la maison, le locataire et l'historique des paiements
-    $contrats = Contrat::with(['maison.utilisateur', 'locataire', 'paiements'])->latest()->get();
+//     public function index()
+// {
+//     // On récupère tous les contrats avec la maison, le locataire et l'historique des paiements
+//     $contrats = Contrat::with(['maison.utilisateur', 'locataire', 'paiements'])->latest()->get();
 
-    // Statistiques rapides pour le tableau de bord
+//     // Statistiques rapides pour le tableau de bord
+//     $totalContrats = $contrats->count();
+//     $contratsActifs = $contrats->where('statut', 'actif')->count();
+    
+//     // Calcul des revenus perçus (statut 'Payé') via le modèle Paiement
+//     $revenusPercus = \App\Models\Paiement::where('statut', 'Payé')->sum('montant');
+//     // Calcul des impayés/en attente
+//     $loyersEnAttente = \App\Models\Paiement::where('statut', 'En attente')->sum('montant');
+
+//     return view('contrats.index', compact('contrats', 'totalContrats', 'contratsActifs', 'revenusPercus', 'loyersEnAttente'));
+// }
+
+
+
+public function index()
+{
+    $userId = auth()->id();
+
+    // On récupère les contrats où l'utilisateur est soit le locataire (contrats.utilisateur_id),
+    // soit le propriétaire de la maison (maisons.utilisateur_id).
+    $contrats = Contrat::with(['maison.utilisateur', 'locataire', 'paiements'])
+        ->where(function ($query) use ($userId) {
+            $query->where('utilisateur_id', $userId)
+                  ->orWhereHas('maison', function ($q) use ($userId) {
+                      $q->where('utilisateur_id', $userId);
+                  });
+        })
+        ->latest()
+        ->get();
+
+    // Statistiques filtrées sur les contrats de cet utilisateur
     $totalContrats = $contrats->count();
     $contratsActifs = $contrats->where('statut', 'actif')->count();
     
-    // Calcul des revenus perçus (statut 'Payé') via le modèle Paiement
-    $revenusPercus = \App\Models\Paiement::where('statut', 'Payé')->sum('montant');
-    // Calcul des impayés/en attente
-    $loyersEnAttente = \App\Models\Paiement::where('statut', 'En attente')->sum('montant');
+    // IDs des contrats de l'utilisateur pour calculer ses paiements
+    $contratIds = $contrats->pluck('id');
+
+    // Calculs restreints aux contrats de l'utilisateur
+    $revenusPercus = \App\Models\Paiement::whereIn('contrat_id', $contratIds)
+        ->where('statut', 'Payé')
+        ->sum('montant');
+
+    $loyersEnAttente = \App\Models\Paiement::whereIn('contrat_id', $contratIds)
+        ->where('statut', 'En attente') // Assuming 'En attente' is the correct status for pending payments
+        ->sum('montant');
 
     return view('contrats.index', compact('contrats', 'totalContrats', 'contratsActifs', 'revenusPercus', 'loyersEnAttente'));
 }
-
-
 
 
     public function show($id)
