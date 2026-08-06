@@ -14,23 +14,6 @@ class ContratController extends Controller
 
 
 
-//     public function index()
-// {
-//     // On récupère tous les contrats avec la maison, le locataire et l'historique des paiements
-//     $contrats = Contrat::with(['maison.utilisateur', 'locataire', 'paiements'])->latest()->get();
-
-//     // Statistiques rapides pour le tableau de bord
-//     $totalContrats = $contrats->count();
-//     $contratsActifs = $contrats->where('statut', 'actif')->count();
-    
-//     // Calcul des revenus perçus (statut 'Payé') via le modèle Paiement
-//     $revenusPercus = \App\Models\Paiement::where('statut', 'Payé')->sum('montant');
-//     // Calcul des impayés/en attente
-//     $loyersEnAttente = \App\Models\Paiement::where('statut', 'En attente')->sum('montant');
-
-//     return view('contrats.index', compact('contrats', 'totalContrats', 'contratsActifs', 'revenusPercus', 'loyersEnAttente'));
-// }
-
 
 
 public function index()
@@ -86,36 +69,6 @@ public function index()
         return view('contrats.create', compact('maison'));
     }
 
-
-//     public function rechercherParEmail(Request $request)
-// {
-//     $request->validate([
-//         'email' => 'required|email'
-//     ]);
-
-
-//     //nettoyer les espaces invisibles autour de l'email
-//     $email = trim($request->email);
-
-//     // Recherche dans la table 'utilisateurs' grâce au modèle
-//     $user = \App\Models\Utilisateur::where('email', $request->email)->first();
-
-//     if ($user) {
-//         // On combine le nom et le prénom récupérés de ta table
-//         $nomComplet = trim($user->prenom . ' ' . $user->name);
-
-//         return response()->json([
-//             'success' => true,
-//             'user_id' => $user->id,
-//             'name' => $nomComplet // Envoie "Gerard TAGBA" ou "Matthieu TAGBA" au JS
-//         ]);
-//     }
-
-//     return response()->json([
-//         'success' => false,
-//         'message' => 'Aucun utilisateur trouvé avec cette adresse e-mail.'
-//     ]);
-// }
 
 
 

@@ -15,9 +15,6 @@ use App\Http\Controllers\LocataireController;
 
 
 
-route::get('/admin/d', function (){
-    return view('admin/dashbord');
-});
 
 
 route::get('/inscription', function(){
@@ -32,8 +29,6 @@ route::get('/admin/modifier', function(){
     return view('admin/modifier');
 });
 
-//route::get('/admin/dev', [AdminController::class, 'dev'])->name('admin.dev');
-//route::get('/admin/table', [MaisonController::class, 'indextable'])->name('ttt');
 
 
 
@@ -43,6 +38,51 @@ Route::middleware(['auth'])->group(function () {
     // Routes réservées exclusivement aux DEV
     Route::middleware(['role:dev'])->group(function () {
         route::get('/admin/dev', [AdminController::class, 'dev'])->name('admin.dev');
+        // Autres routes réservées aux DEV
+        
+        route::get('/dev/{id}', [MaisonController::class, 'indextableD'])->name('tttD');
+
+
+        
+        // Route pour afficher le formulaire
+        Route::get('/admin/categories/creer', [CategorieController::class, 'create'])->name('categories.create');
+
+        // Route pour enregistrer les données
+        Route::post('/admin/categories/store', [CategorieController::class, 'store'])->name('categories.store');
+
+
+        // Formulaire d'édition
+        Route::get('/admin/categories/{id}/modifier', [CategorieController::class, 'edit'])->name('categories.edit');
+
+        // Traitement de la modification (PUT)
+        Route::put('/admin/categories/{id}/update', [CategorieController::class, 'update'])->name('categories.update');
+
+        // Suppression (DELETE)
+        Route::delete('/admin/categories/{id}/delete', [CategorieController::class, 'destroy'])->name('categories.destroy');
+
+
+        // Route pour supprimer un utilisateur et ses biens en cascade
+        Route::delete('/admin/utilisateurs/{id}/delete', [AdminController::class, 'destroyUtilisateur'])->name('utilisateurs.supprimer');
+
+
+
+        //ROUTE POUR GERER LES VILLES (CRUD)
+        // VILLES 
+        Route::get('/admin/villes', [VilleController::class, 'index'])->name('villes.index');
+        Route::post('/admin/villes', [VilleController::class, 'store'])->name('villes.store');
+        Route::put('/admin/villes/{id}', [VilleController::class, 'update'])->name('villes.update');
+        Route::delete('/admin/villes/{id}', [VilleController::class, 'destroy'])->name('villes.destroy');
+
+
+        // Route pour valider LES NOUVELLES DEMANDES DE PUBLICATIONS (PATCH est idéal pour une mise à jour partielle)
+
+        // Route pour valider (PATCH est idéal pour une mise à jour partielle)
+        Route::patch('/maisons/{id}/valider', [AdminController::class, 'valider'])->name('admin.maisons.valider');
+    
+        // Route pour rejeter (DELETE car on supprime l'annonce non conforme)
+        Route::delete('/maisons/{id}/rejeter', [AdminController::class, 'rejeter'])->name('admin.maisons.rejeter');
+
+
 
 
 
@@ -51,39 +91,60 @@ Route::middleware(['auth'])->group(function () {
 
     });
 
-    // Routes accessibles aux ADMIN et DEV
-    Route::middleware(['role:admin,dev'])->group(function () {
-        route::get('/admin/table', [MaisonController::class, 'indextable'])->name('ttt');
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Routes accessibles aux ADMIN et DEV ET CLIENT
+    Route::middleware(['role:admin,dev,client'])->group(function () {
+       
         
-       Route::get('/admin/ajouter', function () {
-    return view('admin/ajouter');
-})->name('admin.ajouter');
-        
+       
 
-// Route pour basculer le statut "loué" d'une maison
-        Route::patch('/maison/{id}/toggle-loue', [MaisonController::class, 'toggleLoue'])->name('maisons.toggleLoue');
-        });
+    Route::get('/mon-espace', [LocataireController::class, 'index'])->name('locataire.dashboard');
 
-    // Routes accessibles aux LOCATAIRES
-    Route::middleware(['role:client'])->group(function () {
-        //Route::get('/mon-espace', [LocataireController::class, 'index'])->name('locataire.dashboard');
-        
-
-
-    });
-
-});
-
-Route::get('/mon-espace', [LocataireController::class, 'index'])->name('locataire.dashboard');
-
-
-//PAIEMENT
+    //PAIEMENT
         Route::post('/paiements/{id}/payer', [LocataireController::class, 'payerFacture'])->name('locataire.payer');  
         Route::post('/locataire/contrat/{contrat_id}/payer-toutes-avances', [LocataireController::class, 'payerToutesAvances'])->name('locataire.payerToutesAvances');
         // Route pour payer une facture ou un frais individuel spécifique (loyer, caution, commission...)
         Route::post('/locataire/paiement/{id}/regler', [LocataireController::class, 'payerFactureSeule'])
     ->name('locataire.payerSeul');
 
+    //OUVRE LA CATEGORIE DES MAISONS
+    route::get('/categories/{id}', [MaisonController::class, 'byCategory'])->name('maisons.categorie');
+
+
+    
+
+        
+
+// Route pour basculer le statut "loué" d'une maison
+        Route::patch('/maison/{id}/toggle-loue', [MaisonController::class, 'toggleLoue'])->name('maisons.toggleLoue');
+
+        //SE DECONNECTER
+        Route::get('/logout', function () {
+            Auth::logout(); // Déconnecte l'utilisateur
+            return redirect('/'); // Redirection après déconnexion
+        })->name('logout');
+
+        
+        Route::post('/locataire/contrat/{id}/payer-avance', [LocataireController::class, 'storeAvance'])
+            ->name('locataire.payerAvance');
+
+
+
+
+
+        });
 
 
 
@@ -91,27 +152,103 @@ Route::get('/mon-espace', [LocataireController::class, 'index'])->name('locatair
 
 
 
-route::get('/categories/{id}', [MaisonController::class, 'byCategory'])->name('maisons.categorie');
-
-
-route::get('/', [MaisonController::class, 'home'])->name('home');
-route::get('/maison', [MaisonController::class, 'home2'])->name('home2');
 
 
 
-Route::get('/admin/home', [AdminController::class, 'home'])->middleware(['auth', 'admin'])->name('admin.home');
 
-Route::get('/admin/home', [AdminController::class, 'home'])->name('jj');
 
-route::post('/ajouter', [MaisonController::class, 'store'])->name('enre');
 
-route::get('/maison/{id}/info', [MaisonController::class, 'index2'])->middleware('auth');
+
+
+
+        
+
+    // Routes accessibles aux ADMIN et DEV uniquement
+    Route::middleware(['role:admin,dev'])->group(function () {
+        // Route pour afficher le formulaire de création d'une maison
+        route::post('/ajouter', [MaisonController::class, 'store'])->name('enre');
+       
+
+        //Route pour afficher le formulaire de modification d'une maison
+        
+
+        route::get('maison/{id}/info3', [AdminController::class, 'show'])->name('maisons.show');
+
+
+
+        //AFFICHER TABLEAU DE BORD POUR LES PROPRIETAIRES
+         route::get('/admin/table', [MaisonController::class, 'indextable'])->name('ttt');
+
+         // Route pour afficher LA PAGE D'enregistrement d'une maison
+         Route::get('/admin/ajouter', function () {
+    return view('admin/ajouter');
+})->name('admin.ajouter');
+
+
+
+        // Route pour enregistrer une maison
+        route::post('/enregistrer/store', [AdminController::class, 'store'])->name('enre2');
+
+        //ROUTE POUR SUPPRIMER UNE MAISON SECONDAIRE
+        
+        route::get('maison/{id}/sup', [MaisonController::class, 'destroy'])->name('maisonsSecon.sup');
+
+        //ROUTE POUR MODIFIER UNE MAISON
+        
+        route::put('/admin/{id}/tt', [MaisonController::class, 'update'])->name('maisons.update');
+
+        //ROUTE POUR SUPPRIMER UNE MAISON PRINCIPALE
+
+        
+        route::delete('/maisons/{id}', [AdminController::class, 'destroy'])->name('maisons.sup');
+
+        //GERER LES CONTRATS
+
+        Route::get('/contrats/creer/{maison_id}', [ContratController::class, 'create'])->name('contrats.create');
+
+        Route::get('/api/users/recherche-email', [ContratController::class, 'rechercherParEmail'])->name('users.rechercheEmail');
+
+        Route::post('/contrats/stocker', [ContratController::class, 'store'])->name('contrats.store');
+
+        Route::get('/contrats/{id}', [ContratController::class, 'show'])->name('contrats.show');
+
+        Route::get('/gestion-contrats', [ContratController::class, 'index'])->name('contrats.index');
+
+
+
+    Route::get('/paiement/{id}/imprimer-facture', [LocataireController::class, 'imprimerFactureMois'])->name('paiement.imprimerFacture');
+
+
+
+
+
+
+    });
+
+});
+
+
+
+
+
+    route::get('/', [MaisonController::class, 'home'])->name('home');
+    
+
+
+
+
+
+
+
+
+
+
 
 
 
 route::get('/maison/{id}/infoA', [MaisonController::class, 'indexadmininfo'])->name('maisons.infoA');
 
-route::post('/enregistrer/store', [AdminController::class, 'store'])->name('enre2');
+
 
 
 //ROUTE POUR LA CONNEXION
@@ -124,44 +261,16 @@ Route::get('/login', function () {
 
 
 
-route::get('/espaceadmin', function(){
-    return view('admin/home');
-});
-
-Route::get('/logout', function () {
-    Auth::logout(); // Déconnecte l'utilisateur
-    return redirect('/'); // Redirection après déconnexion
-})->name('logout');
-
-
-
-
-route::get('/admin/modifier', [MaisonController::class, 'indexModifier'])->name('hhh');
-
-
-
-route::get('/dev/{id}', [MaisonController::class, 'indextableD'])->name('tttD');
 
 
 
 
 
-route::get('/admin/modifier2', [MaisonController::class, 'indexModifier'])->name('hhh');
-
-route::get('/admin/pagemodification', [MaisonController::class, 'indexModifierR'])->name('RRR');
 
 
-route::get('maison/{id}/info3', [AdminController::class, 'show'])->name('maisons.show');
 
-route::get('maison/{id}/sup', [MaisonController::class, 'destroy'])->name('maisonsSecon.sup');
 
-route::put('/admin/{id}/tt', [MaisonController::class, 'update'])->name('maisons.update');
 
-route::delete('/maisons/{id}', [AdminController::class, 'destroy'])->name('maisons.sup');
-
-Route::get('/maisons/recherche', [MaisonController::class, 'recherche'])->name('maisons.recherche');
-
-Route::get('/maisons/rechercheA', [MaisonController::class, 'rechercheA'])->name('maisons.rechercheA');
 
 
 
@@ -179,66 +288,6 @@ Route::get('/maison/{id}/demander-visite', [MaisonController::class, 'demanderVi
 
 
 
-// Route pour afficher le formulaire
-Route::get('/admin/categories/creer', [CategorieController::class, 'create'])->name('categories.create');
-
-// Route pour enregistrer les données
-Route::post('/admin/categories/store', [CategorieController::class, 'store'])->name('categories.store');
-
-
-
-// Formulaire d'édition
-Route::get('/admin/categories/{id}/modifier', [CategorieController::class, 'edit'])->name('categories.edit');
-
-// Traitement de la modification (PUT)
-Route::put('/admin/categories/{id}/update', [CategorieController::class, 'update'])->name('categories.update');
-
-// Suppression (DELETE)
-Route::delete('/admin/categories/{id}/delete', [CategorieController::class, 'destroy'])->name('categories.destroy');
-
-// Route pour supprimer un utilisateur et ses biens en cascade
-Route::delete('/admin/utilisateurs/{id}/delete', [AdminController::class, 'destroyUtilisateur'])->name('utilisateurs.supprimer');
-
-
-
-
-// Tu peux placer ces routes dans ton groupe de middleware d'administration si tu en as un
-Route::get('/admin/villes', [VilleController::class, 'index'])->name('villes.index');
-Route::post('/admin/villes', [VilleController::class, 'store'])->name('villes.store');
-Route::put('/admin/villes/{id}', [VilleController::class, 'update'])->name('villes.update');
-Route::delete('/admin/villes/{id}', [VilleController::class, 'destroy'])->name('villes.destroy');
-
-
-Route::prefix('admin')->middleware(['auth'])->group(function () {
-    // Route pour valider (PATCH est idéal pour une mise à jour partielle)
-    Route::patch('/maisons/{id}/valider', [AdminController::class, 'valider'])->name('admin.maisons.valider');
-    
-    // Route pour rejeter (DELETE car on supprime l'annonce non conforme)
-    Route::delete('/maisons/{id}/rejeter', [AdminController::class, 'rejeter'])->name('admin.maisons.rejeter');
-});
-
-Route::get('/contrats/creer/{maison_id}', [ContratController::class, 'create'])->name('contrats.create');
-
-Route::get('/api/users/recherche-email', [ContratController::class, 'rechercherParEmail'])->name('users.rechercheEmail');
-
-Route::post('/contrats/stocker', [ContratController::class, 'store'])->name('contrats.store');
-
-Route::get('/contrats/{id}', [ContratController::class, 'show'])->name('contrats.show');
-
-
-
-Route::middleware(['auth'])->group(function () {
-    // Espace locataire
-   // Route::get('/mon-espace', [LocataireController::class, 'index'])->name('locataire.dashboard');
-    // Action de paiement
-    // Route::post('/paiements/{id}/payer', [LocataireController::class, 'payerFacture'])->name('locataire.payer');
-});
-
-Route::get('/gestion-contrats', [ContratController::class, 'index'])->name('contrats.index');
-
-
-Route::post('/locataire/contrat/{id}/payer-avance', [LocataireController::class, 'storeAvance'])
-    ->name('locataire.payerAvance');
 
 
 
@@ -246,6 +295,14 @@ Route::post('/locataire/contrat/{id}/payer-avance', [LocataireController::class,
 
 
 
-    Route::get('/paiement/{id}/imprimer-facture', [LocataireController::class, 'imprimerFactureMois'])->name('paiement.imprimerFacture');
+
+
+
+
+
+
+
+
+
 
 

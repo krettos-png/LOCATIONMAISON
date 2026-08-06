@@ -24,20 +24,6 @@ class AdminController extends Controller
      * 
      */
 
-    public function home()
-{
-
-
-
-    $maisons = Maison::all(); // ou Maison::with('photos')->get();
-    // Récupère la liste des quartiers uniques
-    $quartiers = Maison::distinct()->pluck('adresse');
-    $villes = Maison::distinct()->pluck('ville');
-    $categories = Maison::distinct()->pluck('categorie_id');
-    $categoriess = Categorie::all();
-
-    return view('/admin/maisonadmin', compact('maisons', 'quartiers', 'villes', 'categories', 'categoriess')); // transmet la variable à la vue
-}
 
 
 
@@ -211,40 +197,6 @@ public function login(Request $request)
     {
         //
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    //public function destroy(string $id)
-    //{
-        //
-    //}
-
-
-
-//     public function destroy($id)
-// {
-//     $maison = Maison::with('photos')->findOrFail($id);
-
-//     // Supprimer les fichiers photo du disque
-//     foreach ($maison->photos as $photo) {
-//         if (Storage::exists($photo->chemin)) {
-//             Storage::delete($photo->chemin);
-//         }
-//         $photo->delete(); // Supprime la ligne de la BDD
-//     }
-
-//     // Supprimer la maison
-//     $maison->delete();
-
-//     $utilisateur = Auth::user(); // Récupère l'utilisateur connecté
-
-//     $maisons = $utilisateur->maisons; // Toutes ses maisons
-
-//     return view('admin.table', compact('maisons')); // transmet la variable à la vue
-
-
-// }
 
 
 

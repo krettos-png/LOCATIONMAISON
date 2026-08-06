@@ -189,26 +189,8 @@ public function home2()
 
 
 
-public function index2($id){
-     $maisons = Maison::with(['photos'])->findOrFail($id);
-        return view('Maison-info', compact('maisons'));
-}
 
 
-
-public function indexModifier()
-
-
-{
-    $utilisateur = Auth::user(); // Récupère l'utilisateur connecté
-
-
-    $maisons = $utilisateur->maisons; // Toutes ses maisons
-
-    return view('/admin.modifier', compact('maisons')); // transmet la variable à la vue
-
-    
-}
 
 
 
@@ -243,63 +225,6 @@ public function indextableD($id)
 }
 
 
-
-// public function toggleLoue($id)
-// {
-//     // 1. On cherche la maison, sinon erreur 404 propre
-//     $maison = Maison::findOrFail($id);
-    
-//     // 2. On inverse l'état (si true devient false, si false devient true)
-//     $maison->est_loue = !$maison->est_loue; 
-//     $maison->save();
-
-//     // 3. On recharge la page avec le nouveau statut visuel
-//     return back();
-// }
-
-
-// public function toggleLoue(Request $request, $id)
-// {
-//     // 1. On cherche la maison, sinon erreur 404 propre
-//     $maison = Maison::findOrFail($id);
-    
-//     // Si la maison était déjà louée, on la remet juste à "disponible" (Bouton vert "Rendre Disponible")
-//     if ($maison->est_loue) {
-//         $maison->est_loue = false;
-//         // Optionnel : si tu as des colonnes pour la source ou le locataire, tu peux les vider ici
-//         // $maison->tenant_source = null;
-//         $maison->save();
-        
-//         return back()->with('success', 'La maison est de nouveau disponible.');
-//     }
-
-//     // --- LE PROPRIÉTAIRE MARQUE LA MAISON COMME LOUÉE ---
-//     $maison->est_loue = true;
-//     $source = $request->input('tenant_source', 'aucun'); // Récupère le choix du modal
-    
-//     // Si tu as ajouté une colonne 'tenant_source' dans ta base de données, tu peux la stocker :
-//     // $maison->tenant_source = $source;
-//     $maison->save();
-
-//     // 2. Gestion des redirections et des actions selon le choix du modal
-//     switch ($source) {
-//         case 'site':
-//             // Redirige vers la page de création de contrat en passant l'ID de la maison
-//             // Ajuste le nom de la route 'contrats.create' selon ton application
-//             return redirect()->route('contrats.create', ['maison_id' => $maison->id])
-//                              ->with('success', 'Maison marquée comme louée sur le site. Créez le contrat maintenant !');
-
-//         case 'hors_site':
-//             // Le script JS de ta vue s'est déjà chargé d'ouvrir l'onglet WhatsApp.
-//             // On a juste à recharger la page avec un message de succès.
-//             return back()->with('success', 'Annonce retirée. L\'invitation WhatsApp a été lancée.');
-
-//         case 'aucun':
-//         default:
-//             // Simple clôture de l'annonce, on retourne juste en arrière
-//             return back()->with('success', 'La maison a bien été marquée comme louée.');
-//     }
-// }
 
 
 
@@ -361,20 +286,6 @@ public function toggleLoue(Request $request, $id)
 
 
 
-
-public function indexModifierR()
-
-
-{
-    $utilisateur = Auth::user(); // Récupère l'utilisateur connecté
-
-
-    $maisons = $utilisateur->maisons; // Toutes ses maisons
-
-    return view('/admin.pagemodification', compact('maisons')); // transmet la variable à la vue
-
-    
-}
 
 
 
@@ -438,70 +349,6 @@ public function demanderVisite($id)
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-//     public function store(Request $request)
-// {
-//     $request->validate([
-//         'categorie_id' => 'required|exists:categories,id',
-//         'titre' => 'required',
-//         'description' => 'required',
-//         'prix' => 'required|numeric|max:999999999', // Attention : 'max' en minuscules
-//         'ville' => 'required',
-//         'adresse' => 'required',
-//         'image' => 'nullable|image|max:2048',
-//         'latitude' => 'required|numeric|between:-90,90',
-//         'longitude' => 'required|numeric|between:-180,180',
-//         'images_secondaires.*' => 'nullable|image|max:2048'
-//     ]);
-
-//     $utilisateur = Auth::user();
-
-//     // Enregistrer la maison
-//     $maison = new Maison();
-//     $maison->utilisateur_id = $utilisateur->id;
-//     $maison->categorie_id = $request->categorie_id;
-//     $maison->titre = $request->titre;
-//     $maison->description = $request->description;
-//     $maison->prix = $request->prix;
-//     $maison->ville = $request->ville;
-//     $maison->adresse = $request->adresse;
-//     $maison->latitude = $request->latitude;
-//     $maison->longitude = $request->longitude;
-
-//     // Gestion de l'image principale directement dans le dossier public
-//     if ($request->hasFile('image')) {
-//         $file = $request->file('image');
-//         $filename = time() . '_' . $file->getClientOriginalName();
-//         // Déplace le fichier vers public/maisons/principales/
-//         $file->move(public_path('maisons/principales'), $filename);
-//         // On stocke le chemin relatif en base de données pour garder vos affichages intacts
-//         $maison->image = 'maisons/principales/' . $filename;
-//     }
-
-//     $maison->save();
-
-//     // Gestion des photos secondaires directement dans le dossier public
-//     if ($request->hasFile('images_secondaires')) {
-//         foreach ($request->file('images_secondaires') as $photo) {
-//             $filenameSecondaire = time() . '_' . $photo->getClientOriginalName();
-//             // Déplace le fichier vers public/maisons/secondaires/
-//             $photo->move(public_path('maisons/secondaires'), $filenameSecondaire);
-            
-//             $chemin = 'maisons/secondaires/' . $filenameSecondaire;
-//             $maison->photos()->create(['chemin' => $chemin]);
-//         }
-//     }
-
-//     // Note : Les variables générées ici n'étaient pas utilisées à cause de la redirection
-//     // $maisons = Maison::all(); 
-//     // $quartiers = Maison::distinct()->pluck('adresse');
-//     // $villes = Maison::distinct()->pluck('ville');
-//     // $categories = Maison::distinct()->pluck('categorie_id');
-
-//     return redirect('/admin/table');
-// }
 
 
 
@@ -612,67 +459,6 @@ public function store(Request $request)
     {
         //
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    //public function update(Request $request, string $id)
-    //{
-        //
-    //}
-// public function update(Request $request, $id)
-// {
-//     // 1. Trouver la maison
-//     $maison = Maison::findOrFail($id);
-
-//     // 2. Validation
-//     $request->validate([
-//         'titre' => 'required',
-//         'description' => 'required',
-//         'prix' => 'required|numeric|MAX:999999999',
-//         'ville' => 'required',
-//         'adresse' => 'required',
-//         'image' => 'nullable|image|max:2048',
-//         'images_secondaires.*' => 'nullable|image|max:2048'
-//     ]);
-
-//     // 3. Préparer les données de base
-//     $data = $request->only(['titre', 'description', 'prix', 'ville', 'adresse', 'latitude', 'longitude']);
-
-//     // 4. Gestion de l'image principale (remplacement)
-//     if ($request->hasFile('image')) {
-//         // Optionnel : Storage::disk('public')->delete($maison->image); 
-//         $data['image'] = $request->file('image')->store('maisons/principales', 'public');
-//     }
-
-//     // 5. Mise à jour des champs de la maison
-//     $maison->update($data);
-
-//     // 6. Gestion des photos secondaires (Remplacement total)
-//     if ($request->hasFile('images_secondaires')) {
-//         // a. Supprimer les anciennes relations en base de données
-//         $maison->photos()->delete();
-
-//         // b. Ajouter les nouvelles photos
-//         foreach ($request->file('images_secondaires') as $photo) {
-//             $chemin = $photo->store('maisons/secondaires', 'public');
-//             $maison->photos()->create(['chemin' => $chemin]);
-//         }
-//     }
-
-//     // 7. Redirection avec les données à jour
-//     $maisons = Maison::all(); 
-//     return redirect('/admin/table');
-
-
-//     //return view('admin.maisonadmin', compact('maisons'))->with('success', 'Mise à jour réussie');
-
-
-// }
-
-
-
-
 
 
 
@@ -829,42 +615,9 @@ public function update(Request $request, $id)
 
 
 
-    public function recherche(Request $request)
-    {
-        $search = $request->input('search');
-
-        $maisons = Maison::query()
-            ->when($search, function ($query, $search) {
-                $query->where('titre', 'like', "%{$search}%")
-                    ->orWhere('adresse', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%")
-                    ->orwhere('prix', 'like', "%{$search}%");
-            })
-            ->get();
-
-        return view('Maison', compact('maisons'));
-    }
 
 
 
-        public function rechercheA(Request $request)
-    {
-        $search = $request->input('search');
-
-        $maisons = Maison::query()
-            ->when($search, function ($query, $search) {
-                $query->where('titre', 'like', "%{$search}%")
-                    ->orWhere('adresse', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%")
-                    ->orwhere('prix', 'like', "%{$search}%");
-            })
-            ->get();
-
-
-        
-
-        return view('admin.Maisonadmin', compact('maisons'));
-    }
 
 
 
