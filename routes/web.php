@@ -43,23 +43,49 @@ Route::middleware(['auth'])->group(function () {
     // Routes réservées exclusivement aux DEV
     Route::middleware(['role:dev'])->group(function () {
         route::get('/admin/dev', [AdminController::class, 'dev'])->name('admin.dev');
+
+
+
+
+
+
     });
 
     // Routes accessibles aux ADMIN et DEV
     Route::middleware(['role:admin,dev'])->group(function () {
         route::get('/admin/table', [MaisonController::class, 'indextable'])->name('ttt');
+        
        Route::get('/admin/ajouter', function () {
     return view('admin/ajouter');
 })->name('admin.ajouter');
+        
+
+// Route pour basculer le statut "loué" d'une maison
+        Route::patch('/maison/{id}/toggle-loue', [MaisonController::class, 'toggleLoue'])->name('maisons.toggleLoue');
         });
 
     // Routes accessibles aux LOCATAIRES
     Route::middleware(['role:client'])->group(function () {
-        Route::get('/mon-espace', [LocataireController::class, 'index'])->name('locataire.dashboard');
-        Route::post('/paiements/{id}/payer', [LocataireController::class, 'payerFacture'])->name('locataire.payer');
+        //Route::get('/mon-espace', [LocataireController::class, 'index'])->name('locataire.dashboard');
+        
+
+
     });
 
 });
+
+Route::get('/mon-espace', [LocataireController::class, 'index'])->name('locataire.dashboard');
+
+
+//PAIEMENT
+        Route::post('/paiements/{id}/payer', [LocataireController::class, 'payerFacture'])->name('locataire.payer');  
+        Route::post('/locataire/contrat/{contrat_id}/payer-toutes-avances', [LocataireController::class, 'payerToutesAvances'])->name('locataire.payerToutesAvances');
+        // Route pour payer une facture ou un frais individuel spécifique (loyer, caution, commission...)
+        Route::post('/locataire/paiement/{id}/regler', [LocataireController::class, 'payerFactureSeule'])
+    ->name('locataire.payerSeul');
+
+
+
 
 
 
@@ -87,7 +113,16 @@ route::get('/maison/{id}/infoA', [MaisonController::class, 'indexadmininfo'])->n
 
 route::post('/enregistrer/store', [AdminController::class, 'store'])->name('enre2');
 
+
+//ROUTE POUR LA CONNEXION
 Route::post('/login', [AdminController::class, 'login'])->name('login');
+//Route::get('/login', [AdminController::class,''])->name('');
+Route::get('/login', function () {
+    return redirect('/')->with('open_login_modal', true);
+})->name('login');
+
+
+
 
 route::get('/espaceadmin', function(){
     return view('admin/home');
@@ -109,7 +144,7 @@ route::get('/dev/{id}', [MaisonController::class, 'indextableD'])->name('tttD');
 
 
 
-Route::patch('/maison/{id}/toggle-loue', [MaisonController::class, 'toggleLoue'])->name('maisons.toggleLoue');
+
 
 route::get('/admin/modifier2', [MaisonController::class, 'indexModifier'])->name('hhh');
 
@@ -208,13 +243,9 @@ Route::post('/locataire/contrat/{id}/payer-avance', [LocataireController::class,
 
 
 
-// Route pour payer une facture ou un frais individuel spécifique (loyer, caution, commission...)
-Route::post('/locataire/paiement/{id}/regler', [LocataireController::class, 'payerFactureSeule'])
-    ->name('locataire.payerSeul');
+
 
 
     Route::get('/paiement/{id}/imprimer-facture', [LocataireController::class, 'imprimerFactureMois'])->name('paiement.imprimerFacture');
 
 
-
-    Route::post('/locataire/contrat/{contrat_id}/payer-toutes-avances', [LocataireController::class, 'payerToutesAvances'])->name('locataire.payerToutesAvances');

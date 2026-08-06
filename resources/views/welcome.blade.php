@@ -24,13 +24,15 @@
     :root {
         --primary: #2563eb;
         --primary-hover: #1d4ed8;
-        --primary-soft: #eff6ff;
+        --primary-soft: rgba(37, 99, 235, 0.1);
         --text-dark: #111827;
         --text-light: #4b5563;
         --text-muted: #9ca3af;
         --bg-light: #f4f7fb;
         --bg-card: #ffffff;
         --border-color: #e5e7eb;
+        --nav-bg: rgba(15, 23, 42, 0.65);
+        --nav-blur: blur(12px);
     }
 
     /* Variables pour le Mode Sombre */
@@ -40,8 +42,9 @@
         --text-dark: #f8fafc;
         --text-light: #cbd5e1;
         --text-muted: #64748b;
-        --primary-soft: #1e293b;
+        --primary-soft: rgba(30, 41, 59, 0.8);
         --border-color: #334155;
+        --nav-bg: rgba(15, 23, 42, 0.85);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
@@ -50,79 +53,95 @@
 
     /* Bouton Mode Sombre / Mode Clair */
     .theme-toggle-btn {
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         color: white;
-        width: 40px;
-        height: 40px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
-        transition: 0.3s;
+        font-size: 16px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .theme-toggle-btn:hover {
         background: var(--primary);
-        transform: scale(1.05);
+        border-color: var(--primary);
+        transform: rotate(15deg) scale(1.08);
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
     }
 </style>
-
 <section class="hero-rental">
-    <header class="navbar-custom container">
-        <div class="logo">
-            <a href="{{ url('/') }}">Maison<span>Loc</span></a>
-        </div>
-
-        <div class="menu-toggle" id="mobile-menu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </div>
-
-        <nav class="nav-container">
-            <div class="nav-links">
-                <a href="#maisons">Nos Biens</a>
-                <a href="#contact">Contact</a>
-                <a href="#Apropos">À propos</a>
+    <!-- NAVBAR MODERNE ET GLASSMORPHISME -->
+    <header class="navbar-wrapper">
+        <div class="navbar-custom container">
+            <div class="logo">
+                <a href="{{ url('/') }}">
+                    <i class="fa-solid fa-house-chimney logo-icon"></i>
+                    Maison<span>Loc</span>
+                </a>
             </div>
 
-            <div class="nav-buttons">
-                <!-- Bouton Bascule Thème -->
-                <button id="theme-toggle" class="theme-toggle-btn" title="Changer de mode">
-                    <i class="fa-solid fa-moon" id="theme-icon"></i>
-                </button>
-
-                @auth
-                    @php $role = Auth::user()->role; @endphp
-
-                    {{-- Liens selon le rôle --}}
-                    @if($role === 'dev')
-                        <a href="{{ route('admin.dev') }}" class="btn-login">DEVELOPPEUR</a>
-                        <a href="{{ route('ttt') }}" class="btn-login">Manager</a>
-                    @elseif($role === 'admin')
-                        <a href="{{ route('ttt') }}" class="btn-register bg-primary text-white hover:bg-primary-hover" title="Manager l'application">Manager</a>
-                    @endif
-                                
-                    <span class="user-greeting"><i class="fa-solid fa-user"></i> {{ Auth::user()->name }} !</span>
-                    
-                    {{-- Bouton d'action contextuel --}}
-                    @if(in_array($role, ['admin', 'dev']))
-                        <a href="{{ route('admin.ajouter') }}" class="btn-register">Publier un bien</a>
-                    @else
-                        <a href="{{ route('locataire.dashboard') }}" class="btn-register">Gerer Factures</a>
-                    @endif
-
-                    <a href="{{ route('logout') }}" class="btn-logout">Déconnexion</a>
-                @endauth
-
-                @guest
-                    <a href="javascript:void(0)" class="btn-login" id="openLoginBtn">Connexion</a>
-                    <a href="javascript:void(0)" class="btn-register" id="openRegisterBtn">S'inscrire</a>
-                @endguest
+            <div class="menu-toggle" id="mobile-menu" aria-label="Toggle navigation">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
             </div>
-        </nav>
+
+            <nav class="nav-container">
+                <div class="nav-links">
+                    <a href="#maisons" class="nav-link-item">Nos Biens</a>
+                    <a href="#Apropos" class="nav-link-item">À propos</a>
+                    <a href="#contact" class="nav-link-item">Contact</a>
+                </div>
+
+                <div class="nav-buttons">
+                    <!-- Bouton Bascule Thème -->
+                    <button id="theme-toggle" class="theme-toggle-btn" title="Changer de mode">
+                        <i class="fa-solid fa-moon" id="theme-icon"></i>
+                    </button>
+
+                    @auth
+                        @php $role = Auth::user()->role; @endphp
+
+                        {{-- Liens selon le rôle --}}
+                        @if($role === 'dev')
+                            <a href="{{ route('admin.dev') }}" class="btn-nav-outline">Développeur</a>
+                            <a href="{{ route('ttt') }}" class="btn-nav-outline">Manager</a>
+                        @elseif($role === 'admin')
+                            <a href="{{ route('ttt') }}" class="btn-nav-outline" title="Manager l'application">Manager</a>
+                        @endif
+                                    
+                        <div class="user-pill">
+                            <i class="fa-solid fa-circle-user"></i>
+                            <span>{{ Auth::user()->name }}</span>
+                        </div>
+                        
+                        {{-- Bouton d'action contextuel --}}
+                        @if(in_array($role, ['admin', 'dev']))
+                            <a href="{{ route('admin.ajouter') }}" class="btn-nav-primary">
+                                <i class="fa-solid fa-plus-circle"></i> Publier un bien
+                            </a>
+                        @else
+                            <a href="{{ route('locataire.dashboard') }}" class="btn-nav-primary">
+                                <i class="fa-solid fa-file-invoice"></i> Mes Factures
+                            </a>
+                        @endif
+
+                        <a href="{{ route('logout') }}" class="btn-nav-danger" title="Se déconnecter">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        </a>
+                    @endauth
+
+                    @guest
+                        <a href="javascript:void(0)" class="btn-nav-ghost" id="openLoginBtn">Connexion</a>
+                        <a href="javascript:void(0)" class="btn-nav-primary" id="openRegisterBtn">S'inscrire</a>
+                    @endguest
+                </div>
+            </nav>
+        </div>
     </header>
 
     <div class="hero-content container">
@@ -133,53 +152,210 @@
 </section>
 
 <style>
+    /* STYLES HERO RECTIFIÉS (MOINS HAUT & PLUS CLAIR) */
     .hero-rental {
-        min-height: 8vh;
-        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        min-height: 80vh; /* Hauteur réduite pour laisser apparaître les catégories */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        /* Assombrissement fortement diminué (0.3 à 0.4 au lieu de 0.8) */
+        background: linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.45)),
                     url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070');
         background-size: cover;
         background-position: center;
-        padding: 20px 3%;
+        padding-top: 100px;
+        padding-bottom: 15px;
         color: white;
     }
-    .navbar-custom { display: flex; justify-content: space-between; align-items: center; height: 80px; }
-    .logo a { color: white; text-decoration: none; font-size: 28px; font-weight: 800; }
+
+    .navbar-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: var(--nav-bg);
+        backdrop-filter: var(--nav-blur);
+        -webkit-backdrop-filter: var(--nav-blur);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .navbar-custom { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        height: 80px; 
+    }
+
+    .logo a { 
+        color: white; 
+        text-decoration: none; 
+        font-size: 26px; 
+        font-weight: 800; 
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: -0.5px;
+    }
+    .logo a .logo-icon {
+        color: var(--primary);
+        font-size: 24px;
+    }
     .logo a span { color: var(--primary); }
     
-    .nav-container { display: flex; align-items: center; gap: 40px; }
-    .nav-links { display: flex; gap: 25px; }
-    .nav-links a { color: white; text-decoration: none; font-weight: 500; transition: 0.3s; font-size: 15px; }
-    .nav-links a:hover { color: var(--primary); }
-    .nav-buttons { display: flex; gap: 15px; align-items: center; }
+    .nav-container { display: flex; align-items: center; gap: 35px; }
+    .nav-links { display: flex; gap: 30px; }
+    .nav-link-item { 
+        color: rgba(255, 255, 255, 0.85); 
+        text-decoration: none; 
+        font-weight: 500; 
+        font-size: 15px;
+        position: relative;
+        padding: 5px 0;
+        transition: color 0.3s ease;
+    }
+    .nav-link-item:hover { 
+        color: #ffffff; 
+    }
+    .nav-link-item::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        height: 2px;
+        background: var(--primary);
+        border-radius: 2px;
+        transition: width 0.3s ease;
+    }
+    .nav-link-item:hover::after {
+        width: 100%;
+    }
+
+    .nav-buttons { display: flex; gap: 12px; align-items: center; }
     
-    .btn-login { color: white; text-decoration: none; font-weight: 500; transition: 0.3s; }
-    .btn-login:hover { color: var(--primary); }
-    .btn-logout { background: #ef4444; color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; }
-    .btn-register { background: white; color: #111827; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.3s; }
-    .btn-register:hover { background: var(--primary); color: white; }
-    .user-greeting { font-size: 14px; background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px; }
+    .btn-nav-ghost {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 10px 20px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    .btn-nav-ghost:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
 
-    .menu-toggle { display: none; cursor: pointer; flex-direction: column; gap: 6px; z-index: 110; }
-    .menu-toggle .bar { width: 28px; height: 3px; background: white; transition: 0.3s; border-radius: 2px; }
+    .btn-nav-outline {
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 8px 16px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    .btn-nav-outline:hover {
+        background: white;
+        color: var(--text-dark);
+    }
 
-    .hero-content { margin-top: 60px; }
-    .hero-badge { background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 50px; backdrop-filter: blur(5px); font-size: 13px; font-weight: 500; display: inline-block; }
-    .hero-content h1 { font-size: clamp(28px, 5vw, 54px); line-height: 1.2; margin-top: 20px; font-weight: 800; max-width: 800px; }
-    .hero-content p { margin-top: 20px; font-size: clamp(16px, 2vw, 20px); color: #e5e7eb; max-width: 600px; }
+    .btn-nav-primary {
+        background: var(--primary);
+        color: white !important;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 10px 22px;
+        border-radius: 10px;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-nav-primary:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    }
 
+    .btn-nav-danger {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    .btn-nav-danger:hover {
+        background: #ef4444;
+        color: white;
+    }
+
+    .user-pill {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .menu-toggle { display: none; cursor: pointer; flex-direction: column; gap: 5px; z-index: 1001; }
+    .menu-toggle .bar { width: 25px; height: 3px; background: white; transition: 0.3s; border-radius: 2px; }
+
+    .hero-content { text-align: left; }
+    .hero-badge { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.3); padding: 6px 16px; border-radius: 50px; backdrop-filter: blur(8px); font-size: 13px; font-weight: 500; display: inline-block; }
+    .hero-content h1 { font-size: clamp(28px, 4vw, 44px); line-height: 1.25; margin-top: 15px; font-weight: 800; max-width: 750px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+    .hero-content p { margin-top: 12px; font-size: clamp(15px, 1.8vw, 18px); color: #f1f5f9; max-width: 600px; text-shadow: 0 1px 5px rgba(0,0,0,0.5); }
+
+    /* Adaptabilité Mobile Navbar & Hero */
     @media (max-width: 992px) {
-        .menu-toggle { display: flex; position: absolute; top: 25px; right: 20px; }
-        .menu-toggle.active { position: fixed; right: 20px; top: 25px; }
+        .hero-rental { min-height: 50vh; padding-top: 90px; }
+        .menu-toggle { display: flex; }
         
-        .nav-container { position: fixed; top: 0; right: -100%; height: 100vh; width: 280px; background: #111827; flex-direction: column; padding: 100px 30px; transition: 0.4s; overflow-y: auto; z-index: 100; gap: 30px; align-items: flex-start; box-shadow: -10px 0 30px rgba(0,0,0,0.3); }
+        .nav-container { 
+            position: fixed; 
+            top: 0; 
+            right: -100%; 
+            height: 100vh; 
+            width: 300px; 
+            background: #0f172a; 
+            flex-direction: column; 
+            padding: 100px 30px 40px 30px; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            overflow-y: auto; 
+            z-index: 1000; 
+            gap: 30px; 
+            align-items: stretch; 
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5); 
+        }
         .nav-container.active { right: 0; }
-        .nav-links { flex-direction: column; width: 100%; gap: 20px; }
-        .nav-links a { font-size: 18px; }
-        .nav-buttons { flex-direction: column; width: 100%; gap: 15px; align-items: stretch; }
-        .btn-register, .btn-logout, .btn-login { text-align: center; width: 100%; }
-        .theme-toggle-btn { align-self: center; }
+        .nav-links { flex-direction: column; width: 100%; gap: 15px; text-align: left; }
+        .nav-link-item { font-size: 18px; display: block; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .nav-buttons { flex-direction: column; width: 100%; gap: 15px; align-items: stretch; margin-top: 10px; }
+        .btn-nav-primary, .btn-nav-ghost, .btn-nav-outline, .btn-nav-danger { text-align: center; justify-content: center; width: 100%; }
+        .user-pill { justify-content: center; width: 100%; }
+        .theme-toggle-btn { align-self: center; margin-bottom: 10px; }
     }
 </style>
+
+
+
+<!-- Section de categories de biens disponibles -->
 
 <section class="categories-section container" id="maisons">
     <h2 class="section-main-title">Les Catégories de biens disponibles</h2>
@@ -216,8 +392,8 @@
 </section>
 
 <style>
-    .categories-section { padding: 60px 20px; }
-    .section-main-title { text-align: center; margin-bottom: 40px; font-size: clamp(24px, 4vw, 32px); font-weight: 800; color: var(--text-dark); }
+    .categories-section { padding: 15px 10px 60px 20px; }
+    .section-main-title { text-align: center; margin-bottom: 20px; font-size: clamp(24px, 4vw, 32px); font-weight: 800; color: var(--text-dark); }
     
     .houses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; justify-content: center; }
     .card-link { text-decoration: none; color: inherit; display: block; }
@@ -553,28 +729,6 @@
     </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div id="registerModal" class="modal-overlay">
     <div class="auth-card">
         <div class="close-modal" id="closeRegister">&times;</div>
@@ -766,7 +920,6 @@
         }
     }
 
-    // Ajuste l'icône dès l'ouverture de la page si le mode sombre est déjà chargé
     updateThemeIcon();
 
     themeToggleBtn.addEventListener('click', () => {
@@ -838,7 +991,9 @@
     }
 
     window.onload = () => {
-        @if(session('registre_ok'))
+        @if(session('open_login_modal'))
+            showLogin();
+        @elseif(session('registre_ok'))
             showLogin();
         @elseif($errors->register->any())
             showRegister();

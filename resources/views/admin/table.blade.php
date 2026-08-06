@@ -69,12 +69,15 @@
         .logo a { color: white; text-decoration: none; font-size: 24px; font-weight: 700; }
         .logo span { color: #3b82f6; }
 
-        .nav-container { display: flex; align-items: center; gap: 20px; }
-        .btn-contracts-nav {
+        /* NAV CONTAINER & MENU MOBILE */
+        .nav-container { display: flex; align-items: center; gap: 12px; }
+
+        /* BOUTON 1 : VERT (Style Contrat / Validation) */
+        .btn-contracts-primary {
             background: #27ae60;
             color: white;
             text-decoration: none;
-            padding: 8px 18px;
+            padding: 8px 16px;
             border-radius: 30px;
             font-weight: 600;
             font-size: 13px;
@@ -83,8 +86,33 @@
             gap: 8px;
             box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
             transition: 0.3s;
+            border: 1px solid transparent;
         }
-        .btn-contracts-nav:hover { background: #219653; color: white; transform: translateY(-2px); }
+        .btn-contracts-primary:hover { background: #219653; color: white; transform: translateY(-2px); }
+
+        /* BOUTON 2 : BLEU / GLASS (Style Gestion / Dossiers) */
+        .btn-contracts-secondary {
+            background: rgba(37, 99, 235, 0.2);
+            color: #ffffff;
+            border: 1px solid rgba(59, 130, 246, 0.6);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(8px);
+            transition: 0.3s;
+        }
+        .btn-contracts-secondary:hover { 
+            background: #2563eb; 
+            color: white; 
+            border-color: #2563eb;
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
 
         .btn-back {
             background: rgba(255,255,255,0.15);
@@ -98,6 +126,62 @@
             transition: 0.3s;
         }
         .btn-back:hover { background: white; color: #1e293b; }
+
+        /* BOUTON TOGGLE MOBILE */
+        .mobile-nav-toggle {
+            display: none;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 1001;
+        }
+        .mobile-nav-toggle:hover { background: rgba(255, 255, 255, 0.3); }
+
+        /* RESPONSIVE NAVIGATION MOBILE */
+        @media (max-width: 991px) {
+            .mobile-nav-toggle { display: flex; }
+            
+            .nav-container {
+                position: absolute;
+                top: 70px;
+                right: 0;
+                left: 0;
+                background: #1e293b;
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 15px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+                display: none;
+                z-index: 1000;
+            }
+
+            .nav-container.show {
+                display: flex;
+                animation: fadeInDown 0.3s ease forwards;
+            }
+
+            .btn-contracts-primary, .btn-contracts-secondary, .btn-back {
+                justify-content: center;
+                width: 100%;
+                padding: 10px 16px;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         .hero-content { margin: 15px 0 0 0; max-width: 800px; }
         .hero-content h1 { font-size: clamp(22px, 3.5vw, 36px); line-height: 1.2; font-weight: 800; letter-spacing: -0.5px; }
@@ -125,7 +209,7 @@
         .stat-details p { margin: 0; color: var(--text-muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
 
         /* ===================================
-           HOUSES SECTION (STYLE EXACT DE LA RECHERCHE)
+           HOUSES SECTION
         =================================== */
         .houses-section {
             padding: 0 4% 60px;
@@ -188,7 +272,6 @@
         .house-card.house-locked .image-container img,
         .house-card.house-pending .image-container img { filter: grayscale(40%) blur(1px); }
 
-        /* BADGES STATUTS */
         .status-badge {
             position: absolute;
             top: 10px;
@@ -246,7 +329,6 @@
         }
         .price-tag span { font-size: 10px; color: var(--text-muted); font-weight: 400; }
 
-        /* ACTIONS BOUTONS COMPACTS */
         .card-actions { padding: 0 12px 12px 12px; }
 
         .btn-modify {
@@ -324,7 +406,6 @@
             background-color: var(--primary-soft);
         }
 
-        /* FOOTER EXACT */
         .main-footer {
             background: #0f172a;
             color: #94a3b8;
@@ -368,10 +449,24 @@
             <div class="logo">
                 <a href="{{ url('/') }}">Maison<span>Loc</span></a>
             </div>
-            <div class="nav-container">
-                <a href="{{ route('contrats.index') }}" class="btn-contracts-nav">
-                    <i class="fa-solid fa-file-signature"></i> <span class="d-none d-sm-inline">Contrats & Paiements</span>
+
+            <!-- BOUTON DU MENU BURGER MOBILE -->
+            <button class="mobile-nav-toggle" id="menuToggle" aria-label="Toggle navigation">
+                <i class="fa-solid fa-bars" id="menuIcon"></i>
+            </button>
+
+            <!-- CONTENEUR DES BOUTONS DE NAVIGATION -->
+            <div class="nav-container" id="navContainer">
+                <a href="{{ route('locataire.dashboard') }}" class="btn-contracts-primary">
+                    <i class="fa-solid fa-file-signature"></i> 
+                    <span>Mes Suivis Locataire</span>
                 </a>
+                
+                <a href="{{ route('contrats.index') }}" class="btn-contracts-secondary">
+                    <i class="fa-solid fa-folder-closed"></i> 
+                    <span>Gestion Contrats & Paiements</span>
+                </a>
+
                 <a href="{{ route('home') }}" class="btn-back">
                     <i class="fa-solid fa-arrow-left me-1"></i> Retour
                 </a>
@@ -426,7 +521,7 @@
         </div>
     </div>
 
-    <!-- MAIN MAISONS GRID (MÊME GRILLE QUE LA RECHERCHE) -->
+    <!-- MAIN MAISONS GRID -->
     <main class="houses-section">
         <h2 class="section-title">Mes Maisons <span>Enregistrées</span></h2>
         
@@ -655,7 +750,7 @@
         <i class="fa-solid fa-plus"></i>
     </a>
 
-    <!-- FOOTER EXACT -->
+    <!-- FOOTER -->
     <footer class="main-footer">
         <div class="footer-logo">Maison<span>Loc</span></div>
         <p>© 2026 MaisonLoc byGerardKrettos - La référence au Togo.</p>
@@ -665,6 +760,23 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            /* GESTION DU MENU MOBILE (BURGER <-> CROIX) */
+            const menuToggle = document.getElementById('menuToggle');
+            const navContainer = document.getElementById('navContainer');
+            const menuIcon = document.getElementById('menuIcon');
+
+            menuToggle.addEventListener('click', function() {
+                navContainer.classList.toggle('show');
+                if (navContainer.classList.contains('show')) {
+                    menuIcon.classList.remove('fa-bars');
+                    menuIcon.classList.add('fa-xmark');
+                } else {
+                    menuIcon.classList.remove('fa-xmark');
+                    menuIcon.classList.add('fa-bars');
+                }
+            });
+
+            /* LOGIQUE DES MODALES ET SELECTIONS */
             const rentedModal = new bootstrap.Modal(document.getElementById('rentedSourceModal'));
             const rentedForm = document.getElementById('rentedForm');
             const modalTitleElement = document.getElementById('modal-house-title');

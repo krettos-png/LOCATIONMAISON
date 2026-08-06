@@ -41,7 +41,7 @@ public function index()
     // soit le propriétaire de la maison (maisons.utilisateur_id).
     $contrats = Contrat::with(['maison.utilisateur', 'locataire', 'paiements'])
         ->where(function ($query) use ($userId) {
-            $query->where('utilisateur_id', $userId)
+            $query
                   ->orWhereHas('maison', function ($q) use ($userId) {
                       $q->where('utilisateur_id', $userId);
                   });
