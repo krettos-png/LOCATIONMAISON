@@ -95,23 +95,25 @@
                 </button>
 
                 @auth
-                    @if(Auth::user()->role === 'admin')
-                        <a href="{{ route('ttt') }}" class="btn-register bg-primary text-white hover:bg-primary-hover" title="Manager l'application">Manager</a>
-                    @endif
+                    @php $role = Auth::user()->role; @endphp
 
-                    @if(Auth::user()->role === 'dev')
+                    {{-- Liens selon le rôle --}}
+                    @if($role === 'dev')
                         <a href="{{ route('admin.dev') }}" class="btn-login">DEVELOPPEUR</a>
                         <a href="{{ route('ttt') }}" class="btn-login">Manager</a>
+                    @elseif($role === 'admin')
+                        <a href="{{ route('ttt') }}" class="btn-register bg-primary text-white hover:bg-primary-hover" title="Manager l'application">Manager</a>
                     @endif
-                    
+                                
                     <span class="user-greeting"><i class="fa-solid fa-user"></i> {{ Auth::user()->name }} !</span>
                     
-                    @if(Auth::user()->role === 'admin')
+                    {{-- Bouton d'action contextuel --}}
+                    @if(in_array($role, ['admin', 'dev']))
                         <a href="{{ route('admin.ajouter') }}" class="btn-register">Publier un bien</a>
-                    @elseif(Auth::user()->role === 'dev')
                     @else
                         <a href="{{ route('locataire.dashboard') }}" class="btn-register">Gerer Factures</a>
                     @endif
+
                     <a href="{{ route('logout') }}" class="btn-logout">Déconnexion</a>
                 @endauth
 

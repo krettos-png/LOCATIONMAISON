@@ -13,9 +13,7 @@ use App\Http\Controllers\LocataireController;
    // return view('welcome');
 //});
 
-Route::get('/admin/ajouter', function () {
-    return view('admin/ajouter');
-})->name('admin.ajouter');
+
 
 route::get('/admin/d', function (){
     return view('admin/dashbord');
@@ -34,7 +32,35 @@ route::get('/admin/modifier', function(){
     return view('admin/modifier');
 });
 
-route::get('/admin/dev', [AdminController::class, 'dev'])->name('admin.dev');
+//route::get('/admin/dev', [AdminController::class, 'dev'])->name('admin.dev');
+//route::get('/admin/table', [MaisonController::class, 'indextable'])->name('ttt');
+
+
+
+
+Route::middleware(['auth'])->group(function () {
+
+    // Routes réservées exclusivement aux DEV
+    Route::middleware(['role:dev'])->group(function () {
+        route::get('/admin/dev', [AdminController::class, 'dev'])->name('admin.dev');
+    });
+
+    // Routes accessibles aux ADMIN et DEV
+    Route::middleware(['role:admin,dev'])->group(function () {
+        route::get('/admin/table', [MaisonController::class, 'indextable'])->name('ttt');
+       Route::get('/admin/ajouter', function () {
+    return view('admin/ajouter');
+})->name('admin.ajouter');
+        });
+
+    // Routes accessibles aux LOCATAIRES
+    Route::middleware(['role:client'])->group(function () {
+        Route::get('/mon-espace', [LocataireController::class, 'index'])->name('locataire.dashboard');
+        Route::post('/paiements/{id}/payer', [LocataireController::class, 'payerFacture'])->name('locataire.payer');
+    });
+
+});
+
 
 
 
@@ -77,7 +103,7 @@ Route::get('/logout', function () {
 
 route::get('/admin/modifier', [MaisonController::class, 'indexModifier'])->name('hhh');
 
-route::get('/admin/table', [MaisonController::class, 'indextable'])->name('ttt');
+
 
 route::get('/dev/{id}', [MaisonController::class, 'indextableD'])->name('tttD');
 
@@ -168,9 +194,9 @@ Route::get('/contrats/{id}', [ContratController::class, 'show'])->name('contrats
 
 Route::middleware(['auth'])->group(function () {
     // Espace locataire
-    Route::get('/mon-espace', [LocataireController::class, 'index'])->name('locataire.dashboard');
+   // Route::get('/mon-espace', [LocataireController::class, 'index'])->name('locataire.dashboard');
     // Action de paiement
-    Route::post('/paiements/{id}/payer', [LocataireController::class, 'payerFacture'])->name('locataire.payer');
+    // Route::post('/paiements/{id}/payer', [LocataireController::class, 'payerFacture'])->name('locataire.payer');
 });
 
 Route::get('/gestion-contrats', [ContratController::class, 'index'])->name('contrats.index');
