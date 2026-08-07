@@ -95,6 +95,20 @@
     font-size: 14px;
     cursor: pointer;
     color: var(--text-dark) !important;
+    transition: color 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* Style pour griser le label et les champs désactivés */
+  .text-disabled, 
+  .form-check-input:disabled ~ .form-check-label {
+    color: var(--text-muted) !important;
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .form-control:disabled {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    opacity: 0.6;
   }
 
   .section-title {
@@ -112,9 +126,6 @@
     color: var(--text-light) !important;
   }
 
-  /* CORRECTION ICI : On supprime l'inversion de couleurs sur la carte Leaflet
-     pour qu'elle reste toujours claire, naturelle et parfaitement lisible.
-  */
   #map {
     background-color: #e5e9f0 !important;
   }
@@ -207,7 +218,7 @@
           
           <div class="col-md-3 mb-3">
             <label for="adresse" class="form-label fw-bold">Quartier</label>
-            <input type="text" class="form-control" style="text-transform: capitalize;" id="adresse" name="adresse" value="{{ old('adresse', $maisons->adresse) }}" required>
+            <input type="text" class="form-control" style="text-transform: lowercase;" id="adresse" name="adresse" value="{{ old('adresse', $maisons->adresse) }}" required>
           </div>
         </div>
 
@@ -271,23 +282,23 @@
           </div>
           <div class="col-md-6 mb-3">
             <label for="frais_visite" class="form-label fw-semibold">Frais de visite (FCFA)</label>
-            <input type="number" class="form-control" id="frais_visite" name="frais_visite" min="0" value="{{ old('frais_visite', $maisons->frais_visite) }}" placeholder="Ex: 5000" />
+            <input type="number" class="form-control" id="frais_visite" name="frais_visite" min="0" max="999999999" value="{{ old('frais_visite', $maisons->frais_visite) }}" placeholder="Ex: 5000" />
+            <small class="form-text text-muted">Inférieur à 999 999 999.</small>
           </div>
           <div class="col-md-6 mb-3">
             <label for="commission" class="form-label fw-semibold">Commission de l'agence (FCFA)</label>
-            <input type="number" class="form-control" id="commission" name="commission" min="0" value="{{ old('commission', $maisons->commission) }}" placeholder="Montant commission" />
+            <input type="number" class="form-control" id="commission" name="commission" min="0" max="999999999" value="{{ old('commission', $maisons->commission) }}" placeholder="Montant commission" />
+            <small class="form-text text-muted">Inférieur à 999 999 999.</small>
           </div>
-          <div class="col-md-4 mb-3">
-            <label for="caution_elec" class="form-label fw-semibold">Caution Électricité (FCFA)</label>
-            <input type="number" class="form-control" id="caution_elec" name="caution_elec" min="0" value="{{ old('caution_elec', $maisons->caution_elec) }}" placeholder="Caution élec" />
+          <div class="col-md-6 mb-3">
+            <label for="caution_elec" class="form-label fw-semibold" id="label_caution_elec">Caution Électricité (FCFA)</label>
+            <input type="number" class="form-control" id="caution_elec" name="caution_elec" min="0" max="999999999" value="{{ old('caution_elec', $maisons->caution_elec) }}" placeholder="Caution élec" />
+            <small class="form-text text-muted">Inférieur à 999 999 999.</small>
           </div>
-          <div class="col-md-4 mb-3">
-            <label for="caution_eau" class="form-label fw-semibold">Caution Eau (FCFA)</label>
-            <input type="number" class="form-control" id="caution_eau" name="caution_eau" min="0" value="{{ old('caution_eau', $maisons->caution_eau) }}" placeholder="Caution eau" />
-          </div>
-          <div class="col-md-4 mb-3">
-            <label for="caution_elec_eau" class="form-label fw-semibold">Caution combinée Élec & Eau (FCFA)</label>
-            <input type="number" class="form-control" id="caution_elec_eau" name="caution_elec_eau" min="0" value="{{ old('caution_elec_eau', $maisons->caution_elec_eau) }}" placeholder="Caution globale" />
+          <div class="col-md-6 mb-3">
+            <label for="caution_eau" class="form-label fw-semibold" id="label_caution_eau">Caution Eau (FCFA)</label>
+            <input type="number" class="form-control" id="caution_eau" name="caution_eau" min="0" max="999999999" value="{{ old('caution_eau', $maisons->caution_eau) }}" placeholder="Caution eau" />
+            <small class="form-text text-muted">Inférieur à 999 999 999.</small>
           </div>
         </div>
 
@@ -368,6 +379,39 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
+    // ---- LOGIQUE GESTION COMPTEURS & CAUTIONS ----
+    const checkElec = document.getElementById('compteur_elec_perso');
+    const inputElec = document.getElementById('caution_elec');
+    const labelElec = document.getElementById('label_caution_elec');
+
+    const checkEau = document.getElementById('compteur_eau_perso');
+    const inputEau = document.getElementById('caution_eau');
+    const labelEau = document.getElementById('label_caution_eau');
+
+    function toggleCompteurState(checkbox, inputField, labelElement) {
+      if (!checkbox.checked) {
+        inputField.value = '';
+        inputField.disabled = true;
+        labelElement.classList.add('text-disabled');
+      } else {
+        inputField.disabled = false;
+        labelElement.classList.remove('text-disabled');
+      }
+    }
+
+    // Initialisation au chargement de la page
+    toggleCompteurState(checkElec, inputElec, labelElec);
+    toggleCompteurState(checkEau, inputEau, labelEau);
+
+    // Écouteurs d'événements sur changement d'état
+    checkElec.addEventListener('change', function() {
+      toggleCompteurState(checkElec, inputElec, labelElec);
+    });
+
+    checkEau.addEventListener('change', function() {
+      toggleCompteurState(checkEau, inputEau, labelEau);
+    });
+
     // ---- LOGIQUE CARTOGRAPHIE ----
     const initialLat = {{ $maisons->latitude ?? 6.2 }};
     const initialLng = {{ $maisons->longitude ?? 1.2 }};

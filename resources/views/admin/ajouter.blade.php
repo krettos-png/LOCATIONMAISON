@@ -80,6 +80,14 @@
     margin-top: 4px;
   }
 
+  /* Style pour griser le label et les champs désactivés */
+  .text-disabled, 
+  .form-check-input:disabled ~ .form-check-label {
+    color: var(--text-muted) !important;
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
   .navbar {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
@@ -227,7 +235,8 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('ttt') }}">
+                      
+                        <a class="nav-link active" href="javascript:history.back()">
                             <i class="fa-solid fa-arrow-left me-1"></i> Retour
                         </a>
                     </li>
@@ -303,7 +312,7 @@
 
       <div class="form-group">
         <label for="adresse">Quartier</label>
-        <input type="text" style="text-transform: capitalize;" id="adresse" name="adresse" placeholder="Entrez le quartier où se trouve la maison" required />
+        <input type="text" style="text-transform: lowercase;" id="adresse" name="adresse" placeholder="Entrez le quartier où se trouve la maison" required />
       </div>
 
       <div class="section-title">Caractéristiques du bien</div>
@@ -366,21 +375,24 @@
         </div>
         <div class="col-md-6 form-group">
           <label for="frais_visite">Frais de visite (FCFA)</label>
-          <input type="number" id="frais_visite" name="frais_visite" min="0" placeholder="Ex: 5000" />
+          <input type="number" id="frais_visite" name="frais_visite" min="0" max="999999999" placeholder="Ex: 5000" />
+          <small class="form-text text-muted">Inférieur à 999 999 999 FCFA.</small>
         </div>
         <div class="col-md-6 form-group">
           <label for="commission">Commission de l'agence (FCFA)</label>
-          <input type="number" id="commission" name="commission" min="0" placeholder="Montant de la commission" />
+          <input type="number" id="commission" name="commission" min="0" max="999999999" placeholder="Montant de la commission" />
+          <small class="form-text text-muted">Inférieur à 999 999 999 FCFA.</small>
         </div>
         <div class="col-md-4 form-group">
-          <label for="caution_elec">Caution Électricité (FCFA)</label>
-          <input type="number" id="caution_elec" name="caution_elec" min="0" placeholder="Montant caution élec" />
+          <label for="caution_elec" id="label_caution_elec">Caution Électricité (FCFA)</label>
+          <input type="number" id="caution_elec" name="caution_elec" min="0" max="999999999" placeholder="Montant caution élec" />
+          <small class="form-text text-muted">Inférieur à 999 999 999 FCFA.</small>
         </div>
         <div class="col-md-4 form-group">
-          <label for="caution_eau">Caution Eau (FCFA)</label>
-          <input type="number" id="caution_eau" name="caution_eau" min="0" placeholder="Montant caution eau" />
+          <label for="caution_eau" id="label_caution_eau">Caution Eau (FCFA)</label>
+          <input type="number" id="caution_eau" name="caution_eau" min="0" max="999999999" placeholder="Montant caution eau" />
+          <small class="form-text text-muted">Inférieur à 999 999 999 FCFA.</small>
         </div>
-        
       </div>
 
       <div class="form-group mt-3">
@@ -425,6 +437,56 @@
   <script src="{{ asset('js/ajouter.js') }}"></script>
 
   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // ---- LOGIQUE GESTION COMPTEURS & CAUTIONS ----
+      const checkElec = document.getElementById('compteur_elec_perso');
+      const inputElec = document.getElementById('caution_elec');
+      const labelElec = document.getElementById('label_caution_elec');
+
+      const checkEau = document.getElementById('compteur_eau_perso');
+      const inputEau = document.getElementById('caution_eau');
+      const labelEau = document.getElementById('label_caution_eau');
+
+      function toggleCompteurState(checkbox, inputField, labelElement) {
+        if (checkbox && inputField && labelElement) {
+          if (!checkbox.checked) {
+            inputField.value = '';
+            inputField.disabled = true;
+            labelElement.classList.add('text-disabled');
+          } else {
+            inputField.disabled = false;
+            labelElement.classList.remove('text-disabled');
+          }
+        }
+      }
+
+      // Initialisation au chargement de la page
+      toggleCompteurState(checkElec, inputElec, labelElec);
+      toggleCompteurState(checkEau, inputEau, labelEau);
+
+      // Écouteurs d'événements
+      if (checkElec) {
+        checkElec.addEventListener('change', function() {
+          toggleCompteurState(checkElec, inputElec, labelElec);
+        });
+      }
+
+      if (checkEau) {
+        checkEau.addEventListener('change', function() {
+          toggleCompteurState(checkEau, inputEau, labelEau);
+        });
+      }
+
+      // ---- MINUSCULES AUTOMATIQUES POUR LE QUARTIER ----
+      const inputAdresse = document.getElementById('adresse');
+      if (inputAdresse) {
+        inputAdresse.addEventListener('input', function () {
+          this.value = this.value.toLowerCase();
+        });
+      }
+    });
+
+    // ---- LOGIQUE RÉGIONS ET VILLES ----
     const villesParRegion = {
       "Maritime": ["Lomé", "Tsévié", "Aného", "Tabligbo", "Vogan", "Kévé", "Afagnangan", "Baguida", "Agbodrafo", "Togoville"],
       "Plateaux": ["Atakpamé", "Kpalimé", "Badou", "Notsé", "Anié", "Amlamé", "Danyi Apéyemé", "Elavagnon", "Adéta", "Tohoun"],
@@ -455,7 +517,7 @@
       }
     });
 
-    // Fonction d'aperçu de l'image (si besoin)
+    // Fonction d'aperçu de l'image
     function previewImage(event) {
       const reader = new FileReader();
       reader.onload = function(){

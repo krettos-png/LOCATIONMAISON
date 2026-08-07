@@ -165,7 +165,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Routes accessibles aux ADMIN et DEV uniquement
     Route::middleware(['role:admin,dev'])->group(function () {
-        // Route pour afficher le formulaire de création d'une maison
+        // Route pour ENREGISTRER UNE MAISON
         route::post('/ajouter', [MaisonController::class, 'store'])->name('enre');
        
 
@@ -186,9 +186,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-        // Route pour enregistrer une maison
-        route::post('/enregistrer/store', [AdminController::class, 'store'])->name('enre2');
-
+       
         //ROUTE POUR SUPPRIMER UNE MAISON SECONDAIRE
         
         route::get('maison/{id}/sup', [MaisonController::class, 'destroy'])->name('maisonsSecon.sup');
@@ -257,6 +255,10 @@ Route::post('/login', [AdminController::class, 'login'])->name('login');
 Route::get('/login', function () {
     return redirect('/')->with('open_login_modal', true);
 })->name('login');
+
+//ROUTE POUR L'INSCRIPTION
+ // Route pour enregistrer UN NOUVEAU PROPRIETAIRE (ADMIN OU CLIENT)
+        route::post('/enregistrer/store', [AdminController::class, 'store'])->name('enre2');
 
 
 

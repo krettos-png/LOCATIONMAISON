@@ -729,25 +729,25 @@
     </div>
 </div>
 
-<div id="registerModal" class="modal-overlay">
+<div id="registerModal" class="modal-overlay {{ $errors->register->any() ? 'active' : '' }}">
     <div class="auth-card">
         <div class="close-modal" id="closeRegister">&times;</div>
+        
         <div class="auth-header">
             <div class="icon-box"><i class="fa-solid fa-user-plus"></i></div>
             <h3>Créer un compte</h3>
-            <p>Rejoignez la communauté MaisonLoc</p>
+            <p>Rejoignez MaisonLoc</p>
         </div>
 
         @if($errors->register->any())
-            <div class="error-message-box"><i class="fa-solid fa-circle-exclamation"></i> Les mots de passe ne correspondent pas</div>
-        @endif
-
-         @if($errors->Demail->any())
-            <div class="error-message-box"><i class="fa-solid fa-circle-exclamation"></i> L'email existe déjà</div>
+            <div class="error-message-box">
+                <i class="fa-solid fa-circle-exclamation"></i> {{ $errors->register->first() }}
+            </div>
         @endif
 
         <form method="POST" action="{{ route('enre2') }}" enctype="multipart/form-data">
             @csrf
+            
             <div class="role-selector">
                 <p>Avez-vous des maisons à louer ?</p>
                 <div class="radio-group">
@@ -757,25 +757,56 @@
             </div>
 
             <div class="input-row">
-                <div class="input-group"><label>Nom</label><input type="text" name="nom" value="{{ old('nom') }}" required></div>
-                <div class="input-group"><label>Prénom</label><input type="text" name="prenom" value="{{ old('prenom') }}" required></div>
+                <div class="input-group">
+                    <label>Nom</label>
+                    <input type="text" name="nom" value="{{ old('nom') }}" placeholder="Nom" required>
+                </div>
+                <div class="input-group">
+                    <label>Prénom</label>
+                    <input type="text" name="prenom" value="{{ old('prenom') }}" placeholder="Prénom" required>
+                </div>
             </div>
 
             <div class="input-row">
-                <div class="input-group"><label>Contact</label><input type="number" name="contact" value="{{ old('contact') }}" required></div>
-                <div class="input-group"><label>Email</label><input type="email" name="email" value="{{ old('email') }}" required></div>
+                <div class="input-group">
+                    <label>Contact</label>
+                    <input type="number" name="contact" value="{{ old('contact') }}" placeholder="01234567" required>
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" name="email" value="{{ old('email') }}" placeholder="email@ex.com" required>
+                </div>
             </div>
 
             <div class="input-row">
-                <div class="input-group"><label>Mot de passe</label><input type="password" name="password" required></div>
-                <div class="input-group"><label>Confirmer</label><input type="password" name="password_confirmation" required></div>
+                <div class="input-group">
+                    <label>Mot de passe</label>
+                    <input type="password" name="password" placeholder="••••••" required>
+                </div>
+                <div class="input-group">
+                    <label>Confirmer</label>
+                    <input type="password" name="password_confirmation" placeholder="••••••" required>
+                </div>
             </div>
 
             <button type="submit" class="auth-btn">S'inscrire</button>
         </form>
-        <div class="auth-footer">Déjà inscrit ? <a href="javascript:void(0)" class="toggle-to-login">Se connecter</a></div>
+
+        <div class="auth-footer">
+            Déjà inscrit ? <a href="javascript:void(0)" class="toggle-to-login">Se connecter</a>
+        </div>
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+
 
 <style>
     .modal-overlay { display: none; position: fixed; inset: 0; z-index: 10000; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
@@ -812,6 +843,18 @@
         .input-row { flex-direction: column; gap: 0; }
         .auth-card { padding: 20px; }
     }
+
+
+
+
+
+ 
+
+
+
+
+
+    
 </style>
 
 <footer class="main-footer">

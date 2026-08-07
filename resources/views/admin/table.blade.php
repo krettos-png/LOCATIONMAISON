@@ -467,7 +467,7 @@
                     <span>Gestion Contrats & Paiements</span>
                 </a>
 
-                <a href="{{ route('home') }}" class="btn-back">
+                <a href="{{ url('/') }}" class="btn-back">
                     <i class="fa-solid fa-arrow-left me-1"></i> Retour
                 </a>
             </div>

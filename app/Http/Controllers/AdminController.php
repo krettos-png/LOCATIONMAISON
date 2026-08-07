@@ -45,47 +45,44 @@ class AdminController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        // $request->validate([
-        //     'nom' => 'required',
-        //     'prenom' => 'required',
-        //     'contact' => 'required',
-        //     'email' => 'required|email|unique:utilisateurs,email',
-        //     'password' => 'required|min:6|confirmed',
-        //     'role' => 'required|in:oui,non',
-        // ]);
+{
+    $validator = Validator::make($request->all(), [
+        'nom' => 'required',
+        'prenom' => 'required',
+        'contact' => 'required',
+        'email' => 'required|email|unique:utilisateurs,email',
+        'password' => 'required|min:6|confirmed',
+        'role' => 'required|in:oui,non',
+    ], [
+        'email.unique' => 'Cet email est déjà utilisé.',
+        'email.required' => 'L\'adresse email est obligatoire.',
+        'password.confirmed' => 'Les mots de passe ne correspondent pas.',
+        'password.min' => 'Le mot de passe doit faire au moins 6 caractères.',
+        'nom.required' => 'Le nom est obligatoire.',
+        'prenom.required' => 'Le prénom est obligatoire.',
+        'contact.required' => 'Le contact est obligatoire.',
+        'role.required' => 'Veuillez indiquer si vous avez des maisons à louer.',
+    ]);
 
-        $validator = Validator::make($request->all(), [
-            'nom' => 'required',
-            'prenom' => 'required',
-            'contact' => 'required',
-            'email' => 'required|email|unique:utilisateurs,email',
-                'password' => 'required|min:6|confirmed',
-                'role' => 'required|in:oui,non',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator, 'register') // Spécifie le bag d'erreurs pour le formulaire d'inscription
-                ->withInput();
-        }
-
-        $role = $request->role === 'oui' ? 'admin' : 'client'; // 👈 logique du rôle
-    
-        // Enregistrer l'utilisateur
-        $utilisateur = new Utilisateur();
-        $utilisateur->name = $request->nom;
-        $utilisateur->prenom = $request->prenom;
-        $utilisateur->contact = $request->contact;
-        $utilisateur->email = $request->email;
-        $utilisateur->password = Hash::make($request->password); // HASH DU MOT DE PASSE
-        $utilisateur->role=$role;
-        $utilisateur->save();
-
-   
-        return redirect("/")->with('registre_ok', true); // Redirige vers la page d'accueil avec un message de succès
-
+    if ($validator->fails()) {
+        return redirect()->back()
+            ->withErrors($validator, 'register') // Redirige dans le sac 'register'
+            ->withInput();
     }
+
+    $role = $request->role === 'oui' ? 'admin' : 'client';
+
+    $utilisateur = new Utilisateur();
+    $utilisateur->name = $request->nom;
+    $utilisateur->prenom = $request->prenom;
+    $utilisateur->contact = $request->contact;
+    $utilisateur->email = $request->email;
+    $utilisateur->password = Hash::make($request->password);
+    $utilisateur->role = $role;
+    $utilisateur->save();
+
+    return redirect("/")->with('registre_ok', true);
+}
 
     /**
      * Display the specified resource.

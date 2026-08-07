@@ -81,9 +81,23 @@
 <div class="container my-3 my-md-5">
     <div class="d-flex justify-content-between align-items-center mb-3 mb-md-4">
         <h1 class="h3 fw-bold m-0">Bonjour, {{ Auth::user()->prenom ?? Auth::user()->name }} 👋</h1>
-        <a href="{{ route('home') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="fa-solid fa-arrow-left me-1"></i> <span class="d-none d-sm-inline">Retour au site</span>
+
+
+        @auth
+        @php $role = Auth::user()->role; @endphp
+    @if($role === 'admin' || $role === 'dev') {{-- Remplacez par votre méthode/rôle --}}
+        <a href="{{ route('ttt') }}" class="btn btn-outline-secondary btn-sm">
+             <i class="fa-solid fa-arrow-left me-1"></i> <span class="d-none d-sm-inline">Retour</span>
         </a>
+    @else
+        <a href="{{ route('home') }}" class="btn btn-outline-secondary btn-sm">
+             <i class="fa-solid fa-arrow-left me-1"></i> <span class="d-none d-sm-inline">Retour au site</span>
+        </a>
+    @endif
+@endauth
+
+
+
     </div>
 
     {{-- ALERTES ET NOTIFICATIONS AUTO-DISPARAISSANTES --}}
