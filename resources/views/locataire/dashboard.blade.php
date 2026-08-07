@@ -28,6 +28,23 @@
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
         }
 
+        /* Options d'opérateurs Mobile Money */
+        .operator-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .operator-card:hover, .operator-card.selected {
+            border-color: #0d6efd;
+            background-color: #f0f7ff;
+        }
+        .operator-card input[type="radio"] {
+            display: none;
+        }
+
         /* Animation pour la disparition fluide des alertes */
         .alert-dismissible-custom {
             transition: opacity 0.5s ease-out, transform 0.5s ease-out, margin 0.5s ease-out;
@@ -82,10 +99,9 @@
     <div class="d-flex justify-content-between align-items-center mb-3 mb-md-4">
         <h1 class="h3 fw-bold m-0">Bonjour, {{ Auth::user()->prenom ?? Auth::user()->name }} 👋</h1>
 
-
         @auth
         @php $role = Auth::user()->role; @endphp
-    @if($role === 'admin' || $role === 'dev') {{-- Remplacez par votre méthode/rôle --}}
+    @if($role === 'admin' || $role === 'dev')
         <a href="{{ route('ttt') }}" class="btn btn-outline-secondary btn-sm">
              <i class="fa-solid fa-arrow-left me-1"></i> <span class="d-none d-sm-inline">Retour</span>
         </a>
@@ -95,8 +111,6 @@
         </a>
     @endif
 @endauth
-
-
 
     </div>
 
@@ -215,15 +229,16 @@
                         <h5 class="fw-bold text-dark mb-2 fs-6"><i class="fa-solid fa-credit-card text-success me-2"></i>Payer mon loyer à tout moment</h5>
                         <p class="text-muted small mb-3">Sélectionnez le nombre de mois que vous souhaitez régler aujourd'hui.</p>
                         
-                        <form action="{{ route('locataire.payerAvance', $contratActuel->id) }}" method="POST" class="row g-2 g-md-3 align-items-end">
+                        <!-- FORMULAIRE : PAIEMENT PLUSIEURS MOIS -->
+                        <form action="{{ route('locataire.payerAvance', $contratActuel->id) }}" method="POST" class="row g-2 g-md-3 align-items-end form-paiement-momo">
                             @csrf
                             <div class="col-12 col-sm-8">
                                 <label for="nombre_mois" class="form-label small fw-bold text-muted">Période à régler</label>
-                                <select class="form-select" id="nombre_mois" name="nombre_mois">
-                                    <option value="1" selected>1 Mois de loyer</option>
-                                    <option value="2">2 Mois de loyer</option>
-                                    <option value="3">3 Mois de loyer</option>
-                                    <option value="6">6 Mois de loyer (1 Semestre)</option>
+                                <select class="form-select" id="nombre_mois" name="nombre_mois" data-prix="{{ $contratActuel->maison->prix }}">
+                                    <option value="1" selected>1 Mois de loyer ({{ number_format($contratActuel->maison->prix, 0, ',', ' ') }} F CFA)</option>
+                                    <option value="2">2 Mois de loyer ({{ number_format($contratActuel->maison->prix * 2, 0, ',', ' ') }} F CFA)</option>
+                                    <option value="3">3 Mois de loyer ({{ number_format($contratActuel->maison->prix * 3, 0, ',', ' ') }} F CFA)</option>
+                                    <option value="6">6 Mois de loyer ({{ number_format($contratActuel->maison->prix * 6, 0, ',', ' ') }} F CFA)</option>
                                 </select>
                             </div>
                             <div class="col-12 col-sm-4">
@@ -242,9 +257,10 @@
                         
                         <!-- BOUTON : TOUT PAYER LES AVANCES (TYPE == 0) -->
                         @if($aDesAvancesImpayees && !$contratEstTermine)
-                            <form action="{{ route('locataire.payerToutesAvances', $contratActuel->id) }}" method="POST" class="w-100 w-sm-auto">
+                            <!-- FORMULAIRE : TOUT PAYER (AVANCES) -->
+                            <form action="{{ route('locataire.payerToutesAvances', $contratActuel->id) }}" method="POST" class="w-100 w-sm-auto form-paiement-momo" data-montant="{{ $avancesImpayees->sum('montant') }}" data-description="Solder la totalité des avances (Type 0)">
                                 @csrf
-                                <button type="submit" class="btn btn-success btn-sm w-100 shadow-sm fw-bold py-2 px-3" onclick="return confirm('Solder la totalité des avances (Type 0) ?');">
+                                <button type="submit" class="btn btn-success btn-sm w-100 shadow-sm fw-bold py-2 px-3">
                                     <i class="fa-solid fa-check-double me-1"></i> Tout payer (Avances)
                                 </button>
                             </form>
@@ -319,7 +335,8 @@
                                                     <i class="fa-solid fa-lock me-1"></i> Bloqué
                                                 </button>
                                             @else
-                                                <form action="{{ route('locataire.payerSeul', $paiement->id) }}" method="POST" class="d-inline w-100">
+                                                <!-- FORMULAIRE : PAIEMENT UNIQUE (MENSUALITÉ) -->
+                                                <form action="{{ route('locataire.payerSeul', $paiement->id) }}" method="POST" class="d-inline w-100 form-paiement-momo" data-montant="{{ $paiement->montant }}" data-description="Loyer : {{ $paiement->mois_concerne }}">
                                                     @csrf
                                                     <button type="submit" class="btn btn-primary btn-sm px-3 py-1 shadow-sm w-100 w-md-auto">
                                                         <i class="fa-solid fa-wallet me-1"></i> Régler
@@ -387,7 +404,8 @@
                                                 @if($contratEstTermine)
                                                     <span class="badge bg-secondary">Bloqué</span>
                                                 @else
-                                                    <form action="{{ route('locataire.payerSeul', $avance->id) }}" method="POST" class="d-inline">
+                                                    <!-- FORMULAIRE : PAIEMENT AVANCE INDIVIDUELLE -->
+                                                    <form action="{{ route('locataire.payerSeul', $avance->id) }}" method="POST" class="d-inline form-paiement-momo" data-montant="{{ $avance->montant }}" data-description="Avance : {{ $avance->mois_concerne }}">
                                                         @csrf
                                                         <button type="submit" class="btn btn-primary btn-sm px-3 shadow-sm">
                                                             <i class="fa-solid fa-wallet me-1"></i> Régler
@@ -410,9 +428,10 @@
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fermer</button>
                         
                         @if($aDesAvancesImpayees && !$contratEstTermine)
-                            <form action="{{ route('locataire.payerToutesAvances', $contratActuel->id) }}" method="POST">
+                            <!-- FORMULAIRE : TOUT PAYER DEPUIS LA MODAL -->
+                            <form action="{{ route('locataire.payerToutesAvances', $contratActuel->id) }}" method="POST" class="form-paiement-momo" data-montant="{{ $avancesImpayees->sum('montant') }}" data-description="Solder toutes les avances">
                                 @csrf
-                                <button type="submit" class="btn btn-success btn-sm fw-bold px-3 shadow-sm" onclick="return confirm('Solder la totalité des avances ?');">
+                                <button type="submit" class="btn btn-success btn-sm fw-bold px-3 shadow-sm">
                                     <i class="fa-solid fa-check-double me-1"></i> Tout Payer Maintenant
                                 </button>
                             </form>
@@ -426,32 +445,210 @@
     @endif
 </div>
 
-<!-- SCRIPTS BOOTSTRAP OBLIGATOIRES POUR L'OUVERTURE DU MODAL -->
+{{-- MODAL COMMUNE DE SIMULATION DE PAIEMENT MOBILE MONEY --}}
+<div class="modal fade" id="modalMobileMoney" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header bg-primary text-white border-0" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                <h5 class="modal-title fw-bold fs-6">
+                    <i class="fa-solid fa-mobile-screen-button me-2"></i>Paiement Mobile Money (Sandbox)
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" id="btnCloseMomo"></button>
+            </div>
+            <div class="modal-body p-4">
+                
+                {{-- ÉCRAN 1 : FORMULAIRE DE SAISIE --}}
+                <div id="momoFormScreen">
+                    <div class="alert alert-light border text-center mb-3">
+                        <small class="text-muted d-block">Montant à régler</small>
+                        <span class="fs-4 fw-bold text-success" id="momoAffichageMontant">0 F CFA</span>
+                        <small class="text-muted d-block mt-1" id="momoAffichageDesc"></small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">1. Choisissez votre opérateur :</label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="operator-card w-100 selected" onclick="selectOperator(this)">
+                                    <input type="radio" name="momo_operator" value="MTN MoMo" checked>
+                                    <i class="fa-solid fa-bolt text-warning me-1"></i> <strong>MTN MoMo</strong>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="operator-card w-100" onclick="selectOperator(this)">
+                                    <input type="radio" name="momo_operator" value="Moov Money">
+                                    <i class="fa-solid fa-signal text-primary me-1"></i> <strong>Moov Money</strong>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="operator-card w-100" onclick="selectOperator(this)">
+                                    <input type="radio" name="momo_operator" value="T-Money">
+                                    <i class="fa-solid fa-water text-info me-1"></i> <strong>T-Money</strong>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="operator-card w-100" onclick="selectOperator(this)">
+                                    <input type="radio" name="momo_operator" value="Orange Money">
+                                    <i class="fa-solid fa-phone text-warning me-1"></i> <strong>Orange Money</strong>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="momoPhone" class="form-label small fw-bold text-secondary">2. Numéro de téléphone :</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fa-solid fa-phone"></i></span>
+                            <input type="tel" id="momoPhone" class="form-control" placeholder="ex: 90 00 00 00" value="90000000" required>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-success w-100 py-2 fw-bold shadow-sm" id="btnConfirmerPaiementMomo">
+                        <i class="fa-solid fa-lock me-2"></i>Payer Maintenant
+                    </button>
+                </div>
+
+                {{-- ÉCRAN 2 : CHARGEMENT / SIMULATION PUSH USSD --}}
+                <div id="momoLoadingScreen" class="text-center py-4" style="display: none;">
+                    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+                        <span class="visually-hidden">Traitement...</span>
+                    </div>
+                    <h6 class="fw-bold text-dark">Validation sur votre téléphone...</h6>
+                    <p class="text-muted small mb-0">Une demande de confirmation a été envoyée au numéro <strong id="momoPhoneDisplay"></strong>.</p>
+                    <p class="text-muted small">Veuillez valider le paiement avec votre code secret.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS BOOTSTRAP OBLIGATOIRES -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- SCRIPT JS POUR LA DISPARITION AUTOMATIQUE DES MESSAGES D'ALERTE -->
+<!-- SCRIPT PAIEMENT MOBILE MONEY SIMULÉ + AUTO-DISPARITION ALERTES -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Sélectionne toutes les alertes personnalisées
-        const alerts = document.querySelectorAll('.alert-dismissible-custom');
+    let currentFormToSubmit = null;
 
+    function selectOperator(element) {
+        document.querySelectorAll('.operator-card').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+        element.querySelector('input[type="radio"]').checked = true;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const momoModalElement = document.getElementById('modalMobileMoney');
+        const momoModal = new bootstrap.Modal(momoModalElement);
+
+        // Interception de tous les formulaires avec la classe .form-paiement-momo
+        document.querySelectorAll('.form-paiement-momo').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                currentFormToSubmit = this;
+
+                let montant = 0;
+                let description = "";
+
+                // Cas 1 : Formulaire de sélection de plusieurs mois
+                const selectMois = this.querySelector('#nombre_mois');
+                if (selectMois) {
+                    const prixUnitaire = parseFloat(selectMois.getAttribute('data-prix')) || 0;
+                    const nbrMois = parseInt(selectMois.value) || 1;
+                    montant = prixUnitaire * nbrMois;
+                    description = `Règlement de ${nbrMois} mois de loyer`;
+                } 
+                // Cas 2 : Paiement d'une seule ligne ou de la totalité des avances
+                else {
+                    montant = parseFloat(this.getAttribute('data-montant')) || 0;
+                    description = this.getAttribute('data-description') || "Règlement de facture";
+                }
+
+                // Mise à jour des informations dans la modale
+                document.getElementById('momoAffichageMontant').innerText = new Intl.NumberFormat('fr-FR').format(montant) + ' F CFA';
+                document.getElementById('momoAffichageDesc').innerText = description;
+
+                // Réinitialiser les écrans de la modale
+                document.getElementById('momoFormScreen').style.display = 'block';
+                document.getElementById('momoLoadingScreen').style.display = 'none';
+                document.getElementById('btnCloseMomo').style.display = 'block';
+
+                // Si la modale des avances était ouverte, on la ferme d'abord
+                const modalAvancesEl = document.getElementById('modalAvances');
+                if (modalAvancesEl) {
+                    const bsModalAvances = bootstrap.Modal.getInstance(modalAvancesEl);
+                    if (bsModalAvances) bsModalAvances.hide();
+                }
+
+                momoModal.show();
+            });
+        });
+
+        // Bouton "Payer Maintenant" dans la modale
+        document.getElementById('btnConfirmerPaiementMomo').addEventListener('click', function () {
+            const phone = document.getElementById('momoPhone').value.trim();
+            if (!phone) {
+                alert('Veuillez entrer un numéro de téléphone.');
+                return;
+            }
+
+            // 1. Récupération de l'opérateur coché
+            const selectedOperatorRadio = document.querySelector('input[name="momo_operator"]:checked');
+            const moyenPaiement = selectedOperatorRadio ? selectedOperatorRadio.value : 'Mobile Money';
+
+            // 2. Génération d'un ID de transaction aléatoire (ex: TRX-83920147)
+            const randomNum = Math.floor(10000000 + Math.random() * 90000000);
+            const transactionId = 'TRX-' + randomNum;
+
+            document.getElementById('momoPhoneDisplay').innerText = phone;
+            document.getElementById('momoFormScreen').style.display = 'none';
+            document.getElementById('momoLoadingScreen').style.display = 'block';
+            document.getElementById('btnCloseMomo').style.display = 'none';
+
+            // Simulation du délai d'attente réseau (3 secondes)
+            setTimeout(() => {
+                if (currentFormToSubmit) {
+                    // Injection de 'moyen_paiement' dans le formulaire
+                    let inputMoyen = currentFormToSubmit.querySelector('input[name="moyen_paiement"]');
+                    if (!inputMoyen) {
+                        inputMoyen = document.createElement('input');
+                        inputMoyen.type = 'hidden';
+                        inputMoyen.name = 'moyen_paiement';
+                        currentFormToSubmit.appendChild(inputMoyen);
+                    }
+                    inputMoyen.value = moyenPaiement;
+
+                    // Injection de 'transaction_id' dans le formulaire
+                    let inputTxn = currentFormToSubmit.querySelector('input[name="transaction_id"]');
+                    if (!inputTxn) {
+                        inputTxn = document.createElement('input');
+                        inputTxn.type = 'hidden';
+                        inputTxn.name = 'transaction_id';
+                        currentFormToSubmit.appendChild(inputTxn);
+                    }
+                    inputTxn.value = transactionId;
+
+                    // Soumission réelle du formulaire Laravel d'origine
+                    currentFormToSubmit.submit();
+                }
+            }, 3000);
+        });
+
+        // Disparition automatique des messages flash d'alerte (4s)
+        const alerts = document.querySelectorAll('.alert-dismissible-custom');
         if (alerts.length > 0) {
-            // Attend 4 secondes (4000ms) avant de commencer à masquer
             setTimeout(() => {
                 alerts.forEach(alert => {
-                    // Rend l'alerte transparente et la rétrécit
                     alert.style.opacity = '0';
                     alert.style.transform = 'translateY(-10px)';
                     alert.style.marginBottom = '0';
                     alert.style.paddingTop = '0';
                     alert.style.paddingBottom = '0';
 
-                    // Supprime définitivement l'élément du DOM après l'animation (500ms)
                     setTimeout(() => {
                         alert.remove();
                     }, 500);
                 });
-            }, 4000); // <-- Modifie ce chiffre (en millisecondes) pour ajuster le temps d'affichage
+            }, 4000);
         }
     });
 </script>

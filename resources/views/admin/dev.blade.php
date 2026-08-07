@@ -206,17 +206,17 @@
                                 <tbody>
                                     @forelse($villes ?? [] as $ville)
                                     <tr>
-                                        <td>#{{ $ville->id }}</td>
-                                        <td><strong>{{ $ville->nom }}</strong></td>
-                                        <td><span class="badge badge-client">{{ $ville->region }}</span></td>
+                                        <td>#{{ data_get($ville, 'id') }}</td>
+                                        <td><strong>{{ data_get($ville, 'nom') }}</strong></td>
+                                        <td><span class="badge badge-client">{{ data_get($ville, 'region') }}</span></td>
                                         <td>
                                             <div class="actions-btn">
                                                 <button type="button" class="btn-edit" 
-                                                        onclick="editVille('{{ $ville->id }}', '{{ addslashes($ville->nom) }}', '{{ $ville->region }}')">
+                                                        onclick="editVille('{{ data_get($ville, 'id') }}', '{{ addslashes(data_get($ville, 'nom')) }}', '{{ data_get($ville, 'region') }}')">
                                                     Modifier
                                                 </button>
-                                                <form action="{{ route('villes.destroy', $ville->id) }}" method="POST" 
-                                                      onsubmit="return confirm('Voulez-vous vraiment supprimer la ville : {{ $ville->nom }} ?')">
+                                                <form action="{{ route('villes.destroy', data_get($ville, 'id')) }}" method="POST" 
+                                                      onsubmit="return confirm('Voulez-vous vraiment supprimer la ville : {{ data_get($ville, 'nom') }} ?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn-delete">Supprimer</button>

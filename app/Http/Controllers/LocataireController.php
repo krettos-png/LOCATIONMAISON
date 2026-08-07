@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Contrat;
 use App\Models\Paiement;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LocataireController extends Controller
 {
@@ -60,108 +61,196 @@ public function monEspace()
 
 
 
+/**
+     * Enregistrer et régler une avance de plusieurs mois de loyer
+     */
+    public function storeAvance(Request $request, $id)
+    {
+        // 1. Validation des champs reçus
+        $request->validate([
+            'nombre_mois'    => 'required|integer|min:1|max:12',
+            'moyen_paiement' => 'nullable|string|max:50',
+            'transaction_id' => 'nullable|string|max:100',
+        ]);
 
-public function storeAvance(Request $request, $id)
-{
-    $request->validate([
-        'nombre_mois' => 'required|integer|min:1|max:12',
-    ]);
+        $contrat = Contrat::with('maison', 'paiements')->findOrFail($id);
+        $loyerMensuel = $contrat->maison->prix;
+        $nombreMois = (int) $request->nombre_mois;
 
-    $contrat = Contrat::with('maison', 'paiements')->findOrFail($id);
-    $loyerMensuel = $contrat->maison->prix;
-    $nombreMois = (int) $request->nombre_mois;
+        // Récupération de l'opérateur et de l'ID de transaction (ou génération automatique)
+        $moyenPaiement = $request->input('moyen_paiement') ?? 'Mobile Money';
+        $transactionIdBase = $request->input('transaction_id') 
+            ?? 'TRX-' . rand(10000000, 99999999);
 
-    // Récupérer le tout dernier paiement enregistré
-    $dernierPaiement = $contrat->paiements()->orderBy('id', 'desc')->first();
+        // Récupérer le dernier paiement enregistré pour poursuivre le calendrier
+        $dernierPaiement = $contrat->paiements()->orderBy('id', 'desc')->first();
 
-    if ($dernierPaiement && !empty($dernierPaiement->mois_concerne)) {
-        // Option A : Si tu as une colonne 'date_mois_concerne' (Recommandé)
-        // $dateDepart = Carbon::parse($dernierPaiement->date_mois_concerne)->addMonth();
-
-        // Option B : Si tu dois parser la chaîne "Août 2026"
-        try {
-            // On convertit la chaîne française en objet Carbon puis on ajoute 1 mois
-            $dateDepart = Carbon::createFromLocaleFormat('F Y', 'fr', $dernierPaiement->mois_concerne)->addMonth();
-        } catch (\Exception $e) {
-            // Fallback au cas où le parsing de la chaîne échoue
+        if ($dernierPaiement && !empty($dernierPaiement->mois_concerne)) {
+            try {
+                // Parsing de la chaîne française (ex: "Août 2026") puis passage au mois suivant
+                $dateDepart = Carbon::createFromLocaleFormat('F Y', 'fr', $dernierPaiement->mois_concerne)->addMonth();
+            } catch (\Exception $e) {
+                // Fallback au cas où le parsing échoue
+                $dateDepart = Carbon::now();
+            }
+        } else {
+            // Aucun paiement préalable : on démarre au mois en cours
             $dateDepart = Carbon::now();
         }
-    } else {
-        // Aucun paiement préalable : on démarre au mois en cours
-        $dateDepart = Carbon::now();
+
+        DB::beginTransaction();
+        try {
+            // Créer un enregistrement réglé pour chaque mois d'avance
+            for ($i = 0; $i < $nombreMois; $i++) {
+                $moisFutur = $dateDepart->copy()->addMonths($i);
+                $nomMoisFormate = ucfirst($moisFutur->locale('fr')->translatedFormat('F Y'));
+
+                // Générer un TRX unique par mensualité créée
+                $trxUnique = $request->has('transaction_id')
+                    ? $transactionIdBase . '-' . ($i + 1)
+                    : 'TRX-' . rand(10000000, 99999999);
+
+                Paiement::create([
+                    'contrat_id'         => $contrat->id,
+                    'montant'            => $loyerMensuel,
+                    'type'               => '1', // Type 1 pour mensualité / loyer
+                    'mois_concerne'      => $nomMoisFormate,
+                    'statut'             => 'Payé',
+                    'moyen_paiement'     => $moyenPaiement,
+                    'transaction_id'     => $trxUnique,
+                    'reference_paiement' => 'PAY-' . strtoupper(Str::random(8)),
+                    'date_paiement'      => Carbon::now(),
+                ]);
+            }
+
+            DB::commit();
+
+            $montantTotal = $loyerMensuel * $nombreMois;
+
+            return redirect()->back()->with(
+                'success',
+                "Votre avance de {$nombreMois} mois d'un montant total de " . number_format($montantTotal, 0, ',', ' ') . " F CFA a été enregistrée avec succès via {$moyenPaiement} !"
+            );
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', "Une erreur est survenue lors de l'enregistrement de l'avance : " . $e->getMessage());
+        }
     }
 
-    // Créer un enregistrement pour chaque mois d'avance
-    for ($i = 0; $i < $nombreMois; $i++) {
-        $moisFutur = $dateDepart->copy()->addMonths($i);
-        $nomMoisFormate = $moisFutur->locale('fr')->isoFormat('MMMM YYYY');
-
-        Paiement::create([
-            'contrat_id'         => $contrat->id,
-            'montant'            => $loyerMensuel,
-            'type'               => '1', 
-            'mois_concerne'      => ucfirst($nomMoisFormate),
-            'statut'             => 'Payé',
-            'reference_paiement' => 'PAY-' . strtoupper(Str::random(8)),
-            'date_paiement'      => Carbon::now(),
-        ]);
-    }
-
-    return redirect()->back()->with('success', "Votre avance de {$nombreMois} mois a été enregistrée avec succès !");
-}
 
 
-public function payerFactureSeule($id)
-{
-    // 1. Trouver le paiement concerné (qu'il s'agisse d'un mois de loyer, d'une caution ou de frais)
-    $paiement = Paiement::findOrFail($id);
-
-    // 2. Vérifier s'il n'est pas déjà payé pour éviter les doublons
-    if ($paiement->statut === 'Payé') {
-        return redirect()->back()->with('error', 'Cette facture a déjà été réglée.');
-    }
-
-    // 3. Mettre à jour les informations de paiement
-    $paiement->update([
-        'statut' => 'Payé',
-        //'type' => '1', // ou 'Loyer', 'Caution', selon le contexte
-        'date_paiement' => Carbon::now(),
-        // Si ta table n'a pas encore de référence pour cette ligne existante, on en génère une
-        'reference_paiement' => $paiement->reference_paiement ?? 'PAY-' . strtoupper(Str::random(8)),
-    ]);
-
-    return redirect()->back()->with('success', "Le règlement pour \"{$paiement->mois_concerne}\" a été validé !");
-}
 
 
-/**
- * Règle uniquement tous les paiements de type 0 (avances/frais initiaux) non payés du contrat.
- */
-public function payerToutesAvances($contrat_id)
-{
-    $contrat = Contrat::with('paiements')->findOrFail($contrat_id);
 
-    // On sélectionne exclusivement les paiements de TYPE 0 qui ne sont PAS payés
-    $avancesNonPayees = $contrat->paiements
-        ->where('type', 0)
-        ->where('statut', '!=', 'Payé');
 
-    if ($avancesNonPayees->isEmpty()) {
-        return redirect()->back()->with('info', 'Toutes vos avances sont déjà réglées.');
-    }
 
-    // Mise à jour groupée
-    foreach ($avancesNonPayees as $paiement) {
+
+     /* * Régler une seule facture (mensualité ou avance individuelle)
+     */
+    public function payerFactureSeule(Request $request, $id)
+    {
+        // 1. Trouver le paiement concerné
+        $paiement = Paiement::findOrFail($id);
+
+        // 2. Vérifier s'il n'est pas déjà payé pour éviter les doublons
+        if ($paiement->statut === 'Payé') {
+            return redirect()->back()->with('error', 'Cette facture a déjà été réglée.');
+        }
+
+        // Récupération de l'opérateur envoyé par le formulaire (ex: MTN MoMo, Moov Money, T-Money, Orange Money)
+        $moyenPaiement = $request->input('moyen_paiement', 'Mobile Money');
+        
+        // Récupération de l'ID de transaction généré par la modale, ou secours automatique
+        $transactionId = $request->input('transaction_id') 
+            ?? 'TRX-' . rand(10000000, 99999999);
+
+        // 3. Mettre à jour le paiement dans la base de données
         $paiement->update([
-            'statut' => 'Payé',
-            'date_paiement' => Carbon::now(),
+            'statut'             => 'Payé',
+            'date_paiement'      => Carbon::now(),
+            'moyen_paiement'     => $moyenPaiement,
+            'transaction_id'     => $transactionId,
             'reference_paiement' => $paiement->reference_paiement ?? 'PAY-' . strtoupper(Str::random(8)),
         ]);
+
+        return redirect()->back()->with('success', "Paiement de " . number_format($paiement->montant, 0, ',', ' ') . " F CFA via {$moyenPaiement} effectué avec succès ! (Transaction : {$transactionId})");
     }
 
-    return redirect()->back()->with('success', 'Toutes vos avances (frais initiaux) ont été réglées avec succès !');
-}
 
+
+
+
+
+
+
+
+
+     /* * Régler l'ensemble des avances (frais initiaux - Type 0) pour un contrat donné
+     */
+    public function payerToutesAvances(Request $request, $contrat_id)
+    {
+        // 1. Valider la requête transmise par la modale
+        $request->validate([
+            'moyen_paiement' => 'nullable|string|max:50',
+            'transaction_id' => 'nullable|string|max:100',
+        ]);
+
+        // 2. Trouver le contrat avec ses paiements
+        $contrat = Contrat::with('paiements')->findOrFail($contrat_id);
+
+        // 3. Sélectionner les avances (type 0) non payées
+        $avancesNonPayees = $contrat->paiements
+            ->where('type', 0)
+            ->where('statut', '!=', 'Payé');
+
+        if ($avancesNonPayees->isEmpty()) {
+            return redirect()->back()->with('info', 'Toutes vos avances sont déjà réglées.');
+        }
+
+        // Récupération de l'opérateur et de l'ID de transaction (ou génération automatique)
+        $moyenPaiement = $request->input('moyen_paiement') ?? 'Mobile Money';
+        $transactionIdBase = $request->input('transaction_id') 
+            ?? 'TRX-' . rand(10000000, 99999999);
+
+        // Calcul du montant total réglé
+        $montantTotal = $avancesNonPayees->sum('montant');
+
+        DB::beginTransaction();
+        try {
+            // 4. Mise à jour de chaque avance
+            foreach ($avancesNonPayees as $index => $paiement) {
+                // Si plusieurs lignes sont validées d'un coup, on garantit un TRX distinct par ligne si nécessaire
+                $trxUnique = $request->has('transaction_id') 
+                    ? $transactionIdBase . '-' . ($index + 1)
+                    : 'TRX-' . rand(10000000, 99999999);
+
+                $paiement->update([
+                    'statut'             => 'Payé',
+                    'date_paiement'      => Carbon::now(),
+                    'moyen_paiement'     => $moyenPaiement,
+                    'transaction_id'     => $trxUnique,
+                    'reference_paiement' => $paiement->reference_paiement ?? 'PAY-' . strtoupper(Str::random(8)),
+                ]);
+            }
+
+            // 5. Mise à jour éventuelle du statut du contrat si toutes les avances requis sont réglées
+            if ($contrat->statut === 'En attente') {
+                $contrat->update(['statut' => 'Actif']);
+            }
+
+            DB::commit();
+
+            return redirect()->back()->with(
+                'success',
+                "Toutes vos avances d'un montant total de " . number_format($montantTotal, 0, ',', ' ') . " F CFA ont été réglées avec succès via {$moyenPaiement} !"
+            );
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', "Une erreur est survenue lors du règlement des avances : " . $e->getMessage());
+        }
+    }
 
 
 /**
