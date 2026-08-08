@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
 
 class MaisonSeeder extends Seeder
 {
@@ -12,14 +14,32 @@ class MaisonSeeder extends Seeder
      */
     public function run(): void
     {
-        // On désactive les clés étrangères pour vider proprement la table
+        // Désactivation des contraintes de clé étrangère pour vider proprement la table
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('maisons')->delete();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // Insertion de vos données SQL réelles
+        // Attributs par défaut réutilisables pour les équipements et frais
+        $attributsParDefaut = [
+            'immeuble_etage'      => 0,
+            'meuble'              => 0,
+            'climatise'           => 0,
+            'sanitaire'           => 1,
+            'adapte_pmr'          => 0,
+            'compteur_elec_perso' => 1,
+            'compteur_eau_perso'  => 1,
+            'caution_mois'        => 3,
+            'prepaiement_mois'    => 3,
+            'frais_visite'        => 3000,
+            'commission'          => 10,
+            'caution_elec'        => 30000,
+            'caution_eau'         => 15000,
+            'caution_elec_eau'    => 45000,
+        ];
+
+        // Insertion des données SQL réelles enrichies des attributs manquants
         DB::table('maisons')->insert([
-            [
+            array_merge([
                 'id' => 1,
                 'titre' => 'fjhgjfdgGHJKLjk',
                 'description' => 'ghjNBV?khgfdhjk',
@@ -33,11 +53,12 @@ class MaisonSeeder extends Seeder
                 'created_at' => '2026-05-11 17:33:55',
                 'updated_at' => '2026-05-26 01:53:42',
                 'utilisateur_id' => 2,
-                'categorie_id' => null, // Était NULL dans vos données
+                'categorie_id' => null,
                 'ville' => 'anie',
                 'visites_demandees' => 0,
-            ],
-            [
+            ], $attributsParDefaut),
+
+            array_merge([
                 'id' => 2,
                 'titre' => 'fjhgjfdgGHJKLjk',
                 'description' => 'jfkdjfhgklfhjggklhg fbehjterhtrejvrntjmb5j5 mj5m5 mu5 k5jb65m 57bm5n67nm65m56666 m5m7m56 m75m56nvb45b',
@@ -54,8 +75,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 1,
                 'ville' => 'yyyyyy',
                 'visites_demandees' => 0,
-            ],
-            [
+            ], $attributsParDefaut, ['meuble' => 1, 'climatise' => 1]),
+
+            array_merge([
                 'id' => 3,
                 'titre' => 'fjhgjfdghfggkjg788',
                 'description' => 't687btotbo98o',
@@ -72,8 +94,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 3,
                 'ville' => 'ouiou',
                 'visites_demandees' => 1,
-            ],
-            [
+            ], $attributsParDefaut),
+
+            array_merge([
                 'id' => 4,
                 'titre' => 'yterbtrwveq',
                 'description' => 'uuuuutbhryjmiytrbv4',
@@ -90,8 +113,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 2,
                 'ville' => 'cvnbnc',
                 'visites_demandees' => 0,
-            ],
-            [
+            ], $attributsParDefaut),
+
+            array_merge([
                 'id' => 5,
                 'titre' => 'thjynrbever v',
                 'description' => 'trhmtyjmn rtb ev',
@@ -108,8 +132,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 3,
                 'ville' => 'oiu0up',
                 'visites_demandees' => 2,
-            ],
-            [
+            ], $attributsParDefaut),
+
+            array_merge([
                 'id' => 8,
                 'titre' => 'rrrrrrrrrrr',
                 'description' => 'rrrrrrrrrrrrr',
@@ -126,8 +151,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 1,
                 'ville' => 'LOME',
                 'visites_demandees' => 0,
-            ],
-            [
+            ], $attributsParDefaut),
+
+            array_merge([
                 'id' => 9,
                 'titre' => 'fdgbdfbdf',
                 'description' => 'db dsfbs',
@@ -144,8 +170,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 2,
                 'ville' => 'SOKODE3',
                 'visites_demandees' => 0,
-            ],
-            [
+            ], $attributsParDefaut),
+
+            array_merge([
                 'id' => 11,
                 'titre' => 'HGFKHJGLHJKER jhfjfjh jhfjhf jgfkj dkhgkjh gfk jhv',
                 'description' => 'DKFJOIUTIUHGILUWAGW',
@@ -162,8 +189,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 3,
                 'ville' => 'ANEHO',
                 'visites_demandees' => 5,
-            ],
-            [
+            ], $attributsParDefaut, ['climatise' => 1]),
+
+            array_merge([
                 'id' => 12,
                 'titre' => 'HGFKHJGLHJKER FJHFJ HFJ JGHKHJKVKJVLH JKBK',
                 'description' => 'DKFJOIUTIUHGILUWAGW',
@@ -180,8 +208,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 3,
                 'ville' => 'ANEHO',
                 'visites_demandees' => 12,
-            ],
-            [
+            ], $attributsParDefaut),
+
+            array_merge([
                 'id' => 13,
                 'titre' => 'Deux Chambres Salon WC Douche Interne',
                 'description' => 'DKFJOIUTIUHGILUWAGW',
@@ -198,8 +227,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 2,
                 'ville' => 'yyyyyy',
                 'visites_demandees' => 1,
-            ],
-            [
+            ], $attributsParDefaut, ['sanitaire' => 1]),
+
+            array_merge([
                 'id' => 14,
                 'titre' => 'sgsdfasvsaa',
                 'description' => 'SDFNGMHG,FGKGFD',
@@ -216,8 +246,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 1,
                 'ville' => 'GFFJFJGF',
                 'visites_demandees' => 0,
-            ],
-            [
+            ], $attributsParDefaut),
+
+            array_merge([
                 'id' => 15,
                 'titre' => 'sgsdfasvsaa',
                 'description' => 'SDFNGMHG,FGKGFD',
@@ -234,8 +265,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 1,
                 'ville' => 'LOME',
                 'visites_demandees' => 0,
-            ],
-            [
+            ], $attributsParDefaut),
+
+            array_merge([
                 'id' => 16,
                 'titre' => 'villa',
                 'description' => 'SDFNGMHG,qwfrwerqc',
@@ -252,8 +284,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 1,
                 'ville' => 'LOME',
                 'visites_demandees' => 0,
-            ],
-            [
+            ], $attributsParDefaut, ['meuble' => 1]),
+
+            array_merge([
                 'id' => 17,
                 'titre' => 'Appartement',
                 'description' => 'SDFNGMHG,qwfrwerqc',
@@ -270,8 +303,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 2,
                 'ville' => 'LOME',
                 'visites_demandees' => 0,
-            ],
-            [
+            ], $attributsParDefaut, ['immeuble_etage' => 1]),
+
+            array_merge([
                 'id' => 18,
                 'titre' => 'Appartement',
                 'description' => 'SDjgkcvhhbilhnlokjm;okhnjlhohklj',
@@ -288,8 +322,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 1,
                 'ville' => 'ATAKPAME',
                 'visites_demandees' => 0,
-            ],
-            [
+            ], $attributsParDefaut, ['immeuble_etage' => 1]),
+
+            array_merge([
                 'id' => 19,
                 'titre' => 'HGKJHGKJH',
                 'description' => 'HGKBGNIJHLK;okhnjlhohklj',
@@ -306,8 +341,9 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 2,
                 'ville' => 'AKARE',
                 'visites_demandees' => 0,
-            ],
-            [
+            ], $attributsParDefaut),
+
+            array_merge([
                 'id' => 20,
                 'titre' => 'QUATREChambres Salon WC Douche Interne',
                 'description' => 'TYOVYBOIGUO UIGO IUIGIGUICVITCIUY HH GYUF HO OH YF HVLHKU TD UKTH LHV',
@@ -324,7 +360,7 @@ class MaisonSeeder extends Seeder
                 'categorie_id' => 1,
                 'ville' => 'KARA',
                 'visites_demandees' => 0,
-            ],
+            ], $attributsParDefaut, ['climatise' => 1, 'sanitaire' => 1]),
         ]);
     }
 }

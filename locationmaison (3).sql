@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 06 août 2026 à 22:38
+-- Généré le : sam. 08 août 2026 à 16:09
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -91,12 +91,8 @@ CREATE TABLE `contrats` (
 --
 
 INSERT INTO `contrats` (`id`, `utilisateur_id`, `maison_id`, `date_debut`, `statut`, `motif`, `date_fin`, `created_at`, `updated_at`) VALUES
-(30, 24, 43, '2026-07-21', 'termine', 'Non-paiement / Expulsion', '2026-08-06', '2026-07-21 17:49:47', '2026-08-06 20:31:37'),
-(31, 24, 44, '2026-07-21', 'termine', 'Erreur de manipulation', '2026-08-06', '2026-07-21 18:05:47', '2026-08-06 20:32:01'),
-(32, 24, 48, '2026-07-21', 'actif', 'RIEN', NULL, '2026-07-21 18:08:14', '2026-07-21 18:08:14'),
-(33, 26, 58, '2026-08-05', 'actif', 'RIEN', NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(34, 25, 49, '2026-08-06', 'actif', 'RIEN', NULL, '2026-08-06 07:17:40', '2026-08-06 07:17:40'),
-(35, 25, 43, '2026-08-06', 'actif', 'RIEN', NULL, '2026-08-06 20:33:29', '2026-08-06 20:33:29');
+(36, 24, 43, '2026-08-07', 'actif', 'RIEN', NULL, '2026-08-07 18:18:52', '2026-08-07 18:18:52'),
+(37, 24, 44, '2026-08-07', 'actif', 'RIEN', NULL, '2026-08-07 18:28:10', '2026-08-07 18:28:10');
 
 -- --------------------------------------------------------
 
@@ -194,21 +190,23 @@ CREATE TABLE `maisons` (
 --
 
 INSERT INTO `maisons` (`id`, `titre`, `description`, `prix`, `statut_moderation`, `vues`, `est_loue`, `adresse`, `image`, `latitude`, `longitude`, `created_at`, `updated_at`, `utilisateur_id`, `categorie_id`, `ville`, `visites_demandees`, `immeuble_etage`, `meuble`, `climatise`, `sanitaire`, `adapte_pmr`, `compteur_elec_perso`, `compteur_eau_perso`, `caution_mois`, `prepaiement_mois`, `frais_visite`, `commission`, `caution_elec`, `caution_eau`, `caution_elec_eau`) VALUES
-(43, 'Deux Chambres Salon WC Douche Interne', 'jkvlbljkhlv', 65876, 'publiee', 39, 1, 'legbassito', 'maisons/principales/1781272202_ab6b7d38d066c6a4f1649237d113f6ad.png', 6.1939738, 1.1900425, '2026-06-12 13:50:03', '2026-08-06 20:33:29', 13, 1, 'Lomé', 2, 0, 1, 1, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 4000, 4000, 5000),
-(44, 'Deux Chambres Salon WC Douche Interne', 'etbrevwc', 3443435, 'publiee', 36, 0, 'agoe', 'maisons/principales/1781279161_Capture d’écran 2025-09-16 050923.png', 6.1781023, 1.1991405, '2026-06-12 15:34:51', '2026-08-06 20:32:01', 13, 1, 'Kétao', 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 5000, NULL, 4000, 5000, NULL),
+(43, 'Deux Chambres Salon WC Douche Interne', 'jkvlbljkhlv', 65876, 'publiee', 43, 1, 'legbassito', 'maisons/principales/1781272202_ab6b7d38d066c6a4f1649237d113f6ad.png', 6.1939738, 1.1900425, '2026-06-12 13:50:03', '2026-08-08 07:17:18', 13, 1, 'Lomé', 2, 0, 1, 1, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 4000, 4000, 5000),
+(44, 'Deux Chambres Salon WC Douche Interne', 'etbrevwc', 3443435, 'publiee', 38, 1, 'agoe', 'maisons/principales/1781279161_Capture d’écran 2025-09-16 050923.png', 6.1781023, 1.1991405, '2026-06-12 15:34:51', '2026-08-07 18:28:10', 13, 1, 'Kétao', 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 5000, NULL, 4000, 5000, NULL),
 (45, 'rhgfdhdhhd', 'rstbrythnbrsv', 54354, 'en_attente', 10, 0, 'agoe', 'maisons/principales/1781279753_Capture d’écran 2025-09-16 003110.png', 6.2054079, 1.1816311, '2026-06-12 15:55:53', '2026-06-30 13:03:04', 13, 1, 'lome', 0, 1, 0, 1, 1, 0, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
 (46, '5e64gyetrjy', 'ternyertyum,ountrbyevt', 3456534, 'en_attente', 4, 0, 'agoe', 'maisons/principales/1781279799_Capture d’écran 2025-09-16 002742.png', 6.5650000, 5.5550000, '2026-06-12 15:56:39', '2026-06-30 14:15:02', 13, 1, 'lome', 0, 1, 0, 1, 0, 0, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
 (47, '5e64gyetrjyehutr', 'rwetytnurebywvtca', 5344, 'en_attente', 4, 0, 'apessito', 'maisons/principales/1781279837_Capture d’écran 2025-09-16 044922.png', 6.5650000, 5.5550000, '2026-06-12 15:57:17', '2026-06-30 14:15:17', 13, 1, 'lome', 2, 1, 0, 1, 0, 1, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
-(48, '3 chmabre salon', 'gfh drtsevrbht d', 5344, 'publiee', 28, 1, 'apessito', 'maisons/principales/1781279879_Capture d’écran 2025-09-16 051058.png', 6.1394941, 1.2145632, '2026-06-12 15:57:59', '2026-08-06 20:08:28', 13, 1, 'Lomé', 1, 0, 0, 0, 0, 0, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
-(49, '3 chmabre 5salon', 'gttnfjdhbrgvsf', 500000, 'publiee', 8, 1, 'apessito', 'maisons/principales/1781279916_Capture d’écran 2025-09-16 003110.png', 6.1304848, 1.2154484, '2026-06-12 15:58:36', '2026-08-06 18:11:50', 13, 1, 'Lomé', 1, 0, 1, 1, 0, 0, 1, 0, 4, 4, 5000, 645, 4000, 354, NULL),
+(48, '3 chmabre salon', 'gfh drtsevrbht d', 5344, 'publiee', 29, 0, 'apessito', 'maisons/principales/1781279879_Capture d’écran 2025-09-16 051058.png', 6.1394941, 1.2145632, '2026-06-12 15:57:59', '2026-08-07 18:17:52', 13, 1, 'Lomé', 1, 0, 0, 0, 0, 0, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
+(49, '3 chmabre 5salon', 'gttnfjdhbrgvsf', 500000, 'publiee', 9, 0, 'apessito', 'maisons/principales/1781279916_Capture d’écran 2025-09-16 003110.png', 6.1304848, 1.2154484, '2026-06-12 15:58:36', '2026-08-08 07:18:06', 13, 1, 'Lomé', 1, 0, 1, 1, 0, 0, 1, 0, 4, 4, 5000, 645, 4000, 354, NULL),
 (50, '5 chambre', 'vghfjygkmujfynhtdbfss', 99999, 'publiee', 14, 0, 'avedji', 'maisons/principales/1781279972_Capture d’écran 2025-09-16 002742.png', 8.9841380, 1.1304667, '2026-06-12 15:59:32', '2026-08-06 20:25:42', 13, 1, 'Sokodé', 3, 1, 1, 0, 0, 0, 0, 0, 4, 4, 5000, 645, 4000, 354, NULL),
 (51, 'evsgvbrebsv', 'rbh tjyftdrgsef', 3456435, 'publiee', 4, 0, 'kolo', 'maisons/principales/1781280030_Capture d’écran 2025-09-16 003110.png', 6.1360318, 1.2275940, '2026-06-12 16:00:30', '2026-07-21 17:48:03', 13, 1, 'Anié', 0, 1, 1, 1, 1, 1, 1, 1, 5, 4, 4000, NULL, NULL, NULL, NULL),
 (52, 'rwnjdnfgf', 'tdyfnbg hjyr td', 5645, 'publiee', 4, 0, 'hhhh', 'maisons/principales/1781285080_Capture d’écran 2025-09-16 002902.png', 6.1919259, 1.1967373, '2026-06-12 17:24:40', '2026-07-19 20:38:36', 13, 2, 'Togoville', 0, 1, 0, 0, 1, 0, 0, 0, 5, NULL, NULL, NULL, NULL, NULL, NULL),
 (53, 'uneChambres Salon WC Douche Interne', 'gcmbvn, jdbfc hj nklyhjv', 6544, 'en_attente', 2, 0, 'logote', 'maisons/principales/1782254762_Capture d’écran 2026-05-11 111806.png', 6.5650000, 5.5550000, '2026-06-23 22:46:02', '2026-06-30 14:40:11', 13, 1, 'lome', 0, 1, 1, 1, 1, 0, 1, 1, 4, 4, 3400, NULL, 2000, 2000, NULL),
 (54, 'trxxxxxx', 'Jxgxxihxohx', 50000, 'en_attente', 3, 0, 'Lamde', 'maisons/principales/1782254983_747127.jpg', 6.2155811, 1.2014992, '2026-06-23 22:49:43', '2026-06-30 14:27:58', 13, 1, 'Kara', 0, 1, 1, 1, 0, 0, 0, 0, 5, 2, NULL, NULL, NULL, NULL, NULL),
-(55, 'Deux Chambres Salon WC Douche Interne', 'kjgffjghkhgjlnuignou', 60000, 'publiee', 4, 0, 'afonouvi kome', 'maisons/principales/1782473437_Capture d’écran 2026-05-11 112137.png', 6.2151352, 1.2008572, '2026-06-26 11:30:37', '2026-08-06 20:21:30', 13, 1, 'Tabligbo', 0, 1, 0, 1, 1, 0, 0, 0, 5, 3, 5000, NULL, NULL, NULL, NULL),
-(57, 'Cchjbnju', 'Ccvjj vhv', 50000, 'publiee', 2, 0, 'Pagala', 'maisons/principales/1782901413_777221.jpg', 6.1888936, 1.1894879, '2026-07-01 10:23:33', '2026-08-06 18:24:53', 22, 2, 'Bafilo', 0, 1, 1, 1, 1, 0, 1, 1, 2, 5, 3000, 5000, 2000, 2000, NULL),
-(58, 'Rthbbju', 'Fcvvhj vhhjj. Gukjb hhhh', 50000, 'publiee', 1, 1, 'Jannn', 'maisons/principales/1785916064_912309.png', 6.1933714, 1.1946391, '2026-08-05 07:47:44', '2026-08-05 20:33:54', 25, 3, 'Bafilo', 0, 1, 1, 1, 0, 1, 0, 1, 9, 9, 4000, 5000, 2000, 2000, NULL);
+(55, 'Deux Chambres Salon WC Douche Interne', 'kjgffjghkhgjlnuignou', 60000, 'publiee', 17, 0, 'jjjJJjjJJJ', 'maisons/principales/1782473437_Capture d’écran 2026-05-11 112137.png', 6.2151352, 1.2008572, '2026-06-26 11:30:37', '2026-08-07 11:23:56', 13, 1, 'Bombouaka', 1, 1, 1, 1, 1, 1, 1, 1, 5, 9, 999999, 9000, 89898, 99999, NULL),
+(57, 'Cchjbnju', 'Ccvjj vhv', 50000, 'publiee', 3, 0, 'Pagala', 'maisons/principales/1782901413_777221.jpg', 6.1888936, 1.1894879, '2026-07-01 10:23:33', '2026-08-07 10:32:51', 22, 2, 'Bafilo', 0, 1, 1, 1, 1, 0, 1, 1, 2, 5, 3000, 5000, 2000, 2000, NULL),
+(58, 'Rthbbju', 'Fcvvhj vhhjj. Gukjb hhhh', 50000, 'publiee', 2, 1, 'Jannn', 'maisons/principales/1785916064_912309.png', 6.1933714, 1.1946391, '2026-08-05 07:47:44', '2026-08-08 00:30:39', 25, 3, 'Bafilo', 0, 1, 1, 1, 0, 1, 0, 1, 9, 9, 4000, 5000, 2000, 2000, NULL),
+(59, 'ggggggg', 'gggggggggg', 4444437, 'en_attente', 0, 0, 'GGGGG', 'maisons/principales/1786054699_1.png', 6.2006295, 1.2005138, '2026-08-06 22:18:19', '2026-08-06 22:18:19', 13, 1, 'Notsé', 0, 0, 1, 0, 1, 1, 0, 1, 4, 4, 4000, 4000, NULL, NULL, NULL),
+(60, 'ggggggg', 'hkgk  kjglk lljglklkj', 4444437, 'publiee', 2, 0, 'ggggg', 'maisons/principales/1786102206_6.jpg', 6.1909446, 1.1972523, '2026-08-07 11:30:06', '2026-08-07 15:24:57', 13, 3, 'Atakpamé', 0, 1, 0, 0, 1, 0, 0, 1, 4, 4, 4000, 4000, NULL, 77777, NULL);
 
 -- --------------------------------------------------------
 
@@ -291,68 +289,25 @@ CREATE TABLE `paiements` (
 --
 
 INSERT INTO `paiements` (`id`, `contrat_id`, `montant`, `type`, `mois_concerne`, `statut`, `date_concerne`, `moyen_paiement`, `transaction_id`, `date_paiement`, `created_at`, `updated_at`) VALUES
-(135, 30, 65876, 0, 'July 2026', 'Payé', '2026-07-21 17:50:55', NULL, NULL, '2026-07-21 17:50:55', '2026-07-21 17:49:48', '2026-07-21 17:50:55'),
-(136, 30, 4000, 0, 'Caution Électricité', 'Payé', '2026-07-21 17:50:56', NULL, NULL, '2026-07-21 17:50:56', '2026-07-21 17:49:48', '2026-07-21 17:50:56'),
-(137, 30, 4000, 0, 'Caution Eau', 'Payé', '2026-07-21 17:50:26', NULL, NULL, '2026-07-21 17:50:26', '2026-07-21 17:49:48', '2026-07-21 17:50:26'),
-(138, 30, 65876, 1, 'Août 2026', 'Payé', '2026-07-21 17:52:04', NULL, NULL, '2026-07-21 17:52:04', '2026-07-21 17:52:04', '2026-07-21 17:52:04'),
-(139, 30, 65876, 1, 'Août 2026', 'Payé', '2026-07-21 17:52:14', NULL, NULL, '2026-07-21 17:52:14', '2026-07-21 17:52:14', '2026-07-21 17:52:14'),
-(140, 30, 65876, 1, 'Septembre 2026', 'Payé', '2026-07-21 17:57:44', NULL, NULL, '2026-07-21 17:57:44', '2026-07-21 17:57:44', '2026-07-21 17:57:44'),
-(141, 30, 65876, 1, 'Octobre 2026', 'Payé', '2026-07-21 17:57:44', NULL, NULL, '2026-07-21 17:57:44', '2026-07-21 17:57:44', '2026-07-21 17:57:44'),
-(142, 30, 65876, 1, 'Novembre 2026', 'Payé', '2026-07-21 17:57:54', NULL, NULL, '2026-07-21 17:57:54', '2026-07-21 17:57:54', '2026-07-21 17:57:54'),
-(143, 30, 65876, 1, 'Décembre 2026', 'Payé', '2026-07-21 17:58:04', NULL, NULL, '2026-07-21 17:58:04', '2026-07-21 17:58:04', '2026-07-21 17:58:04'),
-(144, 30, 65876, 1, 'Janvier 2027', 'Payé', '2026-07-21 17:58:04', NULL, NULL, '2026-07-21 17:58:04', '2026-07-21 17:58:04', '2026-07-21 17:58:04'),
-(145, 30, 65876, 1, 'Février 2027', 'Payé', '2026-07-21 17:58:04', NULL, NULL, '2026-07-21 17:58:04', '2026-07-21 17:58:04', '2026-07-21 17:58:04'),
-(146, 30, 65876, 1, 'Mars 2027', 'Payé', '2026-07-21 17:58:04', NULL, NULL, '2026-07-21 17:58:04', '2026-07-21 17:58:04', '2026-07-21 17:58:04'),
-(147, 30, 65876, 1, 'Avril 2027', 'Payé', '2026-07-21 17:58:04', NULL, NULL, '2026-07-21 17:58:04', '2026-07-21 17:58:04', '2026-07-21 17:58:04'),
-(148, 30, 65876, 1, 'Mai 2027', 'Payé', '2026-07-21 17:58:04', NULL, NULL, '2026-07-21 17:58:04', '2026-07-21 17:58:04', '2026-07-21 17:58:04'),
-(149, 30, 65876, 1, 'Juin 2027', 'Payé', '2026-07-21 18:02:08', NULL, NULL, '2026-07-21 18:02:08', '2026-07-21 18:02:08', '2026-07-21 18:02:08'),
-(150, 30, 65876, 1, 'Juillet 2027', 'Payé', '2026-07-21 18:02:39', NULL, NULL, '2026-07-21 18:02:39', '2026-07-21 18:02:39', '2026-07-21 18:02:39'),
-(151, 31, 3443435, 0, 'July 2026', 'En attente', '2026-07-21 18:05:48', NULL, NULL, NULL, '2026-07-21 18:05:48', '2026-07-21 18:05:48'),
-(152, 31, 3443435, 0, 'Caution - August 2026', 'En attente', '2026-07-21 18:05:48', NULL, NULL, NULL, '2026-07-21 18:05:48', '2026-07-21 18:05:48'),
-(153, 31, 3443435, 0, 'Caution - September 2026', 'En attente', '2026-07-21 18:05:48', NULL, NULL, NULL, '2026-07-21 18:05:48', '2026-07-21 18:05:48'),
-(154, 31, 3443435, 0, 'Caution - October 2026', 'En attente', '2026-07-21 18:05:48', NULL, NULL, NULL, '2026-07-21 18:05:48', '2026-07-21 18:05:48'),
-(155, 31, 3443435, 0, 'Caution - November 2026', 'En attente', '2026-07-21 18:05:48', NULL, NULL, NULL, '2026-07-21 18:05:48', '2026-07-21 18:05:48'),
-(156, 31, 4000, 0, 'Caution Électricité', 'En attente', '2026-07-21 18:05:48', NULL, NULL, NULL, '2026-07-21 18:05:48', '2026-07-21 18:05:48'),
-(157, 31, 5000, 0, 'Caution Eau', 'En attente', '2026-07-21 18:05:48', NULL, NULL, NULL, '2026-07-21 18:05:48', '2026-07-21 18:05:48'),
-(158, 31, 5000, 0, 'Frais de Visite', 'En attente', '2026-07-21 18:05:48', NULL, NULL, NULL, '2026-07-21 18:05:48', '2026-07-21 18:05:48'),
-(159, 32, 5344, 0, 'July 2026', 'Payé', '2026-08-05 22:19:05', NULL, NULL, '2026-08-05 22:19:05', '2026-07-21 18:08:14', '2026-08-05 22:19:05'),
-(160, 32, 5344, 0, 'Caution - August 2026', 'En attente', '2026-07-21 18:08:14', NULL, NULL, NULL, '2026-07-21 18:08:14', '2026-07-21 18:08:14'),
-(161, 32, 5344, 0, 'Caution - September 2026', 'En attente', '2026-07-21 18:08:14', NULL, NULL, NULL, '2026-07-21 18:08:14', '2026-07-21 18:08:14'),
-(162, 32, 5344, 0, 'Caution - October 2026', 'En attente', '2026-07-21 18:08:14', NULL, NULL, NULL, '2026-07-21 18:08:14', '2026-07-21 18:08:14'),
-(163, 32, 5344, 0, 'Caution - November 2026', 'En attente', '2026-07-21 18:08:14', NULL, NULL, NULL, '2026-07-21 18:08:14', '2026-07-21 18:08:14'),
-(164, 32, 4000, 0, 'Caution Électricité', 'En attente', '2026-07-21 18:08:14', NULL, NULL, NULL, '2026-07-21 18:08:14', '2026-07-21 18:08:14'),
-(165, 32, 354, 0, 'Caution Eau', 'En attente', '2026-07-21 18:08:14', NULL, NULL, NULL, '2026-07-21 18:08:14', '2026-07-21 18:08:14'),
-(166, 32, 645, 0, 'Frais de Commission', 'En attente', '2026-07-21 18:08:14', NULL, NULL, NULL, '2026-07-21 18:08:14', '2026-07-21 18:08:14'),
-(167, 32, 5000, 0, 'Frais de Visite', 'En attente', '2026-07-21 18:08:14', NULL, NULL, NULL, '2026-07-21 18:08:14', '2026-07-21 18:08:14'),
-(168, 33, 50000, 0, 'August 2026', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(169, 33, 50000, 0, 'Caution - September 2026', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(170, 33, 50000, 0, 'Caution - October 2026', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(171, 33, 50000, 0, 'Caution - November 2026', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(172, 33, 50000, 0, 'Caution - December 2026', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(173, 33, 50000, 0, 'Caution - January 2027', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(174, 33, 50000, 0, 'Caution - February 2027', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(175, 33, 50000, 0, 'Caution - March 2027', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(176, 33, 50000, 0, 'Caution - April 2027', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(177, 33, 50000, 0, 'Caution - May 2027', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(178, 33, 2000, 0, 'Caution Électricité', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(179, 33, 2000, 0, 'Caution Eau', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(180, 33, 5000, 0, 'Frais de Commission', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(181, 33, 4000, 0, 'Frais de Visite', 'En attente', '2026-08-05 07:50:53', NULL, NULL, NULL, '2026-08-05 07:50:53', '2026-08-05 07:50:53'),
-(182, 34, 500000, 0, 'August 2026', 'Payé', '2026-08-06 09:01:53', NULL, NULL, '2026-08-06 09:01:53', '2026-08-06 07:17:40', '2026-08-06 09:01:53'),
-(183, 34, 500000, 0, 'Caution - September 2026', 'Payé', '2026-08-06 09:02:01', NULL, NULL, '2026-08-06 09:02:01', '2026-08-06 07:17:40', '2026-08-06 09:02:01'),
-(184, 34, 500000, 0, 'Caution - October 2026', 'Payé', '2026-08-06 20:09:17', NULL, NULL, '2026-08-06 20:09:17', '2026-08-06 07:17:40', '2026-08-06 20:09:17'),
-(185, 34, 500000, 0, 'Caution - November 2026', 'Payé', '2026-08-06 20:10:07', NULL, NULL, '2026-08-06 20:10:07', '2026-08-06 07:17:40', '2026-08-06 20:10:07'),
-(186, 34, 500000, 0, 'Caution - December 2026', 'Payé', '2026-08-06 20:10:07', NULL, NULL, '2026-08-06 20:10:07', '2026-08-06 07:17:40', '2026-08-06 20:10:07'),
-(187, 34, 4000, 0, 'Caution Électricité', 'Payé', '2026-08-06 20:10:07', NULL, NULL, '2026-08-06 20:10:07', '2026-08-06 07:17:40', '2026-08-06 20:10:07'),
-(188, 34, 354, 0, 'Caution Eau', 'Payé', '2026-08-06 20:10:07', NULL, NULL, '2026-08-06 20:10:07', '2026-08-06 07:17:40', '2026-08-06 20:10:07'),
-(189, 34, 645, 0, 'Frais de Commission', 'Payé', '2026-08-06 20:10:07', NULL, NULL, '2026-08-06 20:10:07', '2026-08-06 07:17:40', '2026-08-06 20:10:07'),
-(190, 34, 5000, 0, 'Frais de Visite', 'Payé', '2026-08-06 20:10:07', NULL, NULL, '2026-08-06 20:10:07', '2026-08-06 07:17:40', '2026-08-06 20:10:07'),
-(191, 30, 65876, 1, 'Août 2027', 'Payé', '2026-08-06 20:07:36', NULL, NULL, '2026-08-06 20:07:36', '2026-08-06 20:07:36', '2026-08-06 20:07:36'),
-(192, 34, 500000, 1, 'Août 2026', 'Payé', '2026-08-06 20:10:13', NULL, NULL, '2026-08-06 20:10:13', '2026-08-06 20:10:13', '2026-08-06 20:10:13'),
-(193, 35, 65876, 0, 'August 2026', 'Payé', '2026-08-06 20:33:43', NULL, NULL, '2026-08-06 20:33:43', '2026-08-06 20:33:29', '2026-08-06 20:33:43'),
-(194, 35, 4000, 0, 'Caution Électricité', 'Payé', '2026-08-06 20:33:43', NULL, NULL, '2026-08-06 20:33:43', '2026-08-06 20:33:29', '2026-08-06 20:33:43'),
-(195, 35, 4000, 0, 'Caution Eau', 'Payé', '2026-08-06 20:33:43', NULL, NULL, '2026-08-06 20:33:43', '2026-08-06 20:33:29', '2026-08-06 20:33:43'),
-(196, 35, 65876, 1, 'Août 2026', 'Payé', '2026-08-06 20:33:53', NULL, NULL, '2026-08-06 20:33:53', '2026-08-06 20:33:53', '2026-08-06 20:33:53');
+(197, 36, 65876, 0, 'August 2026', 'Payé', '2026-08-07 18:19:33', 'Orange Money', 'TRX-45172850', '2026-08-07 18:19:33', '2026-08-07 18:18:52', '2026-08-07 18:19:33'),
+(198, 36, 4000, 0, 'Caution Électricité', 'Payé', '2026-08-07 18:20:04', NULL, NULL, '2026-08-07 18:20:04', '2026-08-07 18:18:52', '2026-08-07 18:20:04'),
+(199, 36, 4000, 0, 'Caution Eau', 'Payé', '2026-08-07 18:20:04', NULL, NULL, '2026-08-07 18:20:04', '2026-08-07 18:18:52', '2026-08-07 18:20:04'),
+(200, 36, 65876, 1, 'Août 2026', 'Payé', '2026-08-07 18:23:44', NULL, NULL, '2026-08-07 18:23:44', '2026-08-07 18:23:44', '2026-08-07 18:23:44'),
+(201, 37, 3443435, 0, 'August 2026', 'Payé', '2026-08-07 18:28:25', 'MTN MoMo', 'TRX-55757513', '2026-08-07 18:28:25', '2026-08-07 18:28:10', '2026-08-07 18:28:25'),
+(202, 37, 3443435, 0, 'Caution - September 2026', 'Payé', '2026-08-07 18:33:07', 'MTN MoMo', 'TRX-75111287-2', '2026-08-07 18:33:07', '2026-08-07 18:28:10', '2026-08-07 18:33:07'),
+(203, 37, 3443435, 0, 'Caution - October 2026', 'Payé', '2026-08-07 18:33:07', 'MTN MoMo', 'TRX-75111287-3', '2026-08-07 18:33:07', '2026-08-07 18:28:10', '2026-08-07 18:33:07'),
+(204, 37, 3443435, 0, 'Caution - November 2026', 'Payé', '2026-08-07 18:33:07', 'MTN MoMo', 'TRX-75111287-4', '2026-08-07 18:33:07', '2026-08-07 18:28:10', '2026-08-07 18:33:07'),
+(205, 37, 3443435, 0, 'Caution - December 2026', 'Payé', '2026-08-07 18:33:07', 'MTN MoMo', 'TRX-75111287-5', '2026-08-07 18:33:07', '2026-08-07 18:28:10', '2026-08-07 18:33:07'),
+(206, 37, 4000, 0, 'Caution Électricité', 'Payé', '2026-08-07 18:33:07', 'MTN MoMo', 'TRX-75111287-6', '2026-08-07 18:33:07', '2026-08-07 18:28:10', '2026-08-07 18:33:07'),
+(207, 37, 5000, 0, 'Caution Eau', 'Payé', '2026-08-07 18:33:07', 'MTN MoMo', 'TRX-75111287-7', '2026-08-07 18:33:07', '2026-08-07 18:28:10', '2026-08-07 18:33:07'),
+(208, 37, 5000, 0, 'Frais de Visite', 'Payé', '2026-08-07 18:33:07', 'MTN MoMo', 'TRX-75111287-8', '2026-08-07 18:33:07', '2026-08-07 18:28:10', '2026-08-07 18:33:07'),
+(209, 37, 3443435, 1, 'Août 2026', 'Payé', '2026-08-07 18:37:02', 'Moov Money', 'TRX-78365451-1', '2026-08-07 18:37:02', '2026-08-07 18:37:02', '2026-08-07 18:37:02'),
+(210, 37, 3443435, 1, 'Septembre 2026', 'Payé', '2026-08-07 18:37:57', 'T-Money', 'TRX-60111883-1', '2026-08-07 18:37:57', '2026-08-07 18:37:57', '2026-08-07 18:37:57'),
+(211, 37, 3443435, 1, 'Octobre 2026', 'Payé', '2026-08-07 18:37:57', 'T-Money', 'TRX-60111883-2', '2026-08-07 18:37:57', '2026-08-07 18:37:57', '2026-08-07 18:37:57'),
+(212, 37, 3443435, 1, 'Novembre 2026', 'Payé', '2026-08-07 18:37:57', 'T-Money', 'TRX-60111883-3', '2026-08-07 18:37:57', '2026-08-07 18:37:57', '2026-08-07 18:37:57'),
+(213, 37, 3443435, 1, 'Décembre 2026', 'Payé', '2026-08-07 18:37:57', 'T-Money', 'TRX-60111883-4', '2026-08-07 18:37:57', '2026-08-07 18:37:57', '2026-08-07 18:37:57'),
+(214, 37, 3443435, 1, 'Janvier 2027', 'Payé', '2026-08-07 18:37:57', 'T-Money', 'TRX-60111883-5', '2026-08-07 18:37:57', '2026-08-07 18:37:57', '2026-08-07 18:37:57'),
+(215, 37, 3443435, 1, 'Février 2027', 'Payé', '2026-08-07 18:37:57', 'T-Money', 'TRX-60111883-6', '2026-08-07 18:37:57', '2026-08-07 18:37:57', '2026-08-07 18:37:57');
 
 -- --------------------------------------------------------
 
@@ -372,7 +327,7 @@ CREATE TABLE `password_reset_tokens` (
 
 INSERT INTO `password_reset_tokens` (`email`, `token`, `created_at`) VALUES
 ('rr@gmail.com', 'sl9bCOhIvYaFrALDeaEVrbKGQOz5S6bNR4B5cvZz3rHQycNpou0ntBfLHy7VJBtJ', '2026-05-14 03:45:25'),
-('smithkrettos@gmail.com', 'wlmRyJrSTSORJpAWvTIQf7cnk2iktmdw2nZ8B4417mdojcIDqfZBDdR1YGMlsT1j', '2026-05-14 03:46:11');
+('smithkrettos@gmail.com', 'h87YzsNJ0xAtu3Y6DN5vLHzI4MyvRpNP0Y0kbtGgZFJvbnvh3HbTRbJGePL56gob', '2026-08-08 07:16:17');
 
 -- --------------------------------------------------------
 
@@ -437,9 +392,6 @@ INSERT INTO `photos` (`id`, `maison_id`, `chemin`, `created_at`, `updated_at`) V
 (221, 54, 'maisons/secondaires/1782254983_748769.jpg', '2026-06-23 22:49:43', '2026-06-23 22:49:43'),
 (222, 54, 'maisons/secondaires/1782254983_748470.jpg', '2026-06-23 22:49:43', '2026-06-23 22:49:43'),
 (223, 54, 'maisons/secondaires/1782254983_748721.jpg', '2026-06-23 22:49:43', '2026-06-23 22:49:43'),
-(224, 55, 'maisons/secondaires/1782473437_Capture d’écran 2026-05-11 123755.png', '2026-06-26 11:30:37', '2026-06-26 11:30:37'),
-(225, 55, 'maisons/secondaires/1782473437_Capture d’écran 2026-05-12 074847.png', '2026-06-26 11:30:37', '2026-06-26 11:30:37'),
-(226, 55, 'maisons/secondaires/1782473437_CONNECTION.png', '2026-06-26 11:30:37', '2026-06-26 11:30:37'),
 (231, 57, 'maisons/secondaires/1782901413_781084.png', '2026-07-01 10:23:33', '2026-07-01 10:23:33'),
 (232, 57, 'maisons/secondaires/1782901414_780447.png', '2026-07-01 10:23:34', '2026-07-01 10:23:34'),
 (233, 57, 'maisons/secondaires/1782901414_779999.jpg', '2026-07-01 10:23:34', '2026-07-01 10:23:34'),
@@ -450,7 +402,13 @@ INSERT INTO `photos` (`id`, `maison_id`, `chemin`, `created_at`, `updated_at`) V
 (238, 58, 'maisons/secondaires/1785916064_912502.jpg', '2026-08-05 07:47:44', '2026-08-05 07:47:44'),
 (239, 58, 'maisons/secondaires/1785916064_912501.jpg', '2026-08-05 07:47:44', '2026-08-05 07:47:44'),
 (240, 58, 'maisons/secondaires/1785916064_912500.jpg', '2026-08-05 07:47:44', '2026-08-05 07:47:44'),
-(241, 58, 'maisons/secondaires/1785916064_912499.jpg', '2026-08-05 07:47:44', '2026-08-05 07:47:44');
+(241, 58, 'maisons/secondaires/1785916064_912499.jpg', '2026-08-05 07:47:44', '2026-08-05 07:47:44'),
+(242, 59, 'maisons/secondaires/1786054699_5.jpg', '2026-08-06 22:18:19', '2026-08-06 22:18:19'),
+(243, 59, 'maisons/secondaires/1786054699_6.jpg', '2026-08-06 22:18:19', '2026-08-06 22:18:19'),
+(244, 55, 'maisons/secondaires/1786101561_5.jpg', '2026-08-07 11:19:21', '2026-08-07 11:19:21'),
+(245, 55, 'maisons/secondaires/1786101561_6.jpg', '2026-08-07 11:19:21', '2026-08-07 11:19:21'),
+(246, 60, 'maisons/secondaires/1786102206_5.jpg', '2026-08-07 11:30:07', '2026-08-07 11:30:07'),
+(247, 60, 'maisons/secondaires/1786102207_6.jpg', '2026-08-07 11:30:07', '2026-08-07 11:30:07');
 
 -- --------------------------------------------------------
 
@@ -472,18 +430,11 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('8Mp0EgHwZLtA7mGHCwVEbjkqp8qhLcaKRSXy7am3', 13, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiNHVqeWw3bGx6Q1BQNEtmbUcwV041bENGd3Z4M3loNmU1WmJhM2tZTiI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjQyOiJodHRwOi8vbG9jYWxob3N0L2xvY2F0aW9uL3B1YmxpYy9hZG1pbi9kZXYiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMzt9', 1786045747),
-('8Z6kh4LceHi4cFY1r8sz27NFbTts7VwuxrDrvCzD', 25, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiUTdZUUtyZDduWjJ5RTdzVW8ycTNIWEZWU0h6RXlEd3ZMeTV1WUdjNCI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjQ1OiJodHRwOi8vbG9jYWxob3N0L2xvY2F0aW9uL3B1YmxpYy9jYXRlZ29yaWVzLzEiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyNTt9', 1786047641),
-('9gXBJFveZ2AjPQMTM43BsHyfdsGQsxRVonIkSKcg', 13, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 Edg/151.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiU3IydGlpSEJicW5WWXpMNTZpWVJSWFN5REthamM0U3IxMjJQbGZ4OSI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjMyOiJodHRwOi8vbG9jYWxob3N0L2xvY2F0aW9uL3B1YmxpYyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjEzO30=', 1786047196),
-('BdcDRNiIwd13VjEOAPvDYk8gIOi8C1gPVDkxRBsZ', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiQ2lJYzdMalpuZ3c5enFPcWZHa250ODNGeHp1RWx4bXN2UTdkQWR3bCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDg6Imh0dHA6Ly9sb2NhbGhvc3QvbG9jYXRpb24vcHVibGljL21haXNvbi81MC9pbmZvMyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1786041003),
-('dV3PYjYUGDet9IKt2FrrC1tsQ2TUUHFFAAH5g1O2', 13, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoib0RIOU1wWDJLNzB1ZmNuQllubzFjQWhzSmxVTDFUMnB6Slo2b2ExViI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDg6Imh0dHA6Ly9sb2NhbGhvc3QvbG9jYXRpb24vcHVibGljL21haXNvbi81MC9pbmZvMyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjA6e31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMzt9', 1786041201),
-('FtcvqE6Yk4pErkpymFgUpiPd68WZ7Z95w2r5Gf2x', 13, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiT1M5eDZWVUdXeG9MaU5rbDh5THlYRndMRGYzak1oV1ZKVjFUUnF5dSI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjQyOiJodHRwOi8vbG9jYWxob3N0L2xvY2F0aW9uL3B1YmxpYy9hZG1pbi9kZXYiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMzt9', 1786046495),
-('fYlzShXFWeV18isDeTiy87ZpsrU6GjTfXo2Hbf3J', 13, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiQXdRVEQxRTdLcGtmbmZjVGdidjR4ejNxZTZkNUZDNEU0MEZQdUREeiI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjQyOiJodHRwOi8vbG9jYWxob3N0L2xvY2F0aW9uL3B1YmxpYy9hZG1pbi9kZXYiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMzt9', 1786042906),
-('JNdA6mQpFzbZQ0pBcehYXs6NjDVwUr3iuxMIino0', 13, '192.168.0.102', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Mobile Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiYXVzMERiMGlaVEt1cVByM3M0Z1F1djlaN1RWbGNhd3hPUG1ZVW1KNyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NjY6Imh0dHA6Ly8xOTIuMTY4LjAuMTA4L2xvY2F0aW9uL3B1YmxpYy9wYWllbWVudC8xOTYvaW1wcmltZXItZmFjdHVyZSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjEzO30=', 1786048437),
-('KvL1YiuGRzicqAjJ2RbcMu5XimB8NQoWSXkgMQ1C', 13, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiSUNRVjNlUXFkaFQ3VmNQb2pSVVZrMzhGWmkydERrQWR6SU9janQyWiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDQ6Imh0dHA6Ly9sb2NhbGhvc3QvbG9jYXRpb24vcHVibGljL2FkbWluL3RhYmxlIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MDp7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjEzO30=', 1786041540),
-('wIIdRuR6Df6UHCpqrSeHhlqFF2BEnQXOjnj8ZYD9', 13, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiR2tBcEJVZVlSZXZzdExNbkRsSk9ic1FMWnNLZEZiaUpaTWdyOHFCRyI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjQ4OiJodHRwOi8vbG9jYWxob3N0L2xvY2F0aW9uL3B1YmxpYy9tYWlzb24vNTIvaW5mbzMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMzt9', 1786044482),
-('xlk2Igd5WJn7J7tchUbIctElLgcKuwmVy33lQtED', 13, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiT1FzY3ZibEE5aHlZYWVJN1JISGozTEdPZ0hjdFpCOXlsYnBuazBxYiI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjQ4OiJodHRwOi8vbG9jYWxob3N0L2xvY2F0aW9uL3B1YmxpYy9tYWlzb24vNTAvaW5mbzMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxMzt9', 1786040990),
-('ZjWrzKm9EfXhOEfhtVTiQIIAn7GMQTFbRtoFi8n6', 25, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiSHZ2Mmh6SDlPcWlYNGF1NkpyWDlvaEtnWlpsRk1mSm5tNDd5Z0ZDVyI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjU3OiJodHRwOi8vbG9jYWxob3N0L2xvY2F0aW9uL3B1YmxpYy9tb24tZXNwYWNlP2NvbnRyYXRfaWQ9MzUiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyNTt9', 1786048433);
+('44n7LVcHqH52Bm4PVK2qMfMgNilnDO148swF1lxw', 24, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 Edg/151.0.0.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoieTk0Nm1DOWF0cHh1QklNMjk5b0NpdlhIZDdMcUprMUQyMTREdVExayI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9sb2NhbGhvc3QvbG9jYXRpb24vcHVibGljIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MjQ7fQ==', 1786197477),
+('8om6Z1zCd331uIZIh8HSZ8m7E8e2CbbPeeT5zOLY', 28, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiaGdjTVQ3VHFucjF0WEU1QnJvVlFpSmZOUzZPMHFLU2p3a2ZuQlNQOCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzI6Imh0dHA6Ly9sb2NhbGhvc3QvbG9jYXRpb24vcHVibGljIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjg7fQ==', 1786198095),
+('jZGKoIX5qioH7VYXkAIKCq4Fd8ioyGc2wPyItSDR', 24, '192.168.0.102', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Mobile Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNlcwOFRSbnY1cXNQcDV0WGtFVFNBQWI1Q3BTaXlRM1JwOE83ZUNyaCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NjE6Imh0dHA6Ly8xOTIuMTY4LjAuMTA4L2xvY2F0aW9uL3B1YmxpYy9tb24tZXNwYWNlP2NvbnRyYXRfaWQ9MzciO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyNDt9', 1786174356),
+('MICm2H4aLiPZabEqJFZ1WbqsmIwP8D44X92yvWvF', 13, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiekNubjFUMjB3UUNnMkZqZ1RHS0k4dnF6ZU85aEx1c2d1eTdjSmlDWiI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjQ0OiJodHRwOi8vbG9jYWxob3N0L2xvY2F0aW9uL3B1YmxpYy9hZG1pbi90YWJsZSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjEzO30=', 1786176226),
+('NH2wmcWsHNPhUpmQksBued40WuheRyUyvD4O3hHG', 24, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36 Edg/151.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiQWp2QWU2M2ZiN1R1VExNeTY2WlVxMGxxOTBqMzd4SW9Denl6TWN0TiI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjMyOiJodHRwOi8vbG9jYWxob3N0L2xvY2F0aW9uL3B1YmxpYyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI0O30=', 1786173170);
 
 -- --------------------------------------------------------
 
@@ -538,7 +489,9 @@ INSERT INTO `utilisateurs` (`id`, `name`, `prenom`, `contact`, `email`, `passwor
 (23, 'bb', 'bb', '77777777', 'bb@gmail.com', '$2y$12$L7viCbZHVq/0NhKgWaqSH.nkCUaurs2q06191l07dUSQsjLMOs8aK', 'client', '2026-07-19 18:02:10', '2026-07-19 18:02:10', NULL),
 (24, 'ww', 'ww', '7878787', 'ww@gmail.com', '$2y$12$3ibIQ1.rnc4PekP4GcezyesP7rdhbUik2MmMnYSKHXdWwx7pQpnhi', 'client', '2026-07-19 19:02:43', '2026-07-19 19:02:43', NULL),
 (25, 'nnnn', 'nn', '90090909', 'nn@gmail.com', '$2y$12$YwsC.njrci40nWba85Ept..zb/oLHezZ5237Cfdw7X6s5CThj0reK', 'admin', '2026-08-05 07:22:32', '2026-08-05 07:22:32', NULL),
-(26, 'zz', 'zz', '34343434', 'zz@gmail.com', '$2y$12$Syi8aMZrOUITPmD0ubSrD.31AOsVMsSDZJf7OcBKQ9nvRQFguDSIm', 'client', '2026-08-05 07:49:49', '2026-08-05 07:49:49', NULL);
+(26, 'zz', 'zz', '34343434', 'zz@gmail.com', '$2y$12$Syi8aMZrOUITPmD0ubSrD.31AOsVMsSDZJf7OcBKQ9nvRQFguDSIm', 'client', '2026-08-05 07:49:49', '2026-08-05 07:49:49', NULL),
+(27, 'TAGBA', 'Gérard', '25809632', 'amm@gmail.com', '$2y$12$7iqA0Gcog8ffPHReyi3BIOlfHkegE4mpEFRrVUF16V7KduSdGe0uy', 'admin', '2026-08-06 22:33:20', '2026-08-06 22:33:20', NULL),
+(28, 'AyengréBBBBB', 'khkj', '97879875', 'POO@gmail.com', '$2y$12$8APYZTthHR4QbcP0cfcX4eLdK3uqMe5xebzvfcfl.85XlBAB4SxWC', 'admin', '2026-08-08 14:08:06', '2026-08-08 14:08:06', NULL);
 
 -- --------------------------------------------------------
 
@@ -738,7 +691,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT pour la table `contrats`
 --
 ALTER TABLE `contrats`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT pour la table `failed_jobs`
@@ -756,7 +709,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT pour la table `maisons`
 --
 ALTER TABLE `maisons`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT pour la table `messages`
@@ -774,13 +727,13 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT pour la table `paiements`
 --
 ALTER TABLE `paiements`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=197;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=216;
 
 --
 -- AUTO_INCREMENT pour la table `photos`
 --
 ALTER TABLE `photos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=242;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=248;
 
 --
 -- AUTO_INCREMENT pour la table `users`
@@ -792,7 +745,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT pour la table `villes`
