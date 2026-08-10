@@ -45,6 +45,15 @@
             display: none;
         }
 
+        /* En-tête sombre harmonisé pour les modals */
+        .modal-header-dark {
+            background-color: #343a40 !important;
+            color: #ffffff !important;
+        }
+        .modal-header-dark .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
         /* Animation pour la disparition fluide des alertes */
         .alert-dismissible-custom {
             transition: opacity 0.5s ease-out, transform 0.5s ease-out, margin 0.5s ease-out;
@@ -90,6 +99,22 @@
             .table-responsive table td a {
                 width: 100%;
             }
+
+            /* Adaptation mobile homogène des fenêtres modales (Plein écran fluide) */
+            .modal-dialog.modal-fullscreen-md-down {
+                margin: 0;
+                width: 100%;
+                max-width: 100%;
+                height: 100%;
+            }
+            .modal-dialog.modal-fullscreen-md-down .modal-content {
+                height: 100%;
+                border-radius: 0 !important;
+                border: none;
+            }
+            .modal-dialog.modal-fullscreen-md-down .modal-body {
+                overflow-y: auto;
+            }
         }
     </style>
 </head>
@@ -101,17 +126,16 @@
 
         @auth
         @php $role = Auth::user()->role; @endphp
-    @if($role === 'admin' || $role === 'dev')
-        <a href="{{ route('ttt') }}" class="btn btn-outline-secondary btn-sm">
-             <i class="fa-solid fa-arrow-left me-1"></i> <span class="d-none d-sm-inline">Retour</span>
-        </a>
-    @else
-        <a href="{{ route('home') }}" class="btn btn-outline-secondary btn-sm">
-             <i class="fa-solid fa-arrow-left me-1"></i> <span class="d-none d-sm-inline">Retour au site</span>
-        </a>
-    @endif
-@endauth
-
+        @if($role === 'admin' || $role === 'dev')
+            <a href="{{ route('ttt') }}" class="btn btn-outline-secondary btn-sm">
+                 <i class="fa-solid fa-arrow-left me-1"></i> <span class="d-none d-sm-inline">Retour</span>
+            </a>
+        @else
+            <a href="{{ route('home') }}" class="btn btn-outline-secondary btn-sm">
+                 <i class="fa-solid fa-arrow-left me-1"></i> <span class="d-none d-sm-inline">Retour au site</span>
+            </a>
+        @endif
+        @endauth
     </div>
 
     {{-- ALERTES ET NOTIFICATIONS AUTO-DISPARAISSANTES --}}
@@ -152,8 +176,11 @@
             $aDesAvancesImpayees = $avancesImpayees->isNotEmpty();
             $totalMontantAvances = $toutesLesAvances->sum('montant');
 
-            // Filtrage des mensualités (Type 1)
-            $mensualitesLoyer = $contratActuel->paiements->where('type', '!=', 0)->sortByDesc('id');
+            // Extraction et calculs spécifiques aux Mensualités (Type 1)
+            $toutesLesMensualites = $contratActuel->paiements->where('type', 1)->sortByDesc('id');
+            $mensualitesImpayees = $toutesLesMensualites->where('statut', '!=', 'Payé');
+            $aDesMensualitesImpayees = $mensualitesImpayees->isNotEmpty();
+            $totalMontantMensualites = $toutesLesMensualites->sum('montant');
         @endphp
 
         {{-- MULTI-CONTRATS --}}
@@ -308,55 +335,40 @@
                                 </tr>
                                 @endif
 
-                                {{-- 2. LISTE DES MENSUALITÉS CLASSIQUES (TYPE 1) --}}
-                                @forelse($mensualitesLoyer as $paiement)
-                                <tr>
-                                    <td data-label="Désignation" class="fw-bold text-capitalize text-secondary">
-                                        {{ $paiement->mois_concerne }}
+                                {{-- 2. LIGNE UNIQUE REGROUPANT TOUTES LES MENSUALITÉS (TYPE == 1) --}}
+                                @if($toutesLesMensualites->isNotEmpty())
+                                <tr class="table-info border-start border-primary border-3">
+                                    <td data-label="Désignation" class="fw-bold text-dark">
+                                        <i class="fa-solid fa-calendar-days text-primary me-1"></i> Mensualités & Loyers
+                                        <span class="badge bg-primary ms-1">{{ $toutesLesMensualites->count() }} mois</span>
                                     </td>
-                                    <td data-label="Montant" class="fw-bold">
-                                        {{ number_format($paiement->montant, 0, ',', ' ') }} F CFA
+                                    <td data-label="Montant Total" class="fw-bold text-dark">
+                                        {{ number_format($totalMontantMensualites, 0, ',', ' ') }} F CFA
                                     </td>
                                     <td data-label="Statut">
-                                        @if($paiement->statut == 'Payé')
+                                        @if(!$aDesMensualitesImpayees)
                                             <span class="badge bg-success px-2.5 py-1.5">
-                                                <i class="fa-solid fa-check me-1"></i> Payé
+                                                <i class="fa-solid fa-check me-1"></i> Tout Payé
                                             </span>
                                         @else
                                             <span class="badge bg-warning text-dark px-2.5 py-1.5">
-                                                <i class="fa-solid fa-clock me-1"></i> En attente
+                                                <i class="fa-solid fa-clock me-1"></i> En attente ({{ $mensualitesImpayees->count() }} dûs)
                                             </span>
                                         @endif
                                     </td>
-                                    <td data-label="Action / Date">
-                                        @if($paiement->statut != 'Payé')
-                                            @if($contratEstTermine)
-                                                <button type="button" class="btn btn-secondary btn-sm px-3 py-1 shadow-sm w-100 w-md-auto" disabled>
-                                                    <i class="fa-solid fa-lock me-1"></i> Bloqué
-                                                </button>
-                                            @else
-                                                <!-- FORMULAIRE : PAIEMENT UNIQUE (MENSUALITÉ) -->
-                                                <form action="{{ route('locataire.payerSeul', $paiement->id) }}" method="POST" class="d-inline w-100 form-paiement-momo" data-montant="{{ $paiement->montant }}" data-description="Loyer : {{ $paiement->mois_concerne }}">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-primary btn-sm px-3 py-1 shadow-sm w-100 w-md-auto">
-                                                        <i class="fa-solid fa-wallet me-1"></i> Régler
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        @else
-                                            <span class="text-muted small">
-                                                {{ $paiement->date_paiement ? \Carbon\Carbon::parse($paiement->date_paiement)->format('d/m/Y') : \Carbon\Carbon::parse($paiement->updated_at)->format('d/m/Y') }}
-                                            </span>
-                                        @endif
+                                    <td data-label="Action">
+                                        <button type="button" class="btn btn-outline-primary btn-sm px-3 py-1 shadow-sm w-100 w-md-auto" data-bs-toggle="modal" data-bs-target="#modalMensualites">
+                                            <i class="fa-solid fa-list-check me-1"></i> Voir le détail
+                                        </button>
                                     </td>
                                 </tr>
-                                @empty
-                                    @if($toutesLesAvances->isEmpty())
-                                    <tr>
-                                        <td colspan="4" class="text-center text-muted small py-3">Aucun paiement enregistré pour ce contrat.</td>
-                                    </tr>
-                                    @endif
-                                @endforelse
+                                @endif
+
+                                @if($toutesLesAvances->isEmpty() && $toutesLesMensualites->isEmpty())
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted small py-3">Aucun paiement enregistré pour ce contrat.</td>
+                                </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -368,18 +380,18 @@
         {{-- MODAL POUR L'AFFICHAGE ET LE RÈGLEMENT DÉTAILLÉ DES AVANCES (TYPE 0) --}}
         @if($toutesLesAvances->isNotEmpty())
         <div class="modal fade" id="modalAvances" tabindex="-1" aria-labelledby="modalAvancesLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content border-0 shadow-lg" style="border-radius: 12px;">
-                    <div class="modal-header bg-dark text-white">
-                        <h5 class="modal-title fw-bold fs-6" id="modalAvancesLabel">
-                            <i class="fa-solid fa-list-check text-warning me-2"></i>Détail des Avances et Frais Initiaux
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down">
+                <div class="modal-content border-0 shadow" style="border-radius: 12px;">
+                    <div class="modal-header modal-header-dark py-2">
+                        <h6 class="modal-title fw-bold" id="modalAvancesLabel">
+                            <i class="fa-solid fa-list-ul text-warning me-2"></i> Détail des Avances et Frais Initiaux
+                        </h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                     </div>
-                    <div class="modal-body p-3 p-md-4">
+                    <div class="modal-body p-3">
                         <div class="table-responsive">
-                            <table class="table align-middle">
-                                <thead class="table-light">
+                            <table class="table table-bordered align-middle mb-0 text-start small">
+                                <thead class="table-light text-secondary">
                                     <tr>
                                         <th>Libellé / Frais</th>
                                         <th>Montant</th>
@@ -390,16 +402,16 @@
                                 <tbody>
                                     @foreach($toutesLesAvances as $avance)
                                     <tr>
-                                        <td class="fw-bold text-capitalize">{{ $avance->mois_concerne }}</td>
-                                        <td class="fw-bold">{{ number_format($avance->montant, 0, ',', ' ') }} F CFA</td>
-                                        <td>
+                                        <td class="fw-bold text-capitalize py-2">{{ $avance->mois_concerne }}</td>
+                                        <td class="fw-bold py-2">{{ number_format($avance->montant, 0, ',', ' ') }} F CFA</td>
+                                        <td class="py-2">
                                             @if($avance->statut == 'Payé')
-                                                <span class="badge bg-success"><i class="fa-solid fa-check me-1"></i> Payé</span>
+                                                <span class="badge bg-success px-2 py-1"><i class="fa-solid fa-check me-1"></i> Payé</span>
                                             @else
-                                                <span class="badge bg-warning text-dark"><i class="fa-solid fa-clock me-1"></i> En attente</span>
+                                                <span class="badge bg-danger px-2 py-1">⚠️ En attente</span>
                                             @endif
                                         </td>
-                                        <td class="text-end">
+                                        <td class="text-end py-2">
                                             @if($avance->statut != 'Payé')
                                                 @if($contratEstTermine)
                                                     <span class="badge bg-secondary">Bloqué</span>
@@ -407,7 +419,7 @@
                                                     <!-- FORMULAIRE : PAIEMENT AVANCE INDIVIDUELLE -->
                                                     <form action="{{ route('locataire.payerSeul', $avance->id) }}" method="POST" class="d-inline form-paiement-momo" data-montant="{{ $avance->montant }}" data-description="Avance : {{ $avance->mois_concerne }}">
                                                         @csrf
-                                                        <button type="submit" class="btn btn-primary btn-sm px-3 shadow-sm">
+                                                        <button type="submit" class="btn btn-primary btn-sm px-3 shadow-sm py-0">
                                                             <i class="fa-solid fa-wallet me-1"></i> Régler
                                                         </button>
                                                     </form>
@@ -424,7 +436,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="modal-footer bg-light d-flex justify-content-between">
+                    <div class="modal-footer py-2 bg-light d-flex justify-content-between">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fermer</button>
                         
                         @if($aDesAvancesImpayees && !$contratEstTermine)
@@ -442,10 +454,77 @@
         </div>
         @endif
 
+        {{-- MODAL POUR L'AFFICHAGE ET LE RÈGLEMENT DÉTAILLÉ DES MENSUALITÉS (TYPE 1) --}}
+        @if($toutesLesMensualites->isNotEmpty())
+        <div class="modal fade" id="modalMensualites" tabindex="-1" aria-labelledby="modalMensualitesLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down">
+                <div class="modal-content border-0 shadow" style="border-radius: 12px;">
+                    <div class="modal-header modal-header-dark py-2">
+                        <h6 class="modal-title fw-bold" id="modalMensualitesLabel">
+                            <i class="fa-solid fa-list-ul text-info me-2"></i> Détail des Mensualités & Loyers
+                        </h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body p-3">
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle mb-0 text-start small">
+                                <thead class="table-light text-secondary">
+                                    <tr>
+                                        <th>Libellé / Frais</th>
+                                        <th>Montant</th>
+                                        <th>Statut</th>
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($toutesLesMensualites as $mensualite)
+                                    <tr>
+                                        <td class="fw-bold text-capitalize py-2">{{ $mensualite->mois_concerne }}</td>
+                                        <td class="fw-bold py-2">{{ number_format($mensualite->montant, 0, ',', ' ') }} F CFA</td>
+                                        <td class="py-2">
+                                            @if($mensualite->statut == 'Payé')
+                                                <span class="badge bg-success px-2 py-1"><i class="fa-solid fa-check me-1"></i> Payé</span>
+                                            @else
+                                                <span class="badge bg-warning text-dark px-2 py-1">⏱️ En attente</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-end py-2">
+                                            @if($mensualite->statut != 'Payé')
+                                                @if($contratEstTermine || $aDesAvancesImpayees)
+                                                    <span class="badge bg-secondary">Bloqué</span>
+                                                @else
+                                                    <!-- FORMULAIRE : PAIEMENT MENSUALITÉ INDIVIDUELLE -->
+                                                    <form action="{{ route('locataire.payerSeul', $mensualite->id) }}" method="POST" class="d-inline form-paiement-momo" data-montant="{{ $mensualite->montant }}" data-description="Loyer : {{ $mensualite->mois_concerne }}">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-primary btn-sm px-3 shadow-sm py-0">
+                                                            <i class="fa-solid fa-wallet me-1"></i> Régler
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @else
+                                                <span class="text-muted small">
+                                                    {{ $mensualite->date_paiement ? \Carbon\Carbon::parse($mensualite->date_paiement)->format('d/m/Y') : ($mensualite->updated_at ? \Carbon\Carbon::parse($mensualite->updated_at)->format('d/m/Y') : 'Réglé') }}
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer py-2 bg-light d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
     @endif
 </div>
 
-{{-- MODAL COMMUNE DE SIMULATION DE PAIEMENT MOBILE MONEY --}}
+{{-- MODAL COMMUNE DE SIMULATION DE PAIEMENT MOBILE MONEY (Restauré à l'identique) --}}
 <div class="modal fade" id="modalMobileMoney" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
@@ -572,11 +651,17 @@
                 document.getElementById('momoLoadingScreen').style.display = 'none';
                 document.getElementById('btnCloseMomo').style.display = 'block';
 
-                // Si la modale des avances était ouverte, on la ferme d'abord
+                // Si l'une des modales de détails était ouverte, on la ferme d'abord
                 const modalAvancesEl = document.getElementById('modalAvances');
                 if (modalAvancesEl) {
                     const bsModalAvances = bootstrap.Modal.getInstance(modalAvancesEl);
                     if (bsModalAvances) bsModalAvances.hide();
+                }
+
+                const modalMensualitesEl = document.getElementById('modalMensualites');
+                if (modalMensualitesEl) {
+                    const bsModalMensualites = bootstrap.Modal.getInstance(modalMensualitesEl);
+                    if (bsModalMensualites) bsModalMensualites.hide();
                 }
 
                 momoModal.show();

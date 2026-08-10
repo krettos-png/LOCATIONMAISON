@@ -21,6 +21,15 @@
             position: relative;
         }
 
+        /* En-tête sombre pour les modals style image */
+        .modal-header-dark {
+            background-color: #343a40 !important;
+            color: #ffffff !important;
+        }
+        .modal-header-dark .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
         /* ---------------------------------------------------- */
         /* STYLES RESPONSIVE SPECIFIQUES MOBILES (ÉCRANS < 768px) */
         /* ---------------------------------------------------- */
@@ -129,14 +138,13 @@
 
 <div class="container my-3 my-md-4">
     
-    <!-- BARRE D'ACTIONS (Optimisée Flex-Wrap pour Mobile) -->
+    <!-- BARRE D'ACTIONS -->
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3 d-print-none">
         <a href="{{ route('ttt') }}" class="btn btn-secondary shadow-sm w-100 w-sm-auto">
             <i class="fa-solid fa-arrow-left me-1"></i> Retour
         </a>
         
         <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-sm-auto">
-            <!-- Bouton Afficher / Cacher -->
             <button class="btn btn-outline-dark shadow-sm w-100 w-sm-auto" type="button" data-bs-toggle="collapse" data-bs-target="#printable-contract-wrapper">
                 <i class="fa-solid fa-eye me-1"></i> Afficher / Cacher le contrat
             </button>
@@ -177,7 +185,7 @@
                 <p class="text-muted small mb-0">Référence du bail : <span class="badge bg-dark">#CT-{{ $contrat->id }}</span></p>
             </div>
 
-            <!-- Les parties contractantes (Responsive: 1 col sur mobile, 2 col sur desktop) -->
+            <!-- Les parties contractantes -->
             <div class="row g-2 mb-3">
                 <!-- BAILLEUR -->
                 <div class="col-12 col-sm-6">
@@ -204,11 +212,29 @@
 
             <hr class="my-2">
 
-            <!-- Conditions et description du bien -->
-            <h6 class="fw-bold text-dark mb-2">1. Désignation du bien & Conditions</h6>
-            <div class="bg-light p-2 rounded mb-3 small">
-                <p class="mb-1">Logement sous la référence unique <strong>#{{ $contrat->maison->id }}</strong>.</p>
-                <p class="mb-0"><strong>Prise d'effet :</strong> {{ \Carbon\Carbon::parse($contrat->date_debut)->format('d/m/Y') }} | <strong>Loyer mensuel :</strong> <span class="text-success fw-bold">{{ number_format($contrat->maison->prix, 0, ',', ' ') }} F CFA</span></p>
+            <!-- Conditions et description détaillée du bien -->
+            <h6 class="fw-bold text-dark mb-2">1. Désignation du Bien & Conditions</h6>
+            <div class="bg-light p-3 rounded mb-3 small">
+                <div class="row g-2">
+                    <div class="col-12 col-sm-6">
+                        <p class="mb-1"><strong>Intitulé / Titre :</strong> {{ $contrat->maison->titre ?? 'Logement #' . $contrat->maison->id }}</p>
+                        <p class="mb-1"><strong>Type de bien :</strong> {{ $contrat->maison->type ?? 'Appartement / Maison' }}</p>
+                        <p class="mb-1"><strong>Ville :</strong> {{ $contrat->maison->ville ?? 'Non renseignée' }}</p>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <p class="mb-1"><strong>Reference :</strong> 00000{{ $contrat->maison->id ?? 'Non renseigné' }}</p>
+                        <p class="mb-1"><strong>Adresse précise :</strong> {{ $contrat->maison->adresse ?? 'Non spécifiée' }}</p>
+                        <p class="mb-1"><strong>Prise d'effet :</strong> {{ \Carbon\Carbon::parse($contrat->date_debut)->format('d/m/Y') }}</p>
+                    </div>
+                </div>
+                @if(!empty($contrat->maison->description))
+                    <div class="border-top pt-2 mt-2 text-muted x-small">
+                        <strong>Description :</strong> {{ $contrat->maison->description }}
+                    </div>
+                @endif
+                <div class="mt-2 pt-2 border-top">
+                    <strong>Loyer mensuel :</strong> <span class="text-success fw-bold">{{ number_format($contrat->maison->prix, 0, ',', ' ') }} F CFA</span>
+                </div>
             </div>
 
             <!-- FRAIS INITIAUX ET AVANCES (Type 0) -->
@@ -265,7 +291,7 @@
         </div>
     </div>
 
-    <!-- TABLEAU DE SUIVI DES LOYERS (Pleine fluidité mobile) -->
+    <!-- TABLEAU DE SUIVI (REGROUPE LES AVANCES ET LES LOYERS) -->
     <div class="card p-3 p-md-4 shadow-sm border-0 d-print-none">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="fw-bold text-dark mb-0 fs-6 fs-md-5">Suivi Numérique des Échéances</h5>
@@ -285,52 +311,183 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($contrat->paiements as $paiement)
-                    <tr>
-                        <td data-label="Période" class="fw-bold text-capitalize text-primary">{{ $paiement->mois_concerne }}</td>
+                    @php
+                        $avances = $contrat->paiements->where('type', 0);
+                        $loyers = $contrat->paiements->where('type', 1);
+                        $loyersImpayes = $loyers->where('statut', '!=', 'Payé')->isNotEmpty();
+                    @endphp
+
+                    <!-- 1. GROUPE DES AVANCES (TYPE 0) -->
+                    @if($avances->isNotEmpty())
+                    <tr class="table-light">
+                        <td data-label="Période" class="fw-bold text-dark">Avances & Frais Initiaux</td>
                         <td data-label="Type">
-                            @if($paiement->type == 0)
-                                <span class="badge bg-warning text-dark">Avance</span>
-                            @else
-                                <span class="badge bg-info text-dark">Loyer</span>
-                            @endif
+                            <span class="badge bg-warning text-dark">{{ $avances->count() }} éléments</span>
                         </td>
-                        <td data-label="Montant" class="fw-bold">{{ number_format($paiement->montant, 0, ',', ' ') }} F CFA</td>
+                        <td data-label="Montant" class="fw-bold">{{ number_format($avances->sum('montant'), 0, ',', ' ') }} F CFA</td>
                         <td data-label="Statut">
-                            @if($paiement->statut == 'Payé')
-                                <span class="badge bg-success px-2.5 py-1">✓ {{ $paiement->statut }}</span>
+                            @if($aDesImpayesInitiaux)
+                                <span class="badge bg-warning text-dark px-2 py-1">⏱️ En attente</span>
                             @else
-                                <span class="badge bg-warning text-dark px-2.5 py-1">⏱️ {{ $paiement->statut }}</span>
+                                <span class="badge bg-success px-2 py-1">✓ Tout Payé</span>
                             @endif
                         </td>
                         <td data-label="Date">
-                            <small class="text-secondary">
-                                {{ $paiement->date_paiement ? \Carbon\Carbon::parse($paiement->date_paiement)->format('d/m/Y H:i') : 'En attente' }}
-                            </small>
+                            <small class="text-secondary">Paiement Initial</small>
                         </td>
                         <td data-label="Action" class="text-center">
-                            @if($paiement->type == 1)
-                                @if($paiement->statut == 'Payé')
-                                    <a class="btn btn-sm btn-outline-primary shadow-sm" href="{{ route('paiement.imprimerFacture', $paiement->id) }}" target="_blank">
-                                        <i class="fa-solid fa-print me-1"></i> Imprimer
-                                    </a>
-                                @else
-                                    <button class="btn btn-sm btn-outline-secondary disabled">
-                                        <i class="fa-solid fa-print me-1"></i> Imprimer (Attente)
-                                    </button>
-                                @endif
-                            @else
-                                <span class="text-muted small d-none d-md-inline">—</span>
-                            @endif
+                            <button type="button" class="btn btn-sm btn-outline-dark shadow-sm" data-bs-toggle="modal" data-bs-target="#modalAvancesHistorique">
+                                <i class="fa-solid fa-list-check me-1"></i> Voir le détail
+                            </button>
                         </td>
                     </tr>
-                    @empty
+                    @endif
+
+                    <!-- 2. GROUPE DES LOYERS (TYPE 1) -->
+                    @if($loyers->isNotEmpty())
+                    <tr class="table-light">
+                        <td data-label="Période" class="fw-bold text-primary">Historique des Loyers Mensuels</td>
+                        <td data-label="Type">
+                            <span class="badge bg-info text-dark">{{ $loyers->count() }} éléments</span>
+                        </td>
+                        <td data-label="Montant" class="fw-bold">{{ number_format($loyers->sum('montant'), 0, ',', ' ') }} F CFA</td>
+                        <td data-label="Statut">
+                            @if($loyersImpayes)
+                                <span class="badge bg-warning text-dark px-2 py-1">⏱️ En attente</span>
+                            @else
+                                <span class="badge bg-success px-2 py-1">✓ Tout Payé</span>
+                            @endif
+                        </td>
+                        <td data-label="Date">
+                            <small class="text-secondary">Périodique</small>
+                        </td>
+                        <td data-label="Action" class="text-center">
+                            <button type="button" class="btn btn-sm btn-outline-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalLoyersHistorique">
+                                <i class="fa-solid fa-list-check me-1"></i> Voir le détail
+                            </button>
+                        </td>
+                    </tr>
+                    @endif
+
+                    @if($avances->isEmpty() && $loyers->isEmpty())
                     <tr>
                         <td colspan="6" class="text-center text-muted py-4">Aucun paiement programmé pour ce contrat.</td>
                     </tr>
-                    @endforelse
+                    @endif
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DÉTAIL DES AVANCES (TYPE 0) -->
+<div class="modal fade d-print-none" id="modalAvancesHistorique" tabindex="-1" aria-labelledby="modalAvancesHistoriqueLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content shadow">
+            <div class="modal-header modal-header-dark py-2">
+                <h6 class="modal-title fw-bold" id="modalAvancesHistoriqueLabel">
+                    <i class="fa-solid fa-list-ul text-warning me-2"></i> Détail des Avances et Frais Initiaux
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle mb-0 text-start small">
+                        <thead>
+                            <tr class="border-bottom text-secondary">
+                                <th>Libellé / Frais</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($avances as $p)
+                                <tr class="border-bottom">
+                                    <td class="fw-bold text-capitalize py-2">{{ $p->mois_concerne }}</td>
+                                    <td class="fw-bold py-2">{{ number_format($p->montant, 0, ',', ' ') }} F CFA</td>
+                                    <td class="py-2">
+                                        @if($p->statut == 'Payé')
+                                            <span class="badge bg-success px-2 py-1"><i class="fa-solid fa-check me-1"></i> Payé</span>
+                                        @else
+                                            <span class="badge bg-danger px-2 py-1">⚠️ En attente</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center text-muted py-2">
+                                        {{ $p->date_paiement ? \Carbon\Carbon::parse($p->date_paiement)->format('d/m/Y') : '-' }}
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-2">Aucune avance associée.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer py-1 bg-light">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DÉTAIL DES LOYERS (TYPE 1) -->
+<div class="modal fade d-print-none" id="modalLoyersHistorique" tabindex="-1" aria-labelledby="modalLoyersHistoriqueLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content shadow">
+            <div class="modal-header modal-header-dark py-2">
+                <h6 class="modal-title fw-bold" id="modalLoyersHistoriqueLabel">
+                    <i class="fa-solid fa-list-ul text-info me-2"></i> Détail des Loyers Mensuels
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle mb-0 text-start small">
+                        <thead>
+                            <tr class="border-bottom text-secondary">
+                                <th>Libellé / Frais</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($loyers as $p)
+                                <tr class="border-bottom">
+                                    <td class="fw-bold text-capitalize py-2">{{ $p->mois_concerne }}</td>
+                                    <td class="fw-bold py-2">{{ number_format($p->montant, 0, ',', ' ') }} F CFA</td>
+                                    <td class="py-2">
+                                        @if($p->statut == 'Payé')
+                                            <span class="badge bg-success px-2 py-1"><i class="fa-solid fa-check me-1"></i> Payé</span>
+                                        @else
+                                            <span class="badge bg-warning text-dark px-2 py-1">⏱️ En attente</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center py-2">
+                                        @if($p->statut == 'Payé')
+                                            <a class="btn btn-sm btn-outline-primary shadow-sm py-0 px-2" href="{{ route('paiement.imprimerFacture', $p->id) }}" target="_blank">
+                                                <i class="fa-solid fa-print me-1"></i> Facture
+                                            </a>
+                                        @else
+                                            <span class="text-muted small">{{ $p->date_paiement ? \Carbon\Carbon::parse($p->date_paiement)->format('d/m/Y') : '-' }}</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-2">Aucun loyer enregistré.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer py-1 bg-light">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fermer</button>
+            </div>
         </div>
     </div>
 </div>
