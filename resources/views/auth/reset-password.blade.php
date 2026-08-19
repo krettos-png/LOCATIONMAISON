@@ -1,46 +1,57 @@
 <div class="auth-container">
     <div class="auth-card">
-        <h3>Mot de passe oublié ? 🔑</h3>
-        <p>Pas de panique ! Entrez votre adresse e-mail et nous vous enverrons un lien pour en créer un nouveau.</p>
+        <h3>Nouveau mot de passe 🔒</h3>
+        <p>Saisissez votre nouveau mot de passe ci-dessous pour sécuriser votre compte.</p>
 
-        @if (session('status'))
-            <div class="alert-success">
-                {{ session('status') }}
-            </div>
-        @endif
-
-        <form method="POST" action="{{ route('password.email') }}">
+        <form method="POST" action="{{ route('password.update') }}">
             @csrf
+
+            {{-- Jeton de réinitialisation masqué --}}
+            <input type="hidden" name="token" value="{{ $token }}">
+
+            {{-- Champ Adresse E-mail (lecture seule) --}}
             <div class="input-group">
                 <label>Votre adresse e-mail</label>
-                <input type="email" name="email" value="{{ old('email') }}" placeholder="exemple@mail.com" required autofocus>
+                <input type="email" name="email" value="{{ $email ?? old('email') }}" required readonly class="input-readonly">
                 @error('email')
                     <span style="color: #ef4444; font-size: 12px; margin-top: 5px; display: block;">{{ $message }}</span>
                 @enderror
             </div>
 
-            <button type="submit" class="auth-btn">Envoyer le lien</button>
+            {{-- Champ Nouveau mot de passe --}}
+            <div class="input-group">
+                <label>Nouveau mot de passe</label>
+                <input type="password" name="password" placeholder="••••••••" required autofocus>
+                @error('password')
+                    <span style="color: #ef4444; font-size: 12px; margin-top: 5px; display: block;">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- Champ Confirmation du mot de passe --}}
+            <div class="input-group">
+                <label>Confirmer le mot de passe</label>
+                <input type="password" name="password_confirmation" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="auth-btn">Mettre à jour le mot de passe</button>
         </form>
 
-        <a href="{{ route('home') }}" class="back-to-login">← Retour à l'accueil</a>
+        <a href="{{ route('login') }}" class="back-to-login">← Annuler et se connecter</a>
     </div>
 </div>
 
-
-
 <style>
-    /* Container principal pour centrer la carte verticalement et horizontalement */
+/* Style identique à ta première vue */
 .auth-container {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f8fafc; /* Gris très clair */
+    background-color: #f8fafc;
     padding: 20px;
     font-family: 'Poppins', sans-serif;
 }
 
-/* La carte blanche */
 .auth-card {
     background: #ffffff;
     width: 100%;
@@ -65,7 +76,6 @@
     margin-bottom: 30px;
 }
 
-/* Groupes d'entrée */
 .input-group {
     text-align: left;
     margin-bottom: 20px;
@@ -90,11 +100,17 @@
 }
 
 .input-group input:focus {
-    border-color: #3b82f6; /* Couleur primaire */
+    border-color: #3b82f6;
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
 
-/* Bouton principal */
+/* Style pour le champ e-mail en lecture seule */
+.input-readonly {
+    background-color: #f1f5f9;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
 .auth-btn {
     width: 100%;
     background-color: #3b82f6;
@@ -112,18 +128,6 @@
     background-color: #2563eb;
 }
 
-/* Alertes de succès */
-.alert-success {
-    background-color: #f0fdf4;
-    color: #16a34a;
-    padding: 12px;
-    border-radius: 10px;
-    font-size: 13px;
-    margin-bottom: 20px;
-    border: 1px solid #bbf7d0;
-}
-
-/* Lien de retour */
 .back-to-login {
     display: block;
     margin-top: 20px;

@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\ContratController;
 use App\Http\Controllers\LocataireController;
 
+
 //Route::get('/', function () {
    // return view('welcome');
 //});
@@ -292,6 +293,13 @@ Route::get('/maison/{id}/demander-visite', [MaisonController::class, 'demanderVi
 
 
 
+// Demande de lien (Saisie email)
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
+// Réinitialisation du mot de passe (Formulaire nouveau mot de passe)
+Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
 
 
 
